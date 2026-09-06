@@ -1,7 +1,8 @@
 #!/bin/sh
 # .claude/skills/moot/scripts/remove
 # remove DIR: remove the patch create made, then DIR. DIR is what create
-# printed.
+# printed. If the patch will not go, DIR and its line stay and remove
+# exits nonzero, so nothing is orphaned without a line naming it.
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
@@ -10,5 +11,5 @@ set -eu
 d=${1:?usage: remove DIR}
 [ -f "$d/moot" ] || { echo "not a moot: $d" >&2; exit 1; }
 read -r shape n x b f < "$d/moot"
-"$b/remove" "$x" 2>/dev/null || :
+"$b/remove" "$x"
 rm -rf "$d"

@@ -85,11 +85,15 @@ them is missing a fact, that is a change there, not a paragraph here.
 A test harness is allowed **only to prove the table works**: shell
 seats, not agents, say and hear in rounds and every one hears all N,
 its own included, byte for byte, with a round bigger than the wire
-holds; a seat cannot hear before it says; nothing is locked between
-rounds; mesh 2 is one pipe and works the same; on mesh-p the parent
-hears the round; remove it, see nothing left. The harness must not run
-a moot, judge one, or grow into a seat. If a test needs more than a few
-lines of setup, the table is too complicated, not the test.
+holds; a seat cannot hear before it says, and hearing too early leaves
+nothing behind; a seat whose read was cut inside a payload refuses;
+nothing is locked between rounds; mesh 2 is one pipe and every seat
+hears all N there too; on mesh-p the parent hears the round; create
+leaves no patch when it cannot finish; remove leaves the moot when the
+patch will not go; remove it, see nothing left. The harness must not
+run a moot, judge one, or grow into a seat, and must not touch a moot
+or a patch it did not make. If a test needs more than a few lines of
+setup, the table is too complicated, not the test.
 
 ## Rules
 
@@ -107,8 +111,9 @@ lines of setup, the table is too complicated, not the test.
 - **Favor nothing.** No line in SKILL.md, no brief, no script may make
   one outcome, one seat, or one round's word easier to reach than
   another.
-- **Never read what is said.** say looks at bytes once, to see its own
-  come back. Nothing else here looks.
+- **Never read what is heard.** say compares what came back with what
+  it put on the wire, to see its own come round. Nothing else here
+  looks at what came off the wire.
 
 ## Layout
 

@@ -1,6 +1,7 @@
 # .claude/skills/moot/scripts/.seat
 # Sourced by say and hear, with DIR in d and SEAT in i: find SEAT's ends in
-# the map, its spool, and how to take one payload off the wire.
+# the map, its spool, and how to take one payload off the wire. Refuse if
+# the last read at this seat was cut inside a payload.
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
@@ -14,6 +15,8 @@ set -- $w; wd=$1; ws=$2; wp=$3
 set -- $r; rd=$1; rs=$2
 case ",$wp," in *,"$i",*) echo=1;; *) echo=0;; esac
 s=$d/$i; mkdir -p "$s"
+cut() { echo "seat $i: a read did not finish; $s/.next is what came off" >&2; exit 1; }
+[ ! -e "$s/.next" ] || cut
 count() { ls "$s" | wc -l; }
 avail() { read -t 0 -r 0<> "$rd/$((1 - rs))"; }
-spool() { "$f/read" "$rd" "$rs" > "$s/.next" && mv "$s/.next" "$s/$(( $(count) + 1 ))"; }
+spool() { "$f/read" "$rd" "$rs" > "$s/.next" || cut; mv "$s/.next" "$s/$(( $(count) + 1 ))"; }
