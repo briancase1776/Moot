@@ -1,9 +1,10 @@
 #!/bin/sh
 # .claude/skills/moot/scripts/remove
 # remove DIR: remove the patch create made, then DIR. DIR is what create
-# printed. If Patch's remove fails, DIR and its line stay and remove exits
-# nonzero, so nothing is orphaned without a line naming it. A patch that
-# is already gone is not in the way.
+# printed and the caller holds it; nothing here looks a moot up. If
+# Patch's remove fails, DIR and its line stay and remove exits nonzero,
+# so the patch that would not go is still named in the DIR the caller
+# already has. A patch that is already gone is not in the way.
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
