@@ -59,7 +59,7 @@ that spawns one seat and waits on it before spawning the next waits on
 a round the first cannot finish alone. The brief carries the matter and
 nothing about it: not what the parent expects, not what any seat should
 find, not who sits where. On mesh-p, hear every round as p. There are
-two rounds if no seat said a DELTA in round 2 and N+2 if one did, and p
+two rounds if no seat said a DELTA in round 2 and N+3 if one did, and p
 learns which the way the seats do, by reading round 2. When the seats
 return, read what they returned, then remove DIR.
 
@@ -95,14 +95,24 @@ returns when every seat has said, so nothing is heard before it is said.
 
    hear. After N-1 rotations every seat has argued every position.
 
-4. Vote. For every DELTA said, yes or no on its claim. say
+4. Read what was argued. say the discrepancies you now see that no
+   DELTA has said, zero or more, numbered on from your last, then where
+   you stand having heard it all:
+
+       DELTA I.3 the claim
+       REPORT
+       where you stand
+
+   hear.
+
+5. Vote. For every DELTA said, yes or no on its claim. say
 
        VOTE J.k yes
 
    hear. Count. A claim with more yes than no stands; more no than yes,
    it falls; a tie is a tie.
 
-5. Return every DELTA with its count, and where you stand now.
+6. Return every DELTA with its count, and where you stand now.
 
 ## Facts
 
