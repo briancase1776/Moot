@@ -126,9 +126,14 @@ returns when every seat has said, so nothing is heard before it is said.
   `SEAT I` line in front and a newline at the end. That line is the
   only mark of who said what, as Merge says, and it is what say was
   told: nothing binds a caller to a seat number. Say nothing that
-  starts a line with SEAT.
+  starts a line with SEAT; say refuses a body holding a line of that
+  shape, SEAT and one word alone, because a reader would take it for
+  the mark and the words under it would speak, and vote, as another
+  seat.
 - hear prints the round in the order it reached the seat's end. The
-  order means nothing. Through fittings it is the order the says took
+  round is the first N it has; a payload that arrived behind them is
+  the next round's and is kept for the next hear. The order means
+  nothing. Through fittings it is the order the says took
   the lock, which is a race; on mesh 2 a seat's own words are put in
   place when its say returns, so two seats can see one round in two
   orders.
@@ -151,9 +156,15 @@ returns when every seat has said, so nothing is heard before it is said.
   that has said and not yet heard stalls the others once its end fills
   the same as one that did neither, as Patch says, and frees them the
   moment it does either. On mesh-p that includes p.
+- Take what hear prints whole, to a file. Nothing is dropped until it
+  has been printed, so a hear cut inside its print leaves the round to
+  be heard again; but a seat that read it through something that
+  truncated it has not heard the round, however much of it it saw, and
+  must call hear again rather than answer what it saw.
 - Give either call the longest timeout you have. A hear cut off
   waiting, or a say cut off waiting for the lock, leaves nothing
-  behind; call it again. A say cut off with the lock leaves it held;
+  behind; call it again. A say that fails or is cut off with the lock
+  leaves it held and says so;
   cut inside its write, it leaves part of a payload on the wire, which
   cuts every seat's next hear inside it. A call cut off inside a read
   leaves DIR/SEAT/.next, and say and hear at that seat refuse from

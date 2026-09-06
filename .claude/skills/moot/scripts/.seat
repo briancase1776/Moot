@@ -1,13 +1,17 @@
 # .claude/skills/moot/scripts/.seat
 # Sourced by say and hear, with DIR in d and SEAT in i: find SEAT's ends in
-# the map, its spool, and how to take one payload off the wire. Refuse if
-# the last read at this seat was cut inside a payload.
+# the map, its spool, and how to take one payload off the wire. The seat is
+# matched as a string, the same way the lock list is, so no spelling of a
+# seat can find its ends by one rule and miss the lock by the other. Refuse
+# if the last read at this seat was cut inside a payload.
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
 # MIT License text omitted for brevity, See LICENCE.TXT
 read -r shape n x b f < "$d/moot"
-end() { awk -v s="$i" -v k="$1" '$1==s && $2==k {print $3, $2, $4}' "$x/patch"; }
+end() {
+  awk -v s="$i" -v k="$1" '$1""==s"" && $2""==k"" {print $3, $2, $4}' "$x/patch"
+}
 w=$(end 0); r=$(end 1)
 [ -n "$w" ] || w=$r; [ -n "$r" ] || r=$w
 [ -n "$w" ] || { echo "no seat $i in $x" >&2; exit 1; }

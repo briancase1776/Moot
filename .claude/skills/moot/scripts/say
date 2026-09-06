@@ -18,13 +18,27 @@ d=${1:?usage: say DIR SEAT}; i=${2:?usage: say DIR SEAT}
 p=$(mktemp); trap 'rm -f "$p"' EXIT
 { echo "SEAT $i"; cat; } > "$p"
 [ "$(tail -c 1 "$p" | wc -l)" -eq 1 ] || echo >> "$p"
+tail -n +2 "$p" | grep -qE '^SEAT [^[:space:]]+$' &&
+  { echo "seat $i: the body has a line shaped like the mark" >&2; exit 1; } || :
 push() {
   "$f/write" "$wd" "$ws" < "$p" & w=$!
   while kill -0 "$w" 2>/dev/null; do avail && spool || sleep 0.1; done
   wait "$w"
 }
-if [ "$echo" -eq 0 ]; then push; cp "$p" "$s/$(( $(count) + 1 ))"; exit; fi
+if [ "$echo" -eq 0 ]; then cp "$p" "$s/$(( $(count) + 1 ))"; push; exit; fi
+held=0
+trap 'rm -f "$p"; [ "$held" -eq 0 ] ||
+  echo "seat $i: say failed holding the lock; the moot is over" >&2' EXIT
 until mkdir "$x/lock" 2>/dev/null; do avail && spool || sleep 0.1; done
+held=1
+base=$(count)
 push
-while ! cmp -s "$p" "$s/$(count)" 2>/dev/null; do avail && spool || sleep 0.1; done
-rmdir "$x/lock"
+mine() {
+  k=$base
+  while [ "$k" -lt "$(count)" ]; do
+    k=$((k + 1)); cmp -s "$p" "$s/$k" && return 0
+  done
+  return 1
+}
+until mine; do avail && spool || sleep 0.1; done
+held=0; rmdir "$x/lock"

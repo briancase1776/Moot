@@ -3,7 +3,9 @@
 # create SHAPE N [LANES]: patch a mesh over N seats with icc-patch, LANES
 # lanes each (even, default 2), write the moot's one line, print the moot's
 # directory. Patch makes the wire; the moot makes nothing but its rounds.
-# If create cannot finish, it removes the patch it made.
+# If create cannot finish, it removes the patch it made. This shell is sh,
+# and sh does not run an EXIT trap when it dies on a signal, so the signals
+# a timeout sends are trapped too: a call cut off here leaves no patch.
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
@@ -17,8 +19,9 @@ top=$(cd "$(dirname "$0")/../../../.." && pwd)
 B=$(cd "${ICC_PATCH:-$top/../ICC-Patch}/.claude/skills/icc-patch/scripts" && pwd)
 F=$(cd "${ICC_FRAMES:-$top/../ICC-Frames}/.claude/skills/icc-frames/scripts" && pwd)
 x=$("$B/create" "$shape" "$n" "$lanes")
+trap 'trap - EXIT INT TERM HUP; "$B/remove" "$x"; exit 1' INT TERM HUP
 trap '"$B/remove" "$x"' EXIT
 d=$(mktemp -d /tmp/moot-XXXXXXXX)
 echo "$shape $n $x $B $F" > "$d/moot"
-trap - EXIT
+trap - EXIT INT TERM HUP
 echo "$d"

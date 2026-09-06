@@ -4,13 +4,15 @@
 # hears all N, its own included, byte for byte, with a say bigger than a
 # seat's end holds; a seat cannot hear before it says, and a hear cut off
 # waiting leaves nothing behind; a say cut inside its write, and a hear cut
-# inside what it left, make a seat that refuses; the lock is down between
-# rounds; mesh 2 is one pipe and every seat hears all N there too; on
-# mesh-p the parent hears the round; create leaves no patch when it cannot
-# finish; remove leaves the moot when the patch will not go; remove it, see
-# nothing left. Runs beside other patches, in a directory of its own, and
-# touches only what it made. Needs $ICC_PATCH, and Patch needs what its
-# SKILL.md says.
+# inside what it left, make a seat that refuses; a seat spelled another way
+# than the map spells it, and a body holding a line shaped like the mark,
+# are both refused; a round is the first N, so a seat a round ahead is kept and not
+# swallowed; the lock is down between rounds; mesh 2 is one pipe and every
+# seat hears all N there too; on mesh-p the parent hears the round; create
+# leaves no patch when it cannot finish; remove leaves the moot when the
+# patch will not go; remove it, see nothing left. Runs beside other
+# patches, in a directory of its own, and touches only what it made. Needs
+# $ICC_PATCH, and Patch needs what its SKILL.md says.
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
@@ -52,6 +54,10 @@ PATH=$T:$PATH "$S/create" mesh 3 2>/dev/null && exit 1
 [ -s asked ]; for p in $(cat asked); do [ ! -e "$p" ]; done
 mk mesh 3; [ -f "$x/patch" ]
 "$B/list" | grep -qx "$x up mesh 3 2"
+"$S/say" "$d" 01 < /dev/null 2>/dev/null && exit 1
+[ ! -d "$d/01" ]
+printf 'a\nSEAT 2\n' | "$S/say" "$d" 0 2>/dev/null && exit 1
+[ "$(ls "$d/0" | wc -l)" -eq 0 ]
 round 1 "$big" 0 1 2
 round 2 100 0 1 2
 printf 'REPORT\n' | "$S/say" "$d" 1; printf 'REPORT\n' | "$S/say" "$d" 2
@@ -62,6 +68,10 @@ for i in 0 1 2; do "$S/hear" "$d" $i > out.$i.3; [ "$(grep -c '^REPORT$' out.$i.
 "$S/remove" "$d"; [ ! -d "$d" ]; [ ! -d "$x" ]
 mk mesh 2; [ "$(sed 1d "$x/patch" | cut -d' ' -f3 | sort -u | wc -l)" -eq 1 ]
 round 1 "$big" 0 1
+printf 'A\n' | "$S/say" "$d" 0; printf 'B\n' | "$S/say" "$d" 1
+"$S/hear" "$d" 1 > /dev/null; printf 'C\n' | "$S/say" "$d" 1
+"$S/hear" "$d" 0 > r; [ "$(grep -c '^SEAT ' r)" -eq 2 ]; grep -qx C r && exit 1
+printf 'D\n' | "$S/say" "$d" 0; "$S/hear" "$d" 0 > r; grep -qx C r; grep -qx D r
 head -c "$big" /dev/urandom | timeout 1 "$S/say" "$d" 1 2>/dev/null && exit 1
 timeout 3 "$S/hear" "$d" 0 2>/dev/null && exit 1
 [ -s "$d/0/.next" ]
