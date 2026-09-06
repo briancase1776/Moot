@@ -48,9 +48,9 @@ knows the rounds. It does not read what is said in them.
   Seats that agree where to look are one seat run three times.
 - **A matter is not spent in one moot.** What the spread will not cover
   is what every seat misses alike; a moot corrects a seat, it does not
-  correct a model. This project has been sat three times and given up
-  something new each time. Sitting it again is the parent's to call,
-  and nothing here knows there was a first time.
+  correct a model. Sitting the same matter again turns up what one
+  sitting did not. That is the parent's to call, and nothing here knows
+  there was a first time.
 
 ## What this is not
 
