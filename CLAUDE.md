@@ -37,6 +37,20 @@ knows the rounds. It does not read what is said in them.
 - **Favors nothing.** Every seat gets the same brief, every position
   gets every seat, a vote is yes or no with no tiebreak, and on mesh-p
   the parent hears and says nothing.
+- **N seats, not one.** The seats are cold and do not coordinate. Three
+  of the same model on the same brief go at a matter from three sides
+  and come back with mostly different things: what a seat looks at
+  first shapes everything it looks at after. Three find more than one
+  does and dig further into what they find, so a table can turn up
+  what a single agent of longer reach, working alone, does not. That
+  spread is the product. Nothing here may narrow it: not a fuller
+  brief, not a shared plan, not a house style for what a seat says.
+  Seats that agree where to look are one seat run three times.
+- **A matter is not spent in one moot.** What the spread will not cover
+  is what every seat misses alike; a moot corrects a seat, it does not
+  correct a model. This project has been sat three times and given up
+  something new each time. Sitting it again is the parent's to call,
+  and nothing here knows there was a first time.
 
 ## What this is not
 
