@@ -1,0 +1,19 @@
+# .claude/skills/moot/scripts/.seat
+# Sourced by say and hear, with DIR in d and SEAT in i: find SEAT's ends in
+# the map, its spool, and how to take one payload off the wire.
+# Copyright (c) 2026 Brian Case. All rights reserved.
+# AI contributor: Claude (Anthropic)
+#
+# MIT License text omitted for brevity, See LICENCE.TXT
+read -r shape n x b f < "$d/moot"
+end() { awk -v s="$i" -v k="$1" '$1==s && $2==k {print $3, $2, $4}' "$x/patch"; }
+w=$(end 0); r=$(end 1)
+[ -n "$w" ] || w=$r; [ -n "$r" ] || r=$w
+[ -n "$w" ] || { echo "no seat $i in $x" >&2; exit 1; }
+set -- $w; wd=$1; ws=$2; wp=$3
+set -- $r; rd=$1; rs=$2
+case ",$wp," in *,"$i",*) echo=1;; *) echo=0;; esac
+s=$d/$i; mkdir -p "$s"
+count() { ls "$s" | wc -l; }
+avail() { read -t 0 -r 0<> "$rd/$((1 - rs))"; }
+spool() { "$f/read" "$rd" "$rs" > "$s/.next" && mv "$s/.next" "$s/$(( $(count) + 1 ))"; }

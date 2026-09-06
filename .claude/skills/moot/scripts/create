@@ -1,0 +1,21 @@
+#!/bin/sh
+# .claude/skills/moot/scripts/create
+# create SHAPE N [LANES]: patch a mesh over N seats with icc-patch, LANES
+# lanes each (even, default 2), write the moot's one line, print the moot's
+# directory. Patch makes the wire; the moot makes nothing but its rounds.
+# Copyright (c) 2026 Brian Case. All rights reserved.
+# AI contributor: Claude (Anthropic)
+#
+# MIT License text omitted for brevity, See LICENCE.TXT
+set -eu
+[ $# -ge 2 ] || { echo "usage: create SHAPE N [LANES]" >&2; exit 1; }
+shape=$1; n=$2; lanes=${3:-2}
+case $shape in mesh|mesh-p) ;; *) echo "shape is mesh or mesh-p" >&2; exit 1;; esac
+[ "$n" -ge 2 ] 2>/dev/null || { echo "seats must be 2 or more" >&2; exit 1; }
+top=$(cd "$(dirname "$0")/../../../.." && pwd)
+B=$(cd "${ICC_PATCH:-$top/../ICC-Patch}/.claude/skills/icc-patch/scripts" && pwd)
+F=$(cd "${ICC_FRAMES:-$top/../ICC-Frames}/.claude/skills/icc-frames/scripts" && pwd)
+x=$("$B/create" "$shape" "$n" "$lanes")
+d=$(mktemp -d /tmp/moot-XXXXXXXX)
+echo "$shape $n $x $B $F" > "$d/moot"
+echo "$d"

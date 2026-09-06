@@ -1,0 +1,14 @@
+#!/bin/bash
+# .claude/skills/moot/scripts/hear
+# hear DIR SEAT: print the round, everything every seat said, SEAT's own
+# included, in the order it came, once all N are in. Waits for the rest.
+# Copyright (c) 2026 Brian Case. All rights reserved.
+# AI contributor: Claude (Anthropic)
+#
+# MIT License text omitted for brevity, See LICENCE.TXT
+set -eu
+d=${1:?usage: hear DIR SEAT}; i=${2:?usage: hear DIR SEAT}
+. "$(dirname "$0")/.seat"
+while [ "$(count)" -lt "$n" ]; do spool; done
+for k in $(ls "$s" | sort -n); do cat "$s/$k"; done
+rm -f "$s"/[0-9]*

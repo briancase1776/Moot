@@ -1,0 +1,31 @@
+#!/bin/bash
+# .claude/skills/moot/scripts/say
+# say DIR SEAT < text: put text on the wire as SEAT, once. Where the wire has
+# fittings, take the patch's lock, write, and hold the lock until the words
+# come back round to SEAT's own read end: then they are past the merge and
+# the next seat's cannot cut in. Where the wire is one pipe, write and be
+# done. Either way SEAT's read end is drained while it waits, so no seat
+# stalls on another that is also trying to say; what is drained is kept
+# for hear.
+# Copyright (c) 2026 Brian Case. All rights reserved.
+# AI contributor: Claude (Anthropic)
+#
+# MIT License text omitted for brevity, See LICENCE.TXT
+set -eu
+d=${1:?usage: say DIR SEAT}; i=${2:?usage: say DIR SEAT}
+. "$(dirname "$0")/.seat"
+p=$(mktemp); trap 'rm -f "$p"' EXIT
+{ echo "SEAT $i"; cat; } > "$p"
+[ "$(tail -c 1 "$p" | wc -l)" -eq 1 ] || echo >> "$p"
+push() {
+  "$f/write" "$wd" "$ws" < "$p" & w=$!
+  while kill -0 "$w" 2>/dev/null; do avail && spool || sleep 0.1; done
+  wait "$w"
+}
+if [ "$echo" -eq 0 ]; then push; cp "$p" "$s/$(( $(count) + 1 ))"; exit; fi
+if [ "$(cat "$x/lock/seat" 2>/dev/null)" != "$i" ]; then
+  until mkdir "$x/lock" 2>/dev/null; do avail && spool || sleep 0.1; done
+  echo "$i" > "$x/lock/seat"; push
+fi
+while ! cmp -s "$p" "$s/$(count)" 2>/dev/null; do spool; done
+rm -r "$x/lock"
