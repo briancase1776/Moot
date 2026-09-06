@@ -36,6 +36,12 @@ and nothing else.
 SHAPE is mesh or mesh-p, as Patch says. N is 2 or more. On mesh-p the
 parent holds seat p: it hears every round and says nothing.
 
+create runs Patch's create from `$ICC_PATCH`, by default `../ICC-Patch`
+beside this repo, finds Frames' scripts in `$ICC_FRAMES`, by default
+`../ICC-Frames`, and writes both paths into DIR/moot; say, hear and
+remove take them from there. Patch finds Pipes, Tee and Merge itself,
+as its SKILL.md says.
+
 ## Sitting a moot
 
 The parent does this.
@@ -89,7 +95,7 @@ returns when every seat has said, so nothing is heard before it is said.
 
    hear. After N-1 rotations every seat has argued every position.
 
-4. Vote. For every DELTA said, yes or no on its claim:
+4. Vote. For every DELTA said, yes or no on its claim. say
 
        VOTE J.k yes
 
@@ -110,26 +116,33 @@ returns when every seat has said, so nothing is heard before it is said.
   the lock, which is a race; on mesh 2 a seat's own words are put in
   place when its say returns, so two seats can see one round in two
   orders.
-- hear counts N payloads and returns. That is why p says nothing on
-  mesh-p: a payload from p would count as a seat's, and every round
-  after would be one out.
+- hear counts N payloads and returns; it does not know seats. That is
+  why p says nothing on mesh-p, and why a seat that says twice puts
+  every seat one over: a payload from p, or a second from a seat,
+  counts as a seat's, and every round after is one out. On mesh 2 say
+  spools what arrives while its write runs, so a peer that says, hears
+  and says again inside that instant is heard a round early.
 - say returns when what it said is past the fittings and back at its
-  own seat; on mesh 2 there are no fittings and it returns at once.
-  While what it said fits in what the wire holds, say does not wait on
-  anyone; bigger, it waits for the slowest seat to come to say or hear.
-  Through fittings the wire is three pipes deep, and Pipes says what
-  one holds. hear returns when the round is in.
-- Give either call the longest timeout you have. A hear cut off waiting
-  leaves nothing behind; call it again. A call cut off inside a payload
-  leaves DIR/SEAT/.next, the seat is out of step with the round, and say
-  and hear refuse from then on and say so. A say cut off may also have
-  left part of a payload on the wire, which every seat then waits for.
-  Frames says what is lost. Nothing here recovers either; remove the
-  moot.
+  own seat; on mesh 2 there are no fittings and it returns when the
+  pipe has taken it. Between a say and each seat's read end the wire
+  holds one pipe: LANES/2 lanes of what Pipes says a lane holds, less
+  what the count line takes. While what it said fits there, say waits
+  on no seat's hear; bigger, the tee stalls on the first outlet that
+  is full, so say waits for the slowest seat to come to say or hear,
+  and so does every say after it. Choose LANES so a round fits; more
+  lanes is the only remedy. hear returns when the round is in.
 - A seat that has not said cannot hear: the round is one short. A seat
-  that neither says nor hears stalls the others once its end fills, as
-  Patch says, and frees them the moment it does either. On mesh-p that
-  includes p.
+  that has said and not yet heard stalls the others once its end fills
+  the same as one that did neither, as Patch says, and frees them the
+  moment it does either. On mesh-p that includes p.
+- Give either call the longest timeout you have. A hear cut off
+  waiting, or a say cut off waiting for the lock, leaves nothing
+  behind; call it again. A say cut off with the lock leaves it held;
+  cut inside its write, it leaves part of a payload on the wire, which
+  cuts every seat's next hear inside it. A call cut off inside a read
+  leaves DIR/SEAT/.next, and say and hear at that seat refuse from
+  then on and say so. Past the lock the moot is over: remove it.
+  Frames says what is lost.
 - Nothing here reads what is heard. say compares what came back with
   what it put on the wire, byte for byte, to know its own are past the
   fittings; that is all. A REPORT, a DELTA or a VOTE is what the seats

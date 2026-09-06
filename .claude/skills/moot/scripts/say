@@ -6,7 +6,8 @@
 # the next seat's cannot cut in. Where the wire is one pipe, write and be
 # done. Either way SEAT's read end is drained while it waits, so no seat
 # stalls on another that is also trying to say; what is drained is kept
-# for hear.
+# for hear. Cut off with the lock held, say leaves it held: the moot is
+# over.
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
@@ -23,9 +24,7 @@ push() {
   wait "$w"
 }
 if [ "$echo" -eq 0 ]; then push; cp "$p" "$s/$(( $(count) + 1 ))"; exit; fi
-if [ "$(cat "$x/lock/seat" 2>/dev/null)" != "$i" ]; then
-  until mkdir "$x/lock" 2>/dev/null; do avail && spool || sleep 0.1; done
-  echo "$i" > "$x/lock/seat"; push
-fi
-while ! cmp -s "$p" "$s/$(count)" 2>/dev/null; do spool; done
-rm -r "$x/lock"
+until mkdir "$x/lock" 2>/dev/null; do avail && spool || sleep 0.1; done
+push
+while ! cmp -s "$p" "$s/$(count)" 2>/dev/null; do avail && spool || sleep 0.1; done
+rmdir "$x/lock"

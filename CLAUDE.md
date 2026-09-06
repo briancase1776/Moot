@@ -72,9 +72,10 @@ one belongs here.
 
 create runs Patch's create from a sibling checkout, `$ICC_PATCH`, by
 default `../ICC-Patch` beside this repo, and Patch finds Pipes, Tee and
-Merge itself, as its CLAUDE.md says. say and hear run Frames' write and
-read from `$ICC_FRAMES`, by default `../ICC-Frames`. remove runs Patch's
-remove. Do not vendor any of them into this repo.
+Merge itself, as its CLAUDE.md says. create also finds Frames' write and
+read in `$ICC_FRAMES`, by default `../ICC-Frames`, and writes both paths
+into the moot's line; say, hear and remove run them from there. Do not
+vendor any of them into this repo.
 
 Do not duplicate their documentation. A fact about a lane is Pipes'; a
 copy, Tee's or Merge's; a payload, Frames'; a map, Patch's. If one of
@@ -86,7 +87,8 @@ A test harness is allowed **only to prove the table works**: shell
 seats, not agents, say and hear in rounds and every one hears all N,
 its own included, byte for byte, with a round bigger than the wire
 holds; a seat cannot hear before it says, and hearing too early leaves
-nothing behind; a seat whose read was cut inside a payload refuses;
+nothing behind; a say cut inside its write, and a hear cut inside what
+it left, make a seat that refuses;
 nothing is locked between rounds; mesh 2 is one pipe and every seat
 hears all N there too; on mesh-p the parent hears the round; create
 leaves no patch when it cannot finish; remove leaves the moot when the

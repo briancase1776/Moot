@@ -15,7 +15,7 @@ set -- $w; wd=$1; ws=$2; wp=$3
 set -- $r; rd=$1; rs=$2
 case ",$wp," in *,"$i",*) echo=1;; *) echo=0;; esac
 s=$d/$i; mkdir -p "$s"
-cut() { echo "seat $i: a read did not finish; $s/.next is what came off" >&2; exit 1; }
+cut() { echo "seat $i: a read did not finish; see $s/.next" >&2; exit 1; }
 [ ! -e "$s/.next" ] || cut
 count() { ls "$s" | wc -l; }
 avail() { read -t 0 -r 0<> "$rd/$((1 - rs))"; }
