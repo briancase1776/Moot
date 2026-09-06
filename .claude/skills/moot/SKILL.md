@@ -59,9 +59,10 @@ that spawns one seat and waits on it before spawning the next waits on
 a round the first cannot finish alone. The brief carries the matter and
 nothing about it: not what the parent expects, not what any seat should
 find, not who sits where. On mesh-p, hear every round as p. There are
-two rounds if no seat said a DELTA in round 2 and N+3 if one did, and p
-learns which the way the seats do, by reading round 2. When the seats
-return, read what they returned, then remove DIR.
+two rounds if no seat said a DELTA in round 2 and at most N+3 if one
+did, fewer when a rotation finds the seats agree, and p learns which
+the way the seats do, by reading round 2 and each rotation. When the
+seats return, read what they returned, then remove DIR.
 
 ## At a seat
 
@@ -88,12 +89,17 @@ returns when every seat has said, so nothing is heard before it is said.
 
 3. Rotate. In rotation m, for m from 1 to N-1, hold the position seat
    I-m (mod N) took in round 2 and argue it on every DELTA said, as well
-   as it can be argued, with whatever you have found since. say
+   as it can be argued, with whatever you have found since. If you
+   already know your yes or no on every DELTA, say that too; it counts
+   in this round only. say
 
        REPORT
        the case for it
+       VOTE J.k yes
 
-   hear. After N-1 rotations every seat has argued every position.
+   hear. If every seat said a VOTE on every DELTA and no DELTA got both
+   a yes and a no, the seats agree: go to 6. After N-1 rotations every
+   seat has argued every position.
 
 4. Read what was argued. say the discrepancies you now see that no
    DELTA has said, zero or more, numbered on from your last, then where
