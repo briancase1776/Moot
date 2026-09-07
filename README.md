@@ -35,6 +35,35 @@ different things. N seats find more than one does and dig further into
 what they find. Nothing here narrows that: no fuller brief for one seat,
 no shared plan, no house style for a report.
 
+## What it found
+
+The issues on this repo are the output of one sitting: three seats, six
+rounds, forty-one claims, argued over this project's own scripts.
+
+Eight were defects in the table itself,
+[#15](https://github.com/briancase1776/Moot/issues/15) through
+[#22](https://github.com/briancase1776/Moot/issues/22). The worst of them:
+`hear` would return a complete-looking round that nobody had said — exit
+zero, no error, nothing left behind to show it — and the one-line fix all
+three seats first agreed on was then proved insufficient by one of them.
+Another let a seat spelled a slightly different way write into the merge
+with the lock off. All eight are fixed.
+
+Four are questions about the rules of order that the sitting could not
+settle itself,
+[#23](https://github.com/briancase1776/Moot/issues/23) through
+[#26](https://github.com/briancase1776/Moot/issues/26): whether a
+discrepancy raised too late to be argued may be voted on, whether a moot
+may end early, whether the ballot is well formed, and what the scripts
+actually hold.
+
+One was not this project's at all, and the seats said so:
+[ICC-Frames#1](https://github.com/briancase1776/ICC-Frames/issues/1).
+
+What that evidence is worth: one sitting, one small codebase, and seats
+auditing the thing they were sitting on — which gave them unusually good
+access to whether they were right.
+
 ## What it costs
 
 A moot is expensive. Read this before choosing N.
