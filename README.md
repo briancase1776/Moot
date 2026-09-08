@@ -68,8 +68,9 @@ access to whether they were right.
 
 A moot is expensive. Read this before choosing N.
 
-A sitting is N+3 rounds. Every round is a full turn for every seat, so it
-is N×(N+3) agent turns — 18 at three seats, 1,720 at forty. Expect
+A sitting is N+3 rounds, and N more for every cycle the parent buys past
+the first. Every round is a full turn for every seat, so one cycle is
+N×(N+3) agent turns — 18 at three seats, 1,720 at forty. Expect
 minutes per round rather than seconds; the wire is fast and the thinking
 is not.
 

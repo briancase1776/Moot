@@ -52,17 +52,22 @@ Spawn N agents at once, one per seat 0 to N-1, each with the same brief
 but for its seat number:
 
     You are seat I of the moot at DIR. Read SKILL.md at PATH and do what
-    a seat does. The matter: ...
+    a seat does. Cycles: K. The matter: ...
 
 At once, in the background: a round waits for every seat, so a parent
 that spawns one seat and waits on it before spawning the next waits on
 a round the first cannot finish alone. The brief carries the matter and
 nothing about it: not what the parent expects, not what any seat should
-find, not who sits where. On mesh-p, hear every round as p. There are
-two rounds if no seat said a DELTA in round 2 and at most N+3 if one
-did, fewer when a rotation finds the seats agree, and p learns which
-the way the seats do, by reading round 2 and each rotation. When the
-seats return, read what they returned, then remove DIR.
+find, not who sits where. Cycles is how many times the table rotates,
+1 if the brief says none. A cycle argues the DELTAs said going into
+it; a DELTA that comes out of one is argued only if there is another,
+and is not voted otherwise. Set it before spawning and leave it: a
+parent that bought a cycle after hearing what came up would be
+steering. On mesh-p, hear every round as p. There are two rounds if no
+seat said a DELTA in round 2 and at most KN+3 if one did, fewer when a
+rotation finds the seats agree, and p learns which the way the seats
+do, by reading round 2 and each rotation. When the seats return, read
+what they returned, then remove DIR.
 
 ## At a seat
 
@@ -88,8 +93,9 @@ returns when every seat has said, so nothing is heard before it is said.
    hear. If no seat said a DELTA, return your REPORT and stop.
 
 3. Rotate. In rotation m, for m from 1 to N-1, hold the position seat
-   I-m (mod N) took in round 2 and argue it on every DELTA said, as well
-   as it can be argued, with whatever you have found since. If you
+   I-m (mod N) took in the round before this cycle began, round 2 or a
+   step 4, and argue it on every DELTA said, as well as it can be
+   argued, with whatever you have found since. If you
    already know your yes or no on every DELTA, say that too; it counts
    in this round only. say
 
@@ -99,7 +105,7 @@ returns when every seat has said, so nothing is heard before it is said.
 
    hear. If every seat said a VOTE on every DELTA and no DELTA got both
    a yes and a no, the seats agree: go to 6. After N-1 rotations every
-   seat has argued every position.
+   seat has argued every position: one cycle.
 
 4. Read what was argued. say the discrepancies you now see that no
    DELTA has said, zero or more, numbered on from your last, then where
@@ -109,16 +115,19 @@ returns when every seat has said, so nothing is heard before it is said.
        REPORT
        where you stand
 
-   hear.
+   hear. If a seat said a DELTA and fewer cycles have run than the
+   brief allows, go to 3. Otherwise a DELTA first said here has been
+   argued from no position, and is not voted.
 
-5. Vote. For every DELTA said, yes or no on its claim. say
+5. Vote. For every DELTA a cycle argued, yes or no on its claim. say
 
        VOTE J.k yes
 
    hear. Count. A claim with more yes than no stands; more no than yes,
    it falls; a tie is a tie.
 
-6. Return every DELTA with its count, and where you stand now.
+6. Return every DELTA a cycle argued with its count, every DELTA none
+   did marked so and without one, and where you stand now.
 
 ## Facts
 
@@ -174,9 +183,10 @@ returns when every seat has said, so nothing is heard before it is said.
   what it put on the wire, byte for byte, to know its own are past the
   fittings; that is all. A REPORT, a DELTA or a VOTE is what the seats
   agree to say, and the seats read them.
-- Every seat gets the same brief, every position gets every seat, the
-  vote is yes or no with no tiebreak, and the parent says nothing. That
-  is all the moot does about fairness. The rest is the seats'.
+- Every seat gets the same brief, every position gets every seat,
+  nothing is voted that every seat has not argued, the vote is yes or
+  no with no tiebreak, and the parent says nothing. That is all the
+  moot does about fairness. The rest is the seats'.
 
 ## In Claude Code
 
