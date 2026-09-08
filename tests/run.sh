@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # tests/run.sh
 # Prove the moot: shell seats on a mesh say and hear in rounds, every one
 # hears all N, its own included, byte for byte, with a say bigger than a
@@ -22,7 +22,7 @@ cd "$(dirname "$0")/.."
 S=$PWD/.claude/skills/moot/scripts
 B=$(cd "${ICC_PATCH:-../ICC-Patch}/.claude/skills/icc-patch/scripts" && pwd)
 T=$(mktemp -d); export TMPDIR=$T; cd "$T"; made=
-trap 'for d in $made; do "$S/remove" "$d" 2>/dev/null || :; done; rm -rf "$T"' EXIT INT TERM
+trap 'for d in $made; do "$S/remove" "$d" 2>/dev/null || :; done; rm -rf "$T"' EXIT
 "$S/create" 2>/dev/null && exit 1
 "$S/create" ring 3 2>/dev/null && exit 1
 "$S/create" mesh 1 2>/dev/null && exit 1
@@ -48,7 +48,7 @@ round() {  # round R BYTES SEAT...: every seat at once, then check each heard al
 }
 # a create that cannot finish: mktemp fails for the moot's directory and logs
 # every directory Patch's pieces asked for; none may survive
-printf '#!/bin/sh\ncase $* in *moot-*) exit 1;; esac\n/usr/bin/mktemp "$@" | tee -a %s\n' "$T/asked" > mktemp
+printf '#!/bin/bash\ncase $* in *moot-*) exit 1;; esac\n/usr/bin/mktemp "$@" | tee -a %s\n' "$T/asked" > mktemp
 chmod +x mktemp
 PATH=$T:$PATH "$S/create" mesh 3 2>/dev/null && exit 1
 [ -s asked ]; for p in $(cat asked); do [ ! -e "$p" ]; done
