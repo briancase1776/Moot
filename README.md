@@ -5,8 +5,10 @@ Sit N cold agents around a table and have a matter argued out.
 Each agent investigates alone and reports. They read each other's reports
 and say where they differ. Then every seat takes up the position of the
 seat to its left and argues it, one rotation at a time, until every seat
-has argued every position. What is still in dispute goes to a vote. The
-moot returns what survived.
+has argued every position. What the argument turned up gets the same
+treatment if the parent paid for another turn of the table; if not, it
+comes back unargued and unvoted, so the parent knows it is there. What
+is still in dispute goes to a vote. The moot returns what survived.
 
 It is a Claude Code skill. The agents talk over real pipes, made by
 [ICC](https://github.com/briancase1776/ICC).
@@ -55,7 +57,8 @@ settle itself,
 [#26](https://github.com/briancase1776/Moot/issues/26): whether a
 discrepancy raised too late to be argued may be voted on, whether a moot
 may end early, whether the ballot is well formed, and what the scripts
-actually hold.
+actually hold. The first is settled: it is not voted, and the parent may
+buy the table another turn to argue it. The other three are open.
 
 One was not this project's at all, and the seats said so:
 [ICC-Frames#1](https://github.com/briancase1776/ICC-Frames/issues/1).
