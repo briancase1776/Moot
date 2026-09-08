@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # .claude/skills/moot/scripts/remove
 # remove DIR: remove the patch create made, then DIR. DIR is what create
 # printed and the caller holds it; nothing here looks a moot up. If
