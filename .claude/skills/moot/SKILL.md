@@ -18,9 +18,10 @@ The moot returns what survived. Patch made the wire and the map; Frames
 carries what a seat says; see their SKILL.md. The moot adds the rounds
 and nothing else.
 
-    /tmp/moot-XXXXXXXX/moot        SHAPE N PATCH, then Patch's and Frames' scripts
-    /tmp/moot-XXXXXXXX/SEAT/       what SEAT has heard and not yet read, as it came
-    /tmp/moot-XXXXXXXX/SEAT/.next  a read cut inside a payload, if one was; see Facts
+    /tmp/moot-XXXXXXXX/moot           SHAPE N PATCH, then Patch's and Frames' scripts
+    /tmp/moot-XXXXXXXX/SEAT/          what SEAT has heard and not yet read, as it came
+    /tmp/moot-XXXXXXXX/SEAT/.next     a read cut inside a payload, if one was; see Facts
+    /tmp/moot-XXXXXXXX/work.XXXXXXXX  a seat's own; it makes it and it takes it away
 
 ## Operations
 
@@ -70,6 +71,26 @@ seats return, read what they returned, then remove DIR.
 
 Every seat does the same thing. A round is one say, then one hear. hear
 returns when every seat has said, so nothing is heard before it is said.
+
+Before the first round, make yourself somewhere to work, and print it:
+
+    mktemp -d DIR/work.XXXXXXXX
+
+Every file you write while you sit goes under it and nothing else does:
+a script you wrote to look into the matter, something you fetched, a
+note to yourself. The name has a hash in it so that no two seats can
+choose the same one, which is the whole of why it is made this way; see
+In Claude Code for what happens when two do. Every Bash call is a fresh
+shell, so carry the path and name it in full in each one. Nothing you
+say goes through it: a say is a heredoc and a round is what hear
+printed, as the Facts say.
+
+However you leave the table, after the vote, after a round that ended
+it, or because you are giving up, take it away last: remove what you
+put in it, then rmdir it. rmdir and not rm -r, so that anything still
+in there refuses, and you look at what you left rather than delete it.
+It sits inside DIR, so a seat that dies before it gets that far leaves
+it to the parent's remove; that is the sweep, not the plan.
 
 1. Investigate the matter alone. say
 
@@ -212,7 +233,9 @@ seat's report is written over another's, and a seat says words it did
 not write under its own SEAT mark. Nothing here catches it: say compares
 what came back with what it put on the wire, and that is what it put on
 the wire. The words are another seat's, the mark is this one's, and the
-vote counts them.
+vote counts them. That is why a seat's files go in a directory mktemp
+named: two seats agreeing where to work is the one agreement the table
+cannot have.
 
 The patch is its own processes, as Patch says, so a moot outlives calls.
 Seats are agents the parent spawns; they share its container and its
