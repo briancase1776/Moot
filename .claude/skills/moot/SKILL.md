@@ -27,7 +27,9 @@ and nothing else.
     scripts/create SHAPE N [LANES]  patch a mesh over N seats, LANES lanes
                                     each (even, default 2), print the
                                     moot's directory
-    scripts/say DIR SEAT < text     put text on the wire as SEAT, once
+    scripts/say DIR SEAT            put what is on stdin on the wire as
+                                    SEAT, once; give it a quoted heredoc
+                                    in the same call, never a file
     scripts/hear DIR SEAT           print the round: everything every seat
                                     said, SEAT's own included, once all N
                                     are in
@@ -71,10 +73,13 @@ returns when every seat has said, so nothing is heard before it is said.
 
 1. Investigate the matter alone. say
 
+       scripts/say DIR I <<'MOOT'
        REPORT
        what you found
+       MOOT
 
-   hear.
+   hear. Every say below is that same call, with what is written between
+   the markers.
 
 2. Read every report. say the discrepancies you see, zero or more, each
    a claim that some reports hold and others do not, numbered I.k with k
@@ -130,6 +135,15 @@ returns when every seat has said, so nothing is heard before it is said.
   shape, SEAT and one word alone, because a reader would take it for
   the mark and the words under it would speak, and vote, as another
   seat.
+- Give say what you have to say on stdin, from a heredoc with its
+  marker quoted, in the same call. Quoted, so the body goes down the
+  wire as it was written: unquoted, the shell expands a `$name` or a
+  backtick in it, and a report with code in it arrives as something the
+  seat did not say. Pick a marker that no line of the body is. Do not
+  write what you are going to say to a file and redirect the file in:
+  that is two calls for one say, and the seats share a /tmp, so what a
+  seat has not said yet would be sitting there to be read by a seat
+  that has not heard it.
 - hear prints the round in the order it reached the seat's end. The
   round is the first N it has; a payload that arrived behind them is
   the next round's and is kept for the next hear. The order means
@@ -156,11 +170,15 @@ returns when every seat has said, so nothing is heard before it is said.
   that has said and not yet heard stalls the others once its end fills
   the same as one that did neither, as Patch says, and frees them the
   moment it does either. On mesh-p that includes p.
-- Take what hear prints whole, to a file. Nothing is dropped until it
-  has been printed, so a hear cut inside its print leaves the round to
-  be heard again; but a seat that read it through something that
-  truncated it has not heard the round, however much of it it saw, and
-  must call hear again rather than answer what it saw.
+- What hear prints is the round: take it whole in the call that printed
+  it. Do not redirect it into a file and read the file back. That is a
+  second call, it leaves what the seats said lying in a /tmp they and
+  the parent share, and a file read can be cut without saying so, where
+  the call that printed it says when it cut it. A round you saw part of
+  is a round you have not heard, and hear has taken it off the wire: the
+  next hear is the next round's, not that one again. Only a hear cut off
+  inside its own print leaves the round to be heard again, because
+  nothing is dropped until it has been printed.
 - Give either call the longest timeout you have. A hear cut off
   waiting, or a say cut off waiting for the lock, leaves nothing
   behind; call it again. A say that fails or is cut off with the lock
@@ -180,7 +198,22 @@ returns when every seat has said, so nothing is heard before it is said.
 
 ## In Claude Code
 
-Every Bash call is a fresh shell. The patch is its own processes, as
-Patch says, so a moot outlives calls. Seats are agents the parent
-spawns; they share its container and its /tmp. A moot does not cross a
-session.
+Every Bash call is a fresh shell, so a say is one call with its heredoc
+in it, and a hear is one call and what it printed there. Neither goes
+through a file. A report composed with an editing tool is a report
+another seat can read before it was said, and a round written to a file
+is the moot kept somewhere the moot is not.
+
+And it will be the same file. The seats are N agents of one model on one
+brief in one container: they go at a matter from different sides, which
+is the point of them, but on an incidental like where to put a scratch
+file they land on the same obvious name in the same /tmp. Then one
+seat's report is written over another's, and a seat says words it did
+not write under its own SEAT mark. Nothing here catches it: say compares
+what came back with what it put on the wire, and that is what it put on
+the wire. The words are another seat's, the mark is this one's, and the
+vote counts them.
+
+The patch is its own processes, as Patch says, so a moot outlives calls.
+Seats are agents the parent spawns; they share its container and its
+/tmp. A moot does not cross a session.
