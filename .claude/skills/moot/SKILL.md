@@ -121,9 +121,9 @@ it to the parent's remove; that is the sweep, not the plan.
 3. Rotate. In rotation m, for m from 1 to N-1, hold the position seat
    I-m (mod N) took in the round before this cycle began, round 2 or a
    step 4, and argue it on every DELTA said, as well as it can be
-   argued, with whatever you have found since. If you
-   already know your yes or no on every DELTA, say that too; it counts
-   in this round only. say
+   argued, with whatever you have found since. If you already know your
+   yes or no on every DELTA, say that too; it counts in this round
+   only. say
 
        REPORT
        the case for it
