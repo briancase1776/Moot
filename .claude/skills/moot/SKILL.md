@@ -99,10 +99,10 @@ it to the parent's remove; that is the sweep, not the plan.
 
 1. Investigate the matter alone. say
 
-       scripts/say DIR I <<'MOOT'
+       scripts/say DIR I <<'MOOT-XXXX'
        REPORT
        what you found
-       MOOT
+       MOOT-XXXX
 
    hear. Every say below is that same call, with what is written between
    the markers.
@@ -169,11 +169,19 @@ it to the parent's remove; that is the sweep, not the plan.
   marker quoted, in the same call. Quoted, so the body goes down the
   wire as it was written: unquoted, the shell expands a `$name` or a
   backtick in it, and a report with code in it arrives as something the
-  seat did not say. Pick a marker that no line of the body is. Do not
-  write what you are going to say to a file and redirect the file in:
-  that is two calls for one say, and the seats share a /tmp, so what a
-  seat has not said yet would be sitting there to be read by a seat
-  that has not heard it.
+  seat did not say. Put a few characters of your own in the marker, the
+  way the work directory has a hash in it, and be sure no line of the
+  body is it. A body line equal to the marker ends the heredoc there:
+  the say stops at that line, and the rest of the report goes to the
+  shell as commands to run. Nothing catches that. say is handed what
+  is left after the shell has eaten the rest, and what it is handed is
+  a well formed say, so it goes down the wire and the seats read it as
+  all you had to say. The seat that trips is the one whose matter is
+  this project, because its report quotes the marker this file shows.
+  Do not write what you are going to say to a file and redirect the
+  file in: that is two calls for one say, and the seats share a /tmp,
+  so what a seat has not said yet would be sitting there to be read by
+  a seat that has not heard it.
 - hear prints the round in the order it reached the seat's end. The
   round is the first N it has; a payload that arrived behind them is
   the next round's and is kept for the next hear. The order means
