@@ -1,9 +1,9 @@
 #!/bin/bash
 # tests/run.sh
 # Prove the moot: shell seats on a mesh say and hear in rounds, every one
-# hears all N, its own included, byte for byte, with a say bigger than a
-# seat's end holds; a seat cannot hear before it says, and a hear cut off
-# waiting leaves nothing behind; a say cut inside its write, and a hear cut
+# hears all N, its own included, byte for byte, with a say past one pipe and
+# inside what Frames will weigh; a seat cannot hear before it says, and a hear
+# cut off waiting leaves nothing behind; a say cut inside its write, and a hear
 # inside what it left, make a seat that refuses; a seat spelled another way
 # than the map spells it, and a body holding a line shaped like the mark,
 # are both refused; a round is the first N, so a seat a round ahead is kept and not
@@ -26,9 +26,13 @@ trap 'for d in $made; do "$S/remove" "$d" 2>/dev/null || :; done; rm -rf "$T"' E
 "$S/create" 2>/dev/null && exit 1
 "$S/create" ring 3 2>/dev/null && exit 1
 "$S/create" mesh 1 2>/dev/null && exit 1
-mk() {  # mk SHAPE N [LANES]: create, note it for cleanup, size a say past a seat's end
+mk() {  # mk SHAPE N [LANES]: create, note it for cleanup, size a say for the wire
   d=$("$S/create" "$@"); made="$made $d"; x=$(cut -d' ' -f3 "$d/moot")
-  big=$(( 65536 * ${3:-2} ))  # twice one pipe: LANES/2 lanes a side, 64K a lane
+  # Half again one pipe, so a say must wait on the seats, and three quarters of
+  # what Frames can hold in flight, so it can be weighed at all. Both scale with
+  # LANES: one pipe is LANES/2 lanes of 64K, and the hold is a stage for each
+  # of those lanes. base64 is what goes on the wire, a third more than this.
+  big=$(( 36000 * ${3:-2} ))
 }
 seat() {  # seat I R BYTES: say BYTES of I's own, hear, keep the round
   head -c "$3" /dev/urandom | base64 > "in.$1.$2"

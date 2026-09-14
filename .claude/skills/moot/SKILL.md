@@ -203,7 +203,13 @@ it to the parent's remove; that is the sweep, not the plan.
   on no seat's hear; bigger, the tee stalls on the first outlet that
   is full, so say waits for the slowest seat to come to say or hear,
   and so does every say after it. Choose LANES so a round fits; more
-  lanes is the only remedy. hear returns when the round is in.
+  lanes is the only remedy. There is a ceiling as well as a wait, and
+  it is Frames': what a seat says is weighed in flight before any of
+  it goes, so a say bigger than Frames will hold does not wait, it
+  never finishes. Frames says how deep that is. Both bounds move with
+  LANES, and LANES is fixed when the patch is made: a round that will
+  not fit is a moot to be sat again, wider. hear returns when the
+  round is in.
 - A seat that has not said cannot hear: the round is one short. A seat
   that has said and not yet heard stalls the others once its end fills
   the same as one that did neither, as Patch says, and frees them the
