@@ -130,6 +130,12 @@ setup, the table is too complicated, not the test.
 - **Never read what is heard.** say compares what came back with what
   it put on the wire, to see its own come round. Nothing else here
   looks at what came off the wire.
+- **The session defines the skill. The skill does not define the
+  session.** How many seats, which model sits in one, what the matter
+  is, what a seat finds and how it argues it — all the session's.
+  This file says what a round is and stops there. A table that starts
+  telling a session how to be arranged has stopped being the table and
+  become a seat at it.
 
 ## Layout
 
