@@ -12,7 +12,7 @@
 # leaves no patch when it cannot finish; remove leaves the moot when the
 # patch will not go; remove it, see nothing left. Runs beside other
 # patches, in a directory of its own, and touches only what it made. Needs
-# $ICC_PATCH, and Patch needs what its SKILL.md says.
+# $ICC, and Patch needs what its SKILL.md says.
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
@@ -20,7 +20,7 @@
 set -eu
 cd "$(dirname "$0")/.."
 S=$PWD/.claude/skills/moot/scripts
-B=$(cd "${ICC_PATCH:-../ICC-Patch}/.claude/skills/icc-patch/scripts" && pwd)
+B=$(cd "${ICC:-../ICC}/.claude/skills/icc-patch/scripts" && pwd)
 T=$(mktemp -d); export TMPDIR=$T; cd "$T"; made=
 trap 'for d in $made; do "$S/remove" "$d" 2>/dev/null || :; done; rm -rf "$T"' EXIT
 "$S/create" 2>/dev/null && exit 1

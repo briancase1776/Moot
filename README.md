@@ -88,7 +88,7 @@ the wall clock will not.
 
 ## Using it
 
-Needs the ICC checkouts beside this one — see
+Needs the ICC checkout beside this one — see
 [ICC](https://github.com/briancase1776/ICC). Then read
 `.claude/skills/moot/SKILL.md`, which says what a round is and what a seat
 says in it.

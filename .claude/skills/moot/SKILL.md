@@ -39,11 +39,10 @@ and nothing else.
 SHAPE is mesh or mesh-p, as Patch says. N is 2 or more. On mesh-p the
 parent holds seat p: it hears every round and says nothing.
 
-create runs Patch's create from `$ICC_PATCH`, by default `../ICC-Patch`
-beside this repo, finds Frames' scripts in `$ICC_FRAMES`, by default
-`../ICC-Frames`, and writes both paths into DIR/moot; say, hear and
-remove take them from there. Patch finds Pipes, Tee and Merge itself,
-as its SKILL.md says.
+create runs Patch's create and finds Frames' scripts in `$ICC`, by
+default `../ICC` beside this repo, and writes both paths into
+DIR/moot; say, hear and remove take them from there. Patch finds
+Pipes, Tee and Merge itself, as its SKILL.md says.
 
 ## Sitting a moot
 

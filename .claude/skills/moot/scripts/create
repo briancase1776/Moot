@@ -16,8 +16,9 @@ shape=$1; n=$2; lanes=${3:-2}
 case $shape in mesh|mesh-p) ;; *) echo "shape is mesh or mesh-p" >&2; exit 1;; esac
 [ "$n" -ge 2 ] 2>/dev/null || { echo "seats must be 2 or more" >&2; exit 1; }
 top=$(cd "$(dirname "$0")/../../../.." && pwd)
-B=$(cd "${ICC_PATCH:-$top/../ICC-Patch}/.claude/skills/icc-patch/scripts" && pwd)
-F=$(cd "${ICC_FRAMES:-$top/../ICC-Frames}/.claude/skills/icc-frames/scripts" && pwd)
+I=$(cd "${ICC:-$top/../ICC}" && pwd)
+B=$(cd "$I/.claude/skills/icc-patch/scripts" && pwd)
+F=$(cd "$I/.claude/skills/icc-frames/scripts" && pwd)
 x=$("$B/create" "$shape" "$n" "$lanes")
 trap '"$B/remove" "$x"' EXIT
 d=$(mktemp -d /tmp/moot-XXXXXXXX)

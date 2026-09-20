@@ -88,14 +88,13 @@ Before adding anything, ask: is this the wire, what goes down it, what
 the seats conclude, or the table and its rules of order? Only the last
 one belongs here.
 
-## Depends on ICC-Patch and ICC-Frames
+## Depends on ICC
 
-create runs Patch's create from a sibling checkout, `$ICC_PATCH`, by
-default `../ICC-Patch` beside this repo, and Patch finds Pipes, Tee and
-Merge itself, as its CLAUDE.md says. create also finds Frames' write and
-read in `$ICC_FRAMES`, by default `../ICC-Frames`, and writes both paths
-into the moot's line; say, hear and remove run them from there. Do not
-vendor any of them into this repo.
+create runs Patch's create and finds Frames' write and read in a
+sibling checkout, `$ICC`, by default `../ICC` beside this repo, and
+writes both paths into the moot's line; say, hear and remove run them
+from there. Patch finds Pipes, Tee and Merge itself, as its CLAUDE.md
+says. Do not vendor any of them into this repo.
 
 Do not duplicate their documentation. A fact about a lane is Pipes'; a
 copy, Tee's or Merge's; a payload, Frames'; a map, Patch's. If one of
