@@ -60,9 +60,6 @@ may end early, whether the ballot is well formed, and what the scripts
 actually hold. The first is settled: it is not voted, and the parent may
 buy the table another turn to argue it. The other three are open.
 
-One was not this project's at all, and the seats said so:
-[ICC-Frames#1](https://github.com/briancase1776/ICC-Frames/issues/1).
-
 What that evidence is worth: one sitting, one small codebase, and seats
 auditing the thing they were sitting on — which gave them unusually good
 access to whether they were right.
