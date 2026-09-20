@@ -6,7 +6,7 @@ uses the skill: a session takes what it needs from SKILL.md, and this
 file is not addressed to it. A checkout sitting beside a session's
 work is not an instruction to that session.
 
-A Claude Code skill that sits N cold agents on an ICC-Patch mesh and has
+A Claude Code skill that sits N cold agents on an icc-patch mesh and has
 a matter argued out. That is the whole project.
 
 Think of a moot. Seats around a table. Everyone goes off alone, looks
@@ -21,10 +21,10 @@ rules of order. It has no opinion, and it is nobody's chair.
 
     what the seats find and decide     the seats', not this
     the rounds and the rules of order  this project
-    plug pipes and fittings into a     ICC-Patch, below this
+    plug pipes and fittings into a     icc-patch, below this
     shape, hand out the map
-    slice, carry, reassemble           ICC-Frames, beside Patch
-    copies and lanes                   ICC-Tee, ICC-Merge, ICC-Pipes,
+    slice, carry, reassemble           icc-frames, beside Patch
+    copies and lanes                   icc-tee, icc-merge, icc-pipes,
                                        below them
 
 Moot is not part of ICC. It uses ICC. It is the first thing that sits at
