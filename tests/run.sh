@@ -26,6 +26,7 @@ trap 'for d in $made; do "$S/remove" "$d" 2>/dev/null || :; done; rm -rf "$T"' E
 "$S/create" 2>/dev/null && exit 1
 "$S/create" ring 3 2>/dev/null && exit 1
 "$S/create" mesh 1 2>/dev/null && exit 1
+CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS=2 "$S/create" mesh 3 2>/dev/null && exit 1
 mk() {  # mk SHAPE N [LANES]: create, note it for cleanup, size a say for the wire
   d=$("$S/create" "$@"); made="$made $d"; x=$(cut -d' ' -f3 "$d/moot")
   # Half again one pipe, so a say must wait on the seats, and three quarters of

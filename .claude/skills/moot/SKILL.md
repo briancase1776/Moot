@@ -36,8 +36,11 @@ and nothing else.
                                     are in
     scripts/remove DIR              remove the patch, then DIR
 
-SHAPE is mesh or mesh-p, as Patch says. N is 2 or more. On mesh-p the
-parent holds seat p: it hears every round and says nothing.
+SHAPE is mesh or mesh-p, as Patch says. N is 2 or more, and no more
+than Claude Code runs subagents at once, since a round waits for every
+seat: `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`, 20 when it is unset.
+create refuses anything else. On mesh-p the parent holds seat p: it
+hears every round and says nothing.
 
 create runs Patch's create and finds Frames' scripts in `$ICC`, by
 default `../ICC` beside this repo, and writes both paths into

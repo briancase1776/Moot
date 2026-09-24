@@ -5,7 +5,9 @@
 # directory. Patch makes the wire; the moot makes nothing but its rounds.
 # If create cannot finish, it removes the patch it made. bash runs the EXIT
 # trap when it dies on a signal, so a call a timeout cuts off here leaves
-# no patch either.
+# no patch either. Every seat is a subagent and a round waits for all of
+# them, so N is at most what Claude Code runs at once:
+# CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS, 20 when it is unset.
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
@@ -15,6 +17,9 @@ set -eu
 shape=$1; n=$2; lanes=${3:-2}
 case $shape in mesh|mesh-p) ;; *) echo "shape is mesh or mesh-p" >&2; exit 1;; esac
 [ "$n" -ge 2 ] 2>/dev/null || { echo "seats must be 2 or more" >&2; exit 1; }
+max=${CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS:-20}
+[ "$n" -le "$max" ] 2>/dev/null ||
+  { echo "seats must be $max or fewer: Claude Code runs $max subagents at once" >&2; exit 1; }
 top=$(cd "$(dirname "$0")/../../../.." && pwd)
 I=$(cd "${ICC:-$top/../ICC}" && pwd)
 B=$(cd "$I/.claude/skills/icc-patch/scripts" && pwd)
