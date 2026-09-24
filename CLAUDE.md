@@ -100,6 +100,9 @@ Do not duplicate their documentation. A fact about a lane is Pipes'; a
 copy, Tee's or Merge's; a payload, Frames'; a map, Patch's. If one of
 them is missing a fact, that is a change there, not a paragraph here.
 
+The same goes for how bash is written: that is `bash-practices.txt` in
+`$ICC`. Read it there. A copy here only drifts.
+
 ## Testing
 
 A test harness is allowed **only to prove the table works**: shell
