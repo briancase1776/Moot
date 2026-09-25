@@ -5,21 +5,20 @@
 # one brief per seat for the parent to spawn, then hears both rounds as p and
 # checks every seat said once and heard every other. Two rounds and not one,
 # because hear counts N and does not know seats, so a round that counts wrong
-# only shows on the round after it. Usage: agents.sh [N] [LANES].
+# only shows on the round after it. Usage: agents.sh [N] [BYTES].
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
 # MIT License text omitted for brevity, See LICENCE.TXT
 set -eu
-n=${1:-3}; lanes=${2:-2}
-[ "$n" -ge 2 ] 2>/dev/null || { echo "seats must be 2 or more" >&2; exit 1; }
+n=${1:-3}; bytes=${2:-524288}
 cd "$(dirname "$0")/.."
 S=$PWD/.claude/skills/moot/scripts
 K=$PWD/.claude/skills/moot/SKILL.md
-d=$("$S/create" mesh-p "$n" "$lanes")
-trap '"$S/remove" "$d" 2>/dev/null || :' EXIT
+d=; w=
+trap '[ -z "$d" ] || "$S/remove" "$d" 2>/dev/null || :; [ -z "$w" ] || rm -rf "$w"' EXIT
+d=$("$S/create" mesh-p "$n" "$bytes")
 w=$(mktemp -d)
-trap '"$S/remove" "$d" 2>/dev/null || :; rm -rf "$w"' EXIT
 
 i=0; while [ "$i" -lt "$n" ]; do cat <<BRIEF
 

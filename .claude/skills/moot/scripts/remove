@@ -12,6 +12,6 @@
 set -eu
 d=${1:?usage: remove DIR}
 [ -f "$d/moot" ] || { echo "not a moot: $d" >&2; exit 1; }
-read -r shape n x b f < "$d/moot"
+read -r shape n x b bytes < "$d/moot"
 [ ! -d "$x" ] || "$b/remove" "$x"
 rm -rf "$d"

@@ -1,44 +1,28 @@
 #!/bin/bash
 # .claude/skills/moot/scripts/say
-# say DIR SEAT < text: put text on the wire as SEAT, once. Where the wire has
-# fittings, take the patch's lock, write, and hold the lock until the words
-# come back round to SEAT's own read end: then they are past the merge and
-# the next seat's cannot cut in. Where the wire is one pipe, write and be
-# done. Either way SEAT's read end is drained while it waits, so no seat
-# stalls on another that is also trying to say; what is drained is kept
-# for hear. Cut off with the lock held, say leaves it held: the moot is
-# over.
+# say DIR SEAT < words: land the words on the wire as SEAT, once: a line with
+# their length in bytes, then the mark and the words, ending in a newline, in
+# one write. Nothing takes a turn: the merge takes each say whole before the
+# next, as Merge says of what one writer puts on without a pause. Past the
+# BYTES the moot was made for it is refused, and nothing goes on: the read
+# ends hold a round of says that size and no bigger.
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
 # MIT License text omitted for brevity, See LICENCE.TXT
 set -eu
+export LC_ALL=C
 d=${1:?usage: say DIR SEAT}; i=${2:?usage: say DIR SEAT}
 . "$(dirname "$0")/.seat"
-p=$(mktemp); trap 'rm -f "$p"' EXIT
-{ echo "SEAT $i"; cat; } > "$p"
-[ "$(tail -c 1 "$p" | wc -l)" -eq 1 ] || echo >> "$p"
-tail -n +2 "$p" | grep -qE '^SEAT [^[:space:]]+$' &&
-  { echo "seat $i: the body has a line shaped like the mark" >&2; exit 1; } || :
-push() {
-  "$f/write" "$wd" "$ws" < "$p" & w=$!
-  while kill -0 "$w" 2>/dev/null; do avail && spool || sleep 0.1; done
-  wait "$w"
-}
-if [ "$echo" -eq 0 ]; then cp "$p" "$s/$(( $(count) + 1 ))"; push; exit; fi
-held=0
-trap 'rm -f "$p"; [ "$held" -eq 0 ] ||
-  echo "seat $i: say failed holding the lock; the moot is over" >&2' EXIT
-until mkdir "$x/lock" 2>/dev/null; do avail && spool || sleep 0.1; done
-held=1
-base=$(count)
-push
-mine() {
-  k=$base
-  while [ "$k" -lt "$(count)" ]; do
-    k=$((k + 1)); cmp -s "$p" "$s/$k" && return 0
-  done
-  return 1
-}
-until mine; do avail && spool || sleep 0.1; done
-held=0; rmdir "$x/lock"
+words=$(printf 'SEAT %s\n' "$i"; cat; printf .); words=${words%.}
+[ "${words: -1}" = $'\n' ] || words+=$'\n'
+mark=$'\n''SEAT [^[:space:]]+'$'\n'
+[[ ! $'\n'${words#*$'\n'} =~ $mark ]] ||
+  { echo "seat $i: the body has a line shaped like the mark" >&2; exit 1; }
+[ "${#words}" -le "$bytes" ] ||
+  { echo "seat $i: ${#words} bytes, past the $bytes this moot holds" >&2; exit 1; }
+# dd and not printf: bash line-buffers a builtin's output, so printf puts a
+# short line on as a write of its own, which takes a page of the lane to
+# itself. dd writes whole pages, the last part full, one after another. The
+# here-string ends in the newline the words end in.
+dd bs=4096 status=none <<< "${#words}"$'\n'"${words%$'\n'}" > "$wl"

@@ -96,9 +96,9 @@ says in it.
 
 ## What it does not do
 
-It does not read what the seats say. It carries their words and holds the
-turn; what they find, what they conclude and what to do about it are
-theirs and yours.
+It does not read what the seats say. It carries their words; what they
+find, what they conclude and what to do about it are theirs and
+yours.
 
 It corrects a seat, not a model. Seats of one model share blind spots, and
 what they all miss alike, the moot will miss too. Sitting the same matter

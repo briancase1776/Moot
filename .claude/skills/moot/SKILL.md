@@ -14,35 +14,41 @@ A moot is N seats on a mesh that icc-patch made, a cold agent in each,
 and a matter. Every seat investigates alone and reports. The seats say
 where the reports differ. Every position is then argued from every
 seat, one rotation at a time. What is still in dispute goes to a vote.
-The moot returns what survived. Patch made the wire and the map; Frames
-carries what a seat says; see their SKILL.md. The moot adds the rounds
-and nothing else.
+The moot returns what survived. Patch made the wire and the map; see its
+SKILL.md. What a seat says goes down it as its length and its words. The
+moot adds the rounds and nothing else.
 
-    /tmp/moot-XXXXXXXX/moot           SHAPE N PATCH, then Patch's and Frames' scripts
-    /tmp/moot-XXXXXXXX/SEAT/          what SEAT has heard and not yet read, as it came
-    /tmp/moot-XXXXXXXX/SEAT/.next     a read cut inside a payload, if one was; see Facts
+    /tmp/moot-XXXXXXXX/moot           SHAPE N PATCH, Patch's scripts, BYTES
     /tmp/moot-XXXXXXXX/work.XXXXXXXX  a seat's own; it makes it and it takes it away
 
 ## Operations
 
-    scripts/create SHAPE N [LANES]  patch a mesh over N seats, LANES lanes
-                                    each (even, default 2), print the
-                                    moot's directory
+    scripts/create SHAPE N [BYTES]  patch a mesh over N seats, every read
+                                    end deep enough to hold a round of N
+                                    says of BYTES (default 524288), print
+                                    the moot's directory
     scripts/say DIR SEAT            put what is on stdin on the wire as
                                     SEAT, once; give it a quoted heredoc
                                     in the same call, never a file
-    scripts/hear DIR SEAT           print the round: everything every seat
-                                    said, SEAT's own included, once all N
-                                    are in
+    scripts/hear DIR SEAT           print the round: what every seat said,
+                                    SEAT's own included where the wire
+                                    hands it back, once all are in
     scripts/remove DIR              remove the patch, then DIR
 
 SHAPE is mesh or mesh-p, as Patch says. N is 2 or more. On mesh-p the
 parent holds seat p: it hears every round and says nothing.
 
-create runs Patch's create and finds Frames' scripts in `$ICC`, by
-default `../ICC` beside this repo, and writes both paths into
-DIR/moot; say, hear and remove take them from there. Patch finds
-Pipes, Tee and Merge itself, as its SKILL.md says.
+BYTES is the most one say may be, its mark and its last newline
+counted; say refuses more. The default is about what a model's longest
+answer comes to, and the wire for it is big: at the default, three seats
+and p are about 190 processes, most of them Patch's pipes and tees. A
+table whose seats say less can be made for less. A mesh 2 is one pipe,
+which nothing deepens, so there a say is at most 65472 bytes, whatever
+BYTES is.
+
+create runs Patch's create from `$ICC`, by default `../ICC` beside this
+repo, and writes its path into DIR/moot; remove takes it from there.
+Patch finds Pipes, Tee and Merge itself, as its SKILL.md says.
 
 ## Sitting a moot
 
@@ -156,14 +162,14 @@ it to the parent's remove; that is the sweep, not the plan.
 
 ## Facts
 
-- What a seat says goes on the wire as one Frames payload with a
-  `SEAT I` line in front and a newline at the end. That line is the
-  only mark of who said what, as Merge says, and it is what say was
-  told: nothing binds a caller to a seat number. Say nothing that
-  starts a line with SEAT; say refuses a body holding a line of that
-  shape, SEAT and one word alone, because a reader would take it for
-  the mark and the words under it would speak, and vote, as another
-  seat.
+- What a seat says goes on the wire as a line with its length in bytes,
+  then a `SEAT I` line, the words, and a newline at the end, in one
+  write. The `SEAT I` line is the only mark of who said what, as Merge
+  says, and it is what say was told: nothing binds a caller to a seat
+  number. Say nothing that starts a line with SEAT; say refuses a body
+  holding a line of that shape, SEAT and one word alone, because a
+  reader would take it for the mark and the words under it would speak,
+  and vote, as another seat.
 - Give say what you have to say on stdin, from a heredoc with its
   marker quoted, in the same call. Quoted, so the body goes down the
   wire as it was written: unquoted, the shell expands a `$name` or a
@@ -181,60 +187,44 @@ it to the parent's remove; that is the sweep, not the plan.
   file in: that is two calls for one say, and the seats share a /tmp,
   so what a seat has not said yet would be sitting there to be read by
   a seat that has not heard it.
-- hear prints the round in the order it reached the seat's end. The
-  round is the first N it has; a payload that arrived behind them is
-  the next round's and is kept for the next hear. The order means
-  nothing. Through fittings it is the order the says took
-  the lock, which is a race; on mesh 2 a seat's own words are put in
-  place when its say returns, so two seats can see one round in two
-  orders.
-- hear counts N payloads and returns; it does not know seats. That is
-  why p says nothing on mesh-p, and why a seat that says twice puts
-  every seat one over: a payload from p, or a second from a seat,
-  counts as a seat's, and every round after is one out. On mesh 2 say
-  spools what arrives while its write runs, so a peer that says, hears
-  and says again inside that instant is heard a round early.
-- say returns when what it said is past the fittings and back at its
-  own seat; on mesh 2 there are no fittings and it returns when the
-  pipe has taken it. Between a say and each seat's read end the wire
-  holds one pipe: LANES/2 lanes of what Pipes says a lane holds, less
-  what the count line takes. While what it said fits there, say waits
-  on no seat's hear; bigger, the tee stalls on the first outlet that
-  is full, so say waits for the slowest seat to come to say or hear,
-  and so does every say after it. Choose LANES so a round fits; more
-  lanes is the only remedy. There is a ceiling as well as a wait, and
-  it is Frames': what a seat says is weighed in flight before any of
-  it goes, so a say bigger than Frames will hold does not wait, it
-  never finishes. Frames says how deep that is. Both bounds move with
-  LANES, and LANES is fixed when the patch is made: a round that will
-  not fit is a moot to be sat again, wider. hear returns when the
-  round is in.
-- A seat that has not said cannot hear: the round is one short. A seat
-  that has said and not yet heard stalls the others once its end fills
-  the same as one that did neither, as Patch says, and frees them the
-  moment it does either. On mesh-p that includes p.
+- hear prints the round in the order it reached the seat's end, which
+  is the order the merge took the says in; the tee hands every seat
+  that same order. The round is the next says on the wire: N of them,
+  or on a mesh 2, where a seat's own words never come back, the other
+  seat's one. Anything behind them is the next round's and stays on the
+  wire for the next hear. The order means nothing.
+- hear counts says; it does not know seats. That is why p says nothing
+  on mesh-p, and why a seat that says twice puts every seat one over: a
+  say from p, or a second from a seat, counts as a seat's, and every
+  round after is one out.
+- say takes no turn and waits for nothing of its own. Every seat can
+  say at once: the merge takes one say whole before the next, as Merge
+  says of what one writer puts on without a pause, and say puts its
+  words on in one write. say returns when the wire has taken them. Every
+  read end holds a round of says of BYTES, so a say waits on no seat
+  while every seat has heard the round before it; one made while a seat
+  is still behind waits for that seat to hear, and so does every say
+  after it. Past BYTES, say refuses and nothing goes on: a round that
+  will not fit is a moot to be sat again, made for more.
+- A seat that has not said cannot hear: the round is one short.
 - What hear prints is the round: take it whole in the call that printed
   it. Do not redirect it into a file and read the file back. That is a
   second call, it leaves what the seats said lying in a /tmp they and
   the parent share, and a file read can be cut without saying so, where
-  the call that printed it says when it cut it. A round you saw part of
-  is a round you have not heard, and hear has taken it off the wire: the
-  next hear is the next round's, not that one again. Only a hear cut off
-  inside its own print leaves the round to be heard again, because
-  nothing is dropped until it has been printed.
-- Give either call the longest timeout you have. A hear cut off
-  waiting, or a say cut off waiting for the lock, leaves nothing
-  behind; call it again. A say that fails or is cut off with the lock
-  leaves it held and says so;
-  cut inside its write, it leaves part of a payload on the wire, which
-  cuts every seat's next hear inside it. A call cut off inside a read
-  leaves DIR/SEAT/.next, and say and hear at that seat refuse from
-  then on and say so. Past the lock the moot is over: remove it.
-  Frames says what is lost.
-- Nothing here reads what is heard. say compares what came back with
-  what it put on the wire, byte for byte, to know its own are past the
-  fittings; that is all. A REPORT, a DELTA or a VOTE is what the seats
-  agree to say, and the seats read them.
+  the call that printed it says when it cut it.
+- hear takes each say off the wire as it prints it, and nothing keeps
+  it. A hear cut off partway, waiting or printing, has taken what it
+  printed, and it is gone: that seat's next hear is short of the round
+  and waits for says that are not coming. Give hear the longest timeout
+  you have. A say cut off inside its write leaves part of a say on the
+  wire, and every seat's next hear reads it out of step and says so. A
+  say cut off before its write leaves nothing. Either way past that, the
+  moot is over: remove it, and sit it again.
+- Nothing here reads what is heard. hear reads the length in front of
+  each say and copies that many bytes; say measures what it is handed
+  and looks for a line shaped like the mark. That is all. A REPORT, a
+  DELTA or a VOTE is what the seats agree to say, and the seats read
+  them.
 - Every seat gets the same brief, every position gets every seat,
   nothing is voted that every seat has not argued, the vote is yes or
   no with no tiebreak, and the parent says nothing. That is all the
@@ -244,21 +234,27 @@ it to the parent's remove; that is the sweep, not the plan.
 
 Every Bash call is a fresh shell, so a say is one call with its heredoc
 in it, and a hear is one call and what it printed there. Neither goes
-through a file. A report composed with an editing tool is a report
-another seat can read before it was said, and a round written to a file
-is the moot kept somewhere the moot is not.
+through a file of the moot's. A report composed with an editing tool is
+a report another seat can read before it was said, and a round written
+to a file is the moot kept somewhere the moot is not.
 
 And it will be the same file. The seats are N agents of one model on one
 brief in one container: they go at a matter from different sides, which
 is the point of them, but on an incidental like where to put a scratch
 file they land on the same obvious name in the same /tmp. Then one
 seat's report is written over another's, and a seat says words it did
-not write under its own SEAT mark. Nothing here catches it: say compares
-what came back with what it put on the wire, and that is what it put on
-the wire. The words are another seat's, the mark is this one's, and the
-vote counts them. That is why a seat's files go in a directory mktemp
-named: two seats agreeing where to work is the one agreement the table
-cannot have.
+not write under its own SEAT mark. Nothing here catches it: say puts on
+the wire what it is handed, and that is what it was handed. The words
+are another seat's, the mark is this one's, and the vote counts them.
+That is why a seat's files go in a directory mktemp named: two seats
+agreeing where to work is the one agreement the table cannot have.
+
+A call that outruns the tool's time limit is not cut off: Claude Code
+moves it to the background, where it goes on, and what it prints comes
+back as that task's output file. For a hear, that file is the round.
+Read it whole, once, when the task says it has finished, and start no
+other hear at that seat before then: two hears at one seat split a round
+between them, and neither has it.
 
 The patch is its own processes, as Patch says, so a moot outlives calls.
 Seats are agents the parent spawns; they share its container and its

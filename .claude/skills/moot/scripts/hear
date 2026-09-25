@@ -1,22 +1,22 @@
 #!/bin/bash
 # .claude/skills/moot/scripts/hear
-# hear DIR SEAT: print the round, everything every seat said, SEAT's own
-# included, in the order it came, once all N are in. The round is the first
-# N: anything that arrived behind it belongs to the next one and is kept.
-# Waits for the rest, and takes a payload off the wire only once it has
-# begun to arrive, so a hear cut off waiting leaves nothing behind. Nothing
-# is dropped until it has been printed, so a hear cut inside its print
-# leaves the round to be heard again.
+# hear DIR SEAT: print the round, the next says on SEAT's read end in the
+# order they came: read the length in front of each, copy that many bytes,
+# as many times as a round has says. Anything behind them is the next
+# round's and stays on the wire. What it copies is off the wire once it is
+# printed, so a hear cut off partway has lost what it took.
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
 # MIT License text omitted for brevity, See LICENCE.TXT
 set -eu
+export LC_ALL=C
 d=${1:?usage: hear DIR SEAT}; i=${2:?usage: hear DIR SEAT}
 . "$(dirname "$0")/.seat"
-while [ "$(count)" -lt "$n" ]; do avail && spool || sleep 0.1; done
-m=$(count)
-k=0; while [ "$k" -lt "$n" ]; do k=$((k + 1)); cat "$s/$k"; done
-k=0; while [ "$k" -lt "$n" ]; do k=$((k + 1)); rm -f "$s/$k"; done
-j=0; k=$n
-while [ "$k" -lt "$m" ]; do k=$((k + 1)); j=$((j + 1)); mv "$s/$k" "$s/$j"; done
+exec {lane}< "$rl"
+for ((k = 0; k < says; k++)); do
+  read -r -u "$lane" len
+  [[ $len =~ ^[0-9]+$ ]] ||
+    { echo "seat $i: the wire is out of step; the moot is over" >&2; exit 1; }
+  head -c "$len" <&"$lane"
+done

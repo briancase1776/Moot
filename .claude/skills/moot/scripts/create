@@ -1,27 +1,38 @@
 #!/bin/bash
 # .claude/skills/moot/scripts/create
-# create SHAPE N [LANES]: patch a mesh over N seats with icc-patch, LANES
-# lanes each (even, default 2), write the moot's one line, print the moot's
-# directory. Patch makes the wire; the moot makes nothing but its rounds.
-# If create cannot finish, it removes the patch it made. bash runs the EXIT
-# trap when it dies on a signal, so a call a timeout cuts off here leaves
-# no patch either.
+# create SHAPE N [BYTES]: patch a mesh over N seats with icc-patch, two lanes,
+# every seat's read end deep enough to hold a round of N says of BYTES each
+# (default 524288), write the moot's one line, print the moot's directory.
+# A mesh 2 is one pipe, which Patch does not deepen, so there BYTES is at
+# most what one lane holds. Patch makes the wire; the moot makes nothing but
+# its rounds. The cleanup is armed before the patch is made, so a create
+# that cannot finish, or that a signal cuts off, leaves no patch: bash runs
+# the EXIT trap when it dies on one.
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
 # MIT License text omitted for brevity, See LICENCE.TXT
 set -eu
-[ $# -ge 2 ] || { echo "usage: create SHAPE N [LANES]" >&2; exit 1; }
-shape=$1; n=$2; lanes=${3:-2}
+[ $# -ge 2 ] || { echo "usage: create SHAPE N [BYTES]" >&2; exit 1; }
+shape=$1; n=$2; bytes=${3:-524288}
 case $shape in mesh|mesh-p) ;; *) echo "shape is mesh or mesh-p" >&2; exit 1;; esac
 [ "$n" -ge 2 ] 2>/dev/null || { echo "seats must be 2 or more" >&2; exit 1; }
+[ "$bytes" -ge 1 ] 2>/dev/null || { echo "bytes must be 1 or more" >&2; exit 1; }
+# In base ten, as Patch reads it, so 02 is the mesh 2 it makes.
+n=$((10#$n)); bytes=$((10#$bytes))
+[ "$shape $n" != "mesh 2" ] || [ "$bytes" -le 65472 ] || bytes=65472
+# A say is its length line, its mark and its words: a block of 4096 for every
+# 4096 of that, and one more for the last, part full. A round is N of them,
+# and D pipes in series hold 17 D - 1 blocks, 16 a pipe and one a joint.
+blocks=$(( n * ((bytes + 64 + 4095) / 4096 + 1) ))
+depth=$(( (blocks + 1 + 16) / 17 ))
 top=$(cd "$(dirname "$0")/../../../.." && pwd)
 I=$(cd "${ICC:-$top/../ICC}" && pwd)
 B=$(cd "$I/.claude/skills/icc-patch/scripts" && pwd)
-F=$(cd "$I/.claude/skills/icc-frames/scripts" && pwd)
-x=$("$B/create" "$shape" "$n" "$lanes")
-trap '"$B/remove" "$x"' EXIT
+x=
+trap '[ -z "$x" ] || "$B/remove" "$x"' EXIT
+x=$("$B/create" "$shape" "$n" 2 "$depth")
 d=$(mktemp -d /tmp/moot-XXXXXXXX)
-echo "$shape $n $x $B $F" > "$d/moot"
+echo "$shape $n $x $B $bytes" > "$d/moot"
 trap - EXIT
 echo "$d"

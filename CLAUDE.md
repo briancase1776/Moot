@@ -23,14 +23,14 @@ rules of order. It has no opinion, and it is nobody's chair.
     the rounds and the rules of order  this project
     plug pipes and fittings into a     icc-patch, below this
     shape, hand out the map
-    slice, carry, reassemble           icc-frames, beside Patch
     copies and lanes                   icc-tee, icc-merge, icc-pipes,
-                                       below them
+                                       below it
 
 Moot is not part of ICC. It uses ICC. It is the first thing that sits at
-a seat Patch handed out. Patch says which end a seat holds, Frames says
-how a payload goes down it, and neither knows what a seat says. Moot
-knows the rounds. It does not read what is said in them.
+a seat Patch handed out. Patch says which end a seat holds, and does not
+know what a seat says. A say goes down that end as its length and its
+words, in one write, and Merge takes each say whole. Moot knows the
+rounds. It does not read what is said in them.
 
 ## What this is
 
@@ -38,8 +38,7 @@ knows the rounds. It does not read what is said in them.
   in each, and one matter. create, say, hear, remove. One script each.
 - The **rounds**: report, name the discrepancies, rotate the positions
   round the table until every seat has argued every one, vote on what
-  is left. The seats do the rounds. The scripts carry what they say and
-  hold the turn.
+  is left. The seats do the rounds. The scripts carry what they say.
 - **Favors nothing.** Every seat gets the same brief, every position
   gets every seat, a vote is yes or no with no tiebreak, and on mesh-p
   the parent hears and says nothing.
@@ -62,8 +61,11 @@ knows the rounds. It does not read what is said in them.
 
 Out of scope. Do not build, stub, or "leave room for" any of these:
 
-- **The wire, the fittings, the payload.** Patch, Pipes, Tee, Merge,
-  Frames. Moot runs their scripts and never copies them.
+- **The wire and the fittings.** Patch, Pipes, Tee, Merge. Moot runs
+  Patch's scripts and never copies them. What it puts on the wire of its
+  own is a say's length in front of the say, so hear knows where one
+  ends, and nothing more. Slicing, spreading and reassembling a payload
+  are Frames', and a say needs none of them.
 - **The matter, or what comes of it.** What the seats look into, what
   they find, what stands after the vote. Moot returns it and does not
   read it.
@@ -79,9 +81,8 @@ Out of scope. Do not build, stub, or "leave room for" any of these:
 - **Reading what is said.** Tallying, de-duplicating DELTAs, parsing
   REPORTs, judging a VOTE well formed. The seats agreed on those lines;
   the seats read them.
-- Anything Patch and Frames list as out of scope for themselves:
-  discovery, naming, persistence, replay, liveness, retries, timeouts,
-  transports, config, plugins, options.
+- **What a wire could do for itself.** Discovery, naming, persistence,
+  replay, liveness, retries, timeouts, transports, config, plugins.
 
 If a request touches any of the above, stop and say it is out of scope.
 Before adding anything, ask: is this the wire, what goes down it, what
@@ -90,28 +91,28 @@ one belongs here.
 
 ## Depends on ICC
 
-create runs Patch's create and finds Frames' write and read in a
-sibling checkout, `$ICC`, by default `../ICC` beside this repo, and
-writes both paths into the moot's line; say, hear and remove run them
-from there. Patch finds Pipes, Tee and Merge itself, as its CLAUDE.md
-says. Do not vendor any of them into this repo.
+create runs Patch's create from a sibling checkout, `$ICC`, by default
+`../ICC` beside this repo, and writes its path into the moot's line;
+remove runs Patch's remove from there. Patch finds Pipes, Tee and Merge
+itself, as its CLAUDE.md says. Do not vendor any of them into this repo.
 
 Do not duplicate their documentation. A fact about a lane is Pipes'; a
-copy, Tee's or Merge's; a payload, Frames'; a map, Patch's. If one of
-them is missing a fact, that is a change there, not a paragraph here.
+copy, Tee's or Merge's; a map, Patch's. If one of them is missing a
+fact, that is a change there, not a paragraph here.
 
 ## Testing
 
 A test harness is allowed **only to prove the table works**: shell
-seats, not agents, say and hear in rounds and every one hears all N,
-its own included, byte for byte, with a round bigger than the wire
-holds; a seat cannot hear before it says, and hearing too early leaves
-nothing behind; a say cut inside its write, and a hear cut inside what
-it left, make a seat that refuses;
-nothing is locked between rounds; mesh 2 is one pipe and every seat
-hears all N there too; on mesh-p the parent hears the round; create
-leaves no patch when it cannot finish; remove leaves the moot when the
-patch will not go; remove it, see nothing left. The harness must not
+seats, not agents, say and hear in rounds and every one hears the
+round, its own included where a tee hands it back, byte for byte; every
+seat says at once, before any hears, a round bigger than one pipe, and
+every say returns; a round is the next N says, so a seat a round ahead
+is kept; a seat cannot hear before it says; a seat spelled another way,
+a body with a line shaped like the mark, and a say past what the moot
+was made for are refused; mesh 2 is one pipe and each seat hears the
+other; on mesh-p the parent hears the round; create leaves no patch
+when it cannot finish; remove leaves the moot when the patch will not
+go; remove it, see nothing left. The harness must not
 run a moot, judge one, or grow into a seat, and must not touch a moot
 or a patch it did not make. If a test needs more than a few lines of
 setup, the table is too complicated, not the test.
@@ -132,9 +133,10 @@ setup, the table is too complicated, not the test.
 - **Favor nothing.** No line in SKILL.md, no brief, no script may make
   one outcome, one seat, or one round's word easier to reach than
   another.
-- **Never read what is heard.** say compares what came back with what
-  it put on the wire, to see its own come round. Nothing else here
-  looks at what came off the wire.
+- **Never read what is heard.** hear reads the length in front of each
+  say and copies that many bytes; say measures what it is handed and
+  looks for a line shaped like the mark. Nothing here looks at what is
+  said.
 - **The session defines the skill. The skill does not define the
   session.** How many seats, which model sits in one, what the matter
   is, what a seat finds and how it argues it — all the session's.
