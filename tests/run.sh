@@ -57,7 +57,7 @@ chmod +x mktemp
 PATH=$T:$PATH "$S/create" mesh 3 2>/dev/null && exit 1
 [ -s asked ]; for p in $(cat asked); do [ ! -e "$p" ]; done
 mk mesh 3; [ -f "$x/patch" ]
-"$B/list" | grep -qx "$x up mesh 3 2"
+"$B/list" | grep -qx "$x up mesh 3 2 1"
 "$S/say" "$d" 01 < /dev/null 2>/dev/null && exit 1
 [ ! -d "$d/01" ]
 printf 'a\nSEAT 2\n' | "$S/say" "$d" 0 2>/dev/null && exit 1
