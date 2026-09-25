@@ -1,23 +1,69 @@
-# .claude/skills/moot/scripts/.seat
-# Sourced by say and hear, with DIR in d and SEAT in i: find the lane SEAT
-# writes and the lane it reads in the map, and how many says make a round
-# at SEAT. The seat is matched as a string, so no spelling of a seat but the
-# map's finds an end. A pipe here is two lanes: the side a seat holds is the
-# lane it writes, and the other is the lane it reads.
+#!/bin/bash
+##
+# @file .seat
+# @brief What say and hear share: a seat's two lanes, and how many says
+#        make a round there.
+# @details Sourced, not run, by say and hear once they have named the
+#          moot's directory pDir and the seat osSeat. It reads the moot's
+#          line and finds the seat's ends in Patch's map. The seat is
+#          matched as a string, so no spelling of a seat but the map's
+#          finds an end. A pipe here is two lanes: the side a seat holds is
+#          the lane it writes, and the other is the lane it reads. On the
+#          one pipe of a mesh 2 a seat holds one side of it; through a
+#          mesh's fittings it holds side 0 of its own cable in and side 1
+#          of its own cable out. Where the seat is its own peer a tee hands
+#          its words back, and a round is all N says; on a mesh 2 its own
+#          never come back, and a round is the other seat's one.
+#          It sets, from the moot's line, eShape, nSeats, pPatch, pIccPatch
+#          and nBytes; from the map, pWriteLane, pReadLane and osPeers, the
+#          seats its words reach, comma separated; and nSays.
+# @stdin nothing
+# @stdout nothing
+# @stderr the reason, when the seat is not in the map
+# @exit 0, or 1 when the seat is not in the map, which ends the script
+#       that sourced it
+#
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
-# MIT License text omitted for brevity, See LICENCE.TXT
-read -r shape n x b bytes < "$d/moot"
-end() {
-  awk -v s="$i" -v k="$1" '$1""==s"" && $2""==k"" {print $3, $2, $4}' "$x/patch"
+# MIT Licence. See LICENCE.TXT
+##
+read -r eShape nSeats pPatch pIccPatch nBytes < "$pDir/moot"
+
+##
+# @fn oEnd()
+# @brief Print the end the seat holds on one side: pipe, side and peers.
+# @param $1 eSide - the side, 0 or 1
+# @stdout "DIR SIDE PEERS" from the map, or nothing when the seat holds no
+#         end on that side
+# @global osSeat - read, the seat
+# @global pPatch - read, the patch whose map it reads
+# @return 0
+##
+oEnd() {
+  local eSide=$1
+  awk -v s="$osSeat" -v k="$eSide" \
+    '$1""==s"" && $2""==k"" {print $3, $2, $4}' "$pPatch/patch"
 }
-w=$(end 0); r=$(end 1)
-[ -n "$w" ] || w=$r; [ -n "$r" ] || r=$w
-[ -n "$w" ] || { echo "no seat $i in $x" >&2; exit 1; }
-set -- $w; wl=$1/$2; wp=$3
-set -- $r; rl=$1/$((1 - $2))
-# Where the seat is its own peer a tee hands its words back, and a round is
-# all N says; on the one pipe of a mesh 2 its own never come back, and a
-# round is the other seat's.
-case ",$wp," in *,"$i",*) says=$n;; *) says=$((n - 1));; esac
+
+oWrite=$(oEnd 0)
+oRead=$(oEnd 1)
+[ -n "$oWrite" ] || oWrite=$oRead
+[ -n "$oRead" ] || oRead=$oWrite
+[ -n "$oWrite" ] || {
+  echo "no seat $osSeat in $pPatch" >&2
+  exit 1
+}
+read -r pWritePipe eWriteSide osPeers <<< "$oWrite"
+# The read end's peers are the same seats, and are not needed twice.
+read -r pReadPipe eReadSide <<< "${oRead% *}"
+pWriteLane=$pWritePipe/$eWriteSide
+pReadLane=$pReadPipe/$((1 - eReadSide))
+case ",$osPeers," in
+  *,"$osSeat",*)
+    nSays=$nSeats
+    ;;
+  *)
+    nSays=$((nSeats - 1))
+    ;;
+esac

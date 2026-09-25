@@ -1,28 +1,50 @@
 #!/bin/bash
-# .claude/skills/moot/scripts/say
-# say DIR SEAT < words: land the words on the wire as SEAT, once: a line with
-# their length in bytes, then the mark and the words, ending in a newline, in
-# one write. Nothing takes a turn: the merge takes each say whole before the
-# next, as Merge says of what one writer puts on without a pause. Past the
-# BYTES the moot was made for it is refused, and nothing goes on: the read
-# ends hold a round of says that size and no bigger.
+##
+# @file say
+# @brief Land the words on stdin on the wire as a seat, once.
+# @details say DIR SEAT < words. DIR is what create printed, and SEAT a
+#          seat as the map spells it. What goes on is a line with the
+#          length in bytes of what follows, then SEAT's mark, the words,
+#          and a newline at the end if the words lack one, in one write of
+#          whole pages. Nothing takes a turn: the merge takes each say
+#          whole before the next, as Merge says of what one writer puts on
+#          without a pause. A write that finds the wire full waits there
+#          until the slowest seat reads. A body holding a line shaped like
+#          the mark, SEAT and one word alone, is refused, because a reader
+#          would take it for another seat's; so is a say past the BYTES the
+#          moot was made for, since the read ends hold a round of says that
+#          size and no bigger. A refused say puts nothing on the wire.
+# @stdin the words
+# @stdout nothing
+# @stderr the reason, on refusal
+# @exit 0 the words are on the wire; 1 they were refused, or the seat is
+#       not in the map, and nothing went on
+#
 # Copyright (c) 2026 Brian Case. All rights reserved.
 # AI contributor: Claude (Anthropic)
 #
-# MIT License text omitted for brevity, See LICENCE.TXT
+# MIT Licence. See LICENCE.TXT
+##
+pDir=${1:?usage: say DIR SEAT}
+osSeat=${2:?usage: say DIR SEAT}
 set -eu
 export LC_ALL=C
-d=${1:?usage: say DIR SEAT}; i=${2:?usage: say DIR SEAT}
-. "$(dirname "$0")/.seat"
-words=$(printf 'SEAT %s\n' "$i"; cat; printf .); words=${words%.}
-[ "${words: -1}" = $'\n' ] || words+=$'\n'
-mark=$'\n''SEAT [^[:space:]]+'$'\n'
-[[ ! $'\n'${words#*$'\n'} =~ $mark ]] ||
-  { echo "seat $i: the body has a line shaped like the mark" >&2; exit 1; }
-[ "${#words}" -le "$bytes" ] ||
-  { echo "seat $i: ${#words} bytes, past the $bytes this moot holds" >&2; exit 1; }
+source "$(dirname "$0")/.seat"
+osWords=$(printf 'SEAT %s\n' "$osSeat"; cat; printf .)
+osWords=${osWords%.}
+[ "${osWords: -1}" = $'\n' ] || osWords+=$'\n'
+osMark=$'\n''SEAT [^[:space:]]+'$'\n'
+[[ ! $'\n'${osWords#*$'\n'} =~ $osMark ]] || {
+  echo "seat $osSeat: the body has a line shaped like the mark" >&2
+  exit 1
+}
+[ "${#osWords}" -le "$nBytes" ] || {
+  echo "seat $osSeat: ${#osWords} bytes, past the $nBytes this moot holds" >&2
+  exit 1
+}
 # dd and not printf: bash line-buffers a builtin's output, so printf puts a
 # short line on as a write of its own, which takes a page of the lane to
 # itself. dd writes whole pages, the last part full, one after another. The
-# here-string ends in the newline the words end in.
-dd bs=4096 status=none <<< "${#words}"$'\n'"${words%$'\n'}" > "$wl"
+# here-string gives back the newline the words end in.
+osSaid=${#osWords}$'\n'${osWords%$'\n'}
+dd bs=4096 status=none <<< "$osSaid" > "$pWriteLane"
