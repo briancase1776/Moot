@@ -19,9 +19,10 @@
 #          so a create that cannot finish, or that a signal cuts off,
 #          leaves neither the patch nor the moot's directory.
 # @stdin nothing
-# @stdout the moot's directory, one line
+# @stdout the moot's directory, one line, as soon as it is made, as
+#         icc-lib's pMakeDir prints it
 # @stderr the reason, on refusal, and whatever Patch's create says
-# @exit 0 the moot is made and printed; 1 the arguments are refused, or
+# @exit 0 the moot is made; 1 the arguments are refused, or
 #       the patch or the directory could not be made, and none of it is
 #       left
 #
@@ -80,7 +81,6 @@ vArm '[ -z "$pPatch" ] || "$pIccPatch/remove" "$pPatch" || :
       [ -z "$pDir" ] || rm -rf "$pDir"
       exit 1'
 pPatch=$("$pIccPatch/create" "$eShape" "$nSeats" 2 "$nDepth")
-pDir=$(mktemp -d /tmp/moot-XXXXXXXX)
+pMakeDir moot
 echo "$eShape $nSeats $pPatch $nBytes $pIccPatch" > "$pDir/moot"
 vDisarm
-echo "$pDir"
