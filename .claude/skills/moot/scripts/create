@@ -67,9 +67,9 @@ then
   nBytes=65472
 fi
 # A say is its length line, its mark and its words: a block of 4096 for
-# every 4096 of that, and one more for the last, part full. A seat's cable
-# from another seat carries one say a round, and D pipes in series hold
-# 17 D - 1 blocks, 16 a pipe and one a joint.
+# every 4096 of that, the last part full, and one block of slack. A seat's
+# cable from another seat carries one say a round, and D pipes in series
+# hold 17 D - 1 blocks, 16 a pipe and one a joint.
 nBlocks=$(( (nBytes + 64 + 4095) / 4096 + 1 ))
 nDepth=$(( (nBlocks + 1 + 16) / 17 ))
 # Armed before anything is made, as icc-lib's vArm says: the patch and the

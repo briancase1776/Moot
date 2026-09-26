@@ -204,10 +204,16 @@ it to the parent's remove; that is the sweep, not the plan.
   round's too: every other seat hears its second say a round early, and
   p's rounds from then on are one out.
 - say takes no turn and waits for nothing of its own. Every seat can
-  say at once: every other seat reads it on a cable of its own, the
-  merge that p reads takes one say whole before the next, as Merge says
-  of what one writer puts on without a pause, and say puts its words on
-  in one write. say returns when the wire has taken them. A seat's read
+  say at once: every other seat reads it on a cable of its own, and say
+  puts its words on with one dd, page after page without a pause. What
+  feeds p's merge is each seat's tee, and the merge takes one say whole
+  before the next, as Merge says of a writer that does not pause, while
+  every seat and p keep up. A seat far enough behind that its cable
+  fills stops its tee partway through a say, the merge lets another
+  seat's in, and p's hear reads out of step; p far enough behind that
+  its own cable fills gets its rounds mixed, and nothing says so. At the
+  default BYTES a model's says come nowhere near either. say returns
+  when the wire has taken them. A seat's read
   end holds a say of BYTES from its seat, and p's a round of them, so a
   say waits on no seat while every seat has heard the round before it;
   one made while a seat is still behind waits for that seat to hear, and
@@ -220,13 +226,15 @@ it to the parent's remove; that is the sweep, not the plan.
   the parent share, and a file read can be cut without saying so, where
   the call that printed it says when it cut it.
 - hear takes each say off the wire as it prints it, and nothing keeps
-  it. A hear cut off partway, waiting or printing, has taken what it
-  printed, and it is gone: that seat's next hear is short of the round
-  and waits for says that are not coming. Give hear the longest timeout
-  you have. A say cut off inside its write leaves part of a say on the
-  wire, and every seat's next hear reads it out of step and says so. A
-  say cut off before its write leaves nothing. Either way past that, the
-  moot is over: remove it, and sit it again.
+  it. A hear cut off partway, waiting or printing, has taken at least
+  what it printed, and can have taken more it had not printed yet, and
+  all of it is gone: that seat's next hear is short of the round and
+  waits for says that are not coming. Give hear the longest timeout you
+  have. A say cut off inside its write leaves part of a say on the wire:
+  every other seat's next hear waits for the rest, and takes the start
+  of that seat's next say for it, so what it prints is wrong and nothing
+  says so. A say cut off before its write leaves nothing. Either way
+  past that, the moot is over: remove it, and sit it again.
 - Nothing here reads what is heard. hear reads the length in front of
   each say and copies that many bytes; say measures what it is handed
   and looks for a line shaped like the mark. That is all. A REPORT, a

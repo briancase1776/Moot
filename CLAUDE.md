@@ -65,7 +65,8 @@ Out of scope. Do not build, stub, or "leave room for" any of these:
 - **The wire and the fittings.** Patch, Pipes, Tee, Merge. Moot runs
   Patch's scripts and never copies them. What it puts on the wire of its
   own is a say's length in front of the say, so hear knows where one
-  ends, and nothing more. Slicing, spreading and reassembling a payload
+  ends, and the SEAT mark line, so the seats know who said it, and
+  nothing more. Slicing, spreading and reassembling a payload
   are Frames', and a say needs none of them.
 - **The matter, or what comes of it.** What the seats look into, what
   they find, what stands after the vote. Moot returns it and does not
