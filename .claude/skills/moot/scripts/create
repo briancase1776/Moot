@@ -7,15 +7,16 @@
 #          more, and 524288 when not given, about what a model's longest
 #          answer comes to; both numbers are read in base ten. Patch's
 #          create makes the wire, from $ICC, by default ../ICC beside this
-#          repo: two lanes, and every seat's read end pipes enough deep to
-#          hold a round of N says of BYTES. A mesh 2 is one pipe, which
-#          Patch does not deepen, so there BYTES is at most what one lane
-#          holds. The moot's directory holds one file, moot: SHAPE, N, the
-#          patch, Patch's scripts and BYTES, on one line. Patch makes the
-#          wire; the moot makes nothing but its rounds. The cleanup is
-#          armed before the patch is made, so a create that cannot finish,
-#          or that a signal cuts off, leaves no patch: bash runs the EXIT
-#          trap when it dies on one.
+#          repo: two lanes, every seat's read end pipes enough deep to
+#          hold a say of BYTES, and p's, which Patch makes N times as deep,
+#          a round of them. A mesh 2 is one pipe, which Patch does not
+#          deepen, so there BYTES is at most what one lane holds. The
+#          moot's directory holds one file, moot: SHAPE, N, the patch,
+#          Patch's scripts and BYTES, on one line. Patch makes the wire;
+#          the moot makes nothing but its rounds. The cleanup is armed
+#          before the patch is made, so a create that cannot finish, or
+#          that a signal cuts off, leaves no patch: bash runs the EXIT trap
+#          when it dies on one.
 # @stdin nothing
 # @stdout the moot's directory, one line
 # @stderr the reason, on refusal, and whatever Patch's create says
@@ -62,10 +63,10 @@ then
   nBytes=65472
 fi
 # A say is its length line, its mark and its words: a block of 4096 for
-# every 4096 of that, and one more for the last, part full. A round is N of
-# them, and D pipes in series hold 17 D - 1 blocks, 16 a pipe and one a
-# joint.
-nBlocks=$(( nSeats * ((nBytes + 64 + 4095) / 4096 + 1) ))
+# every 4096 of that, and one more for the last, part full. A seat's cable
+# from another seat carries one say a round, and D pipes in series hold
+# 17 D - 1 blocks, 16 a pipe and one a joint.
+nBlocks=$(( (nBytes + 64 + 4095) / 4096 + 1 ))
 nDepth=$(( (nBlocks + 1 + 16) / 17 ))
 pTop=$(cd "$(dirname "$0")/../../../.." && pwd)
 pIcc=$(cd "${ICC:-$pTop/../ICC}" && pwd)

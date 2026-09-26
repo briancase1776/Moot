@@ -29,8 +29,9 @@ rules of order. It has no opinion, and it is nobody's chair.
 Moot is not part of ICC. It uses ICC. It is the first thing that sits at
 a seat Patch handed out. Patch says which end a seat holds, and does not
 know what a seat says. A say goes down that end as its length and its
-words, in one write, and Merge takes each say whole. Moot knows the
-rounds. It does not read what is said in them.
+words, in one write, and on a mesh-p the merge that p reads takes each
+say whole. Moot knows the rounds. It does not read what is said in
+them.
 
 ## What this is
 
@@ -103,16 +104,16 @@ fact, that is a change there, not a paragraph here.
 ## Testing
 
 A test harness is allowed **only to prove the table works**: shell
-seats, not agents, say and hear in rounds and every one hears the
-round, its own included where a tee hands it back, byte for byte; every
-seat says at once, before any hears, a round bigger than one pipe, and
-every say returns; a round is the next N says, so a seat a round ahead
-is kept; a seat cannot hear before it says; a seat spelled another way,
-a body with a line shaped like the mark, and a say past what the moot
-was made for are refused; mesh 2 is one pipe and each seat hears the
-other; on mesh-p the parent hears the round; create leaves no patch
-when it cannot finish; remove leaves the moot when the patch will not
-go; remove it, see nothing left. The harness must not
+seats, not agents, say and hear in rounds and every one hears every
+other seat's words, byte for byte, and none of its own; every seat
+says at once, before any hears, a round bigger than one pipe, and
+every say returns; a round is the next say from each seat, so a seat a
+round ahead is kept; a seat spelled another way, a body with a line
+shaped like the mark, and a say past what the moot was made for are
+refused; mesh 2 is one pipe and each seat hears the other; on mesh-p
+the parent hears the round and cannot say; create leaves no patch when
+it cannot finish; remove leaves the moot when the patch will not go;
+remove it, see nothing left. The harness must not
 run a moot, judge one, or grow into a seat, and must not touch a moot
 or a patch it did not make. If a test needs more than a few lines of
 setup, the table is too complicated, not the test.

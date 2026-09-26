@@ -24,24 +24,26 @@ moot adds the rounds and nothing else.
 ## Operations
 
     scripts/create SHAPE N [BYTES]  patch a mesh over N seats, every read
-                                    end deep enough to hold a round of N
-                                    says of BYTES (default 524288), print
-                                    the moot's directory
+                                    end deep enough to hold a say of
+                                    BYTES (default 524288) from each seat
+                                    that writes into it, print the moot's
+                                    directory
     scripts/say DIR SEAT            put what is on stdin on the wire as
                                     SEAT, once; give it a quoted heredoc
                                     in the same call, never a file
-    scripts/hear DIR SEAT           print the round: what every seat said,
-                                    SEAT's own included where the wire
-                                    hands it back, once all are in
+    scripts/hear DIR SEAT           print the round: what every other
+                                    seat said, once all are in; p is
+                                    printed every seat's
     scripts/remove DIR              remove the patch, then DIR
 
 SHAPE is mesh or mesh-p, as Patch says. N is 2 or more. On mesh-p the
-parent holds seat p: it hears every round and says nothing.
+parent holds seat p: it hears every round and says nothing, and say
+refuses it, since p writes nowhere.
 
 BYTES is the most one say may be, its mark and its last newline
 counted; say refuses more. The default is about what a model's longest
 answer comes to, and the wire for it is big: at the default, three seats
-and p are about 190 processes, most of them Patch's pipes and tees. A
+and p are about 150 processes, most of them Patch's pipes and tees. A
 table whose seats say less can be made for less. A mesh 2 is one pipe,
 which nothing deepens, so there a say is at most 65472 bytes, whatever
 BYTES is.
@@ -80,7 +82,7 @@ what they returned, then remove DIR.
 ## At a seat
 
 Every seat does the same thing. A round is one say, then one hear. hear
-returns when every seat has said, so nothing is heard before it is said.
+returns when every other seat has said.
 
 Before the first round, make yourself somewhere to work, and print it:
 
@@ -187,26 +189,28 @@ it to the parent's remove; that is the sweep, not the plan.
   file in: that is two calls for one say, and the seats share a /tmp,
   so what a seat has not said yet would be sitting there to be read by
   a seat that has not heard it.
-- hear prints the round in the order it reached the seat's end, which
-  is the order the merge took the says in; the tee hands every seat
-  that same order. The round is the next says on the wire: N of them,
-  or on a mesh 2, where a seat's own words never come back, the other
-  seat's one. Anything behind them is the next round's and stays on the
-  wire for the next hear. The order means nothing.
-- hear counts says; it does not know seats. That is why p says nothing
-  on mesh-p, and why a seat that says twice puts every seat one over: a
-  say from p, or a second from a seat, counts as a seat's, and every
-  round after is one out.
+- A seat's own words never come back to it. It reads each other seat
+  on a read end of its own, and hear prints the round a read end at a
+  time, in the order the map lists them: the next say from each other
+  seat. p reads one end, the merge's, and hear prints the next N says
+  off it, in the order the merge took them. Anything behind the round
+  is the next round's and stays on the wire for the next hear. The order
+  means nothing.
+- hear takes the next say from each seat that writes into a read end;
+  it does not know rounds. A seat that says twice has said its next
+  round's too: every other seat hears its second say a round early, and
+  p's rounds from then on are one out.
 - say takes no turn and waits for nothing of its own. Every seat can
-  say at once: the merge takes one say whole before the next, as Merge
-  says of what one writer puts on without a pause, and say puts its
-  words on in one write. say returns when the wire has taken them. Every
-  read end holds a round of says of BYTES, so a say waits on no seat
-  while every seat has heard the round before it; one made while a seat
-  is still behind waits for that seat to hear, and so does every say
-  after it. Past BYTES, say refuses and nothing goes on: a round that
-  will not fit is a moot to be sat again, made for more.
-- A seat that has not said cannot hear: the round is one short.
+  say at once: every other seat reads it on a cable of its own, the
+  merge that p reads takes one say whole before the next, as Merge says
+  of what one writer puts on without a pause, and say puts its words on
+  in one write. say returns when the wire has taken them. A seat's read
+  end holds a say of BYTES from its seat, and p's a round of them, so a
+  say waits on no seat while every seat has heard the round before it;
+  one made while a seat is still behind waits for that seat to hear, and
+  so does every say after it. Past BYTES, say refuses and nothing goes
+  on: a round that will not fit is a moot to be sat again, made for
+  more.
 - What hear prints is the round: take it whole in the call that printed
   it. Do not redirect it into a file and read the file back. That is a
   second call, it leaves what the seats said lying in a /tmp they and

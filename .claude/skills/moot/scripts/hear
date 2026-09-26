@@ -2,14 +2,16 @@
 ##
 # @file hear
 # @brief Print the round at a seat, once all of it is in.
-# @details hear DIR SEAT. The round is the next says on SEAT's read end,
-#          in the order they came, which is the order the merge took them
-#          in: N of them, or on a mesh 2, where a seat's own words never
-#          come back, the other seat's one. For each it reads the length
-#          line in front and copies that many bytes. Anything behind the
-#          round is the next round's and stays on the wire. What it copies
-#          is off the wire once it is printed, and nothing keeps it, so a
-#          hear cut off partway has lost what it took.
+# @details hear DIR SEAT. The round is the next say from each seat that
+#          writes into one of SEAT's read ends, a read end at a time, in
+#          the order the map lists them: one from each other seat, or at p
+#          all N off its one end from the merge, in the order the merge took
+#          them. A seat's own words never come back to it. For each say it
+#          reads the length line in front and copies that many bytes.
+#          Anything behind the round is the next round's and stays on the
+#          wire. What it copies is off the wire once it is printed, and
+#          nothing keeps it, so a hear cut off partway has lost what it
+#          took.
 # @stdin nothing
 # @stdout the round: each say's mark and words, ending in a newline
 # @stderr the reason, on refusal
@@ -26,12 +28,17 @@ osSeat=${2:?usage: hear DIR SEAT}
 set -eu
 export LC_ALL=C
 source "$(dirname "$0")/.seat"
-exec {fdLane}< "$pReadLane"
-for ((iSay = 0; iSay < nSays; iSay++)); do
-  read -r -u "$fdLane" nLength
-  [[ $nLength =~ ^[0-9]+$ ]] || {
-    echo "seat $osSeat: the wire is out of step; the moot is over" >&2
-    exit 1
-  }
-  head -c "$nLength" <&"$fdLane"
+for oRead in "${aReads[@]}"; do
+  read -r pReadLane osPeers <<< "$oRead"
+  IFS=, read -r -a aPeers <<< "$osPeers"
+  exec {fdLane}< "$pReadLane"
+  for ((iSay = 0; iSay < ${#aPeers[@]}; iSay++)); do
+    read -r -u "$fdLane" nLength
+    [[ $nLength =~ ^[0-9]+$ ]] || {
+      echo "seat $osSeat: the wire is out of step; the moot is over" >&2
+      exit 1
+    }
+    head -c "$nLength" <&"$fdLane"
+  done
+  exec {fdLane}<&-
 done

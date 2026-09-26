@@ -7,9 +7,9 @@
 #          not given, made for says of BYTES, create's default when not
 #          given; prints one brief per seat for the parent to spawn; then
 #          hears both rounds as p and checks every seat said once and heard
-#          every other. Two rounds and not one, because hear counts N and
-#          does not know seats, so a round that counts wrong only shows on
-#          the round after it.
+#          every other and not itself. Two rounds and not one, because hear
+#          at p counts N off the merge and does not know seats, so a round
+#          that counts wrong only shows on the round after it.
 # @stdin nothing
 # @stdout the briefs, then what p heard checked, and ok
 # @stderr whatever a failing step printed
@@ -75,7 +75,7 @@ awk -v n="$nSeats" '
   function bad(m) { print "  FAIL: " m; rc = 1 }
   FILENAME ~ /r1$/ && /^PING / {
     if (++seen[$2] > 1) bad("seat " $2 " pinged twice")
-    t[$2] = $3; np++; ord = ord " " $3 }
+    t[$2] = $3; np++ }
   FILENAME ~ /r2$/ && /^PONG / {
     if (++sn[$2] > 1) bad("seat " $2 " ponged twice")
     saw[$2] = ""
@@ -87,15 +87,13 @@ awk -v n="$nSeats" '
     for (s = 0; s < n; s++) {
       if (!(s in t)) bad("no ping from seat " s)
       if (!(s in saw)) { bad("no pong from seat " s); continue }
-      for (q in t) if (index(saw[s], t[q]) == 0)
+      # A seat hears every other seat and not itself.
+      for (q in t) if (q != s && index(saw[s], t[q]) == 0)
         bad("seat " s " never heard seat " q)
+      if (s in t && index(saw[s], t[s]) != 0)
+        bad("seat " s " heard itself")
     }
-    same = 1; for (s in saw) if (saw[s] != ord) same = 0
-    print "  every seat said once and heard all " n ": " (rc ? "no" : "yes")
-    # The tee hands every seat the order the merge took the says in, so
-    # this should be the same everywhere; it is reported, not required.
-    print "  order seen: " (same ? "the same at every seat, and at p" \
-                                  : "differed between seats")
+    print "  every seat said once and heard every other: " (rc ? "no" : "yes")
     exit rc
   }' "$pWork/r1" "$pWork/r2"
 echo ok

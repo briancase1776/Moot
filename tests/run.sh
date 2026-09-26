@@ -3,22 +3,22 @@
 # @file run.sh
 # @brief Prove the table works: shell seats say and hear in rounds.
 # @details Shell seats on a mesh say and hear in rounds, and every one
-#          hears the round byte for byte, its own included where a tee
-#          hands it back. Every seat says at once before any hears, with a
-#          round past one pipe, and every say returns: the read ends hold a
-#          round of says as big as the moot was made for, a model's longest
-#          by default. A round is the next N says, so a seat a round ahead
-#          is kept and not swallowed. A seat cannot hear before it says. A
-#          seat spelled another way than the map spells it, a body holding
-#          a line shaped like the mark, and a say past what the moot was
-#          made for are all refused and put nothing on the wire. mesh 2 is
-#          one pipe, a say there at most a lane, and each seat hears the
-#          other; on mesh-p the parent hears the round. create leaves no
-#          patch when it cannot finish; remove leaves the moot when the
-#          patch will not go; remove it, see nothing left. Raspberries are
-#          what is said. Runs beside other patches, in a directory of its
-#          own, and touches only what it made. Needs $ICC, and Patch needs
-#          what its SKILL.md says.
+#          hears every other seat's words byte for byte and none of its
+#          own. Every seat says at once before any hears, with a round past
+#          one pipe, and every say returns: a read end holds a say as big
+#          as the moot was made for, a model's longest by default, from
+#          each seat that writes into it. A round is the next say from each,
+#          so a seat a round ahead is kept and not swallowed. A seat spelled
+#          another way than the map spells it, a body holding a line shaped
+#          like the mark, and a say past what the moot was made for are all
+#          refused and put nothing on the wire. mesh 2 is one pipe, a say
+#          there at most a lane, and each seat hears the other; on mesh-p
+#          the parent hears the round, every seat's, and cannot say.
+#          create leaves no patch when it cannot finish; remove leaves the
+#          moot when the patch will not go; remove it, see nothing left.
+#          Raspberries are what is said. Runs beside other patches, in a
+#          directory of its own, and touches only what it made. Needs
+#          $ICC, and Patch needs what its SKILL.md says.
 # @stdin nothing
 # @stdout ok, once every check has passed
 # @stderr whatever a failing check printed
@@ -86,22 +86,28 @@ vBlow() {
 
 ##
 # @fn vHeard()
-# @brief Succeed when a seat heard just what the seats given said, whole.
+# @brief Succeed when a seat heard just what the other seats said, whole.
+# @details The seats given are the round's speakers. A seat hears every one
+#          but itself: its own words never come back to it.
 # @param $1 nRound - the round
 # @param $2 osEar - the seat that heard it
-# @param $3... - the seats it should have heard, and no others
+# @param $3... - the seats that said the round
 # @return 0 it did; 1 it did not, which ends the harness
 ##
 vHeard() {
   local nRound=$1
   local osEar=$2
   local osSpeaker
+  local aOthers=()
   shift 2
-  [ "$(grep -c '^SEAT ' "out.$osEar.$nRound")" -eq $# ]
+  for osSpeaker; do
+    [ "$osSpeaker" = "$osEar" ] || aOthers+=("$osSpeaker")
+  done
+  [ "$(grep -c '^SEAT ' "out.$osEar.$nRound")" -eq "${#aOthers[@]}" ]
   awk -v o="got.$nRound.$osEar" \
     '/^SEAT [0-9p]+$/ {f = o "." $2; next} {print > f}' \
     "out.$osEar.$nRound"
-  for osSpeaker; do
+  for osSpeaker in "${aOthers[@]}"; do
     cmp "in.$osSpeaker.$nRound" "got.$nRound.$osEar.$osSpeaker"
   done
 }
@@ -144,12 +150,13 @@ chmod +x mktemp
 PATH=$pWork:$PATH "$pMoot/create" mesh 3 2>/dev/null && exit 1
 [ -s asked ]
 for pAsked in $(cat asked); do [ ! -e "$pAsked" ]; done
-# Made for says of 80000, four deep: a seat's read end holds three of them.
-# All say at once, every say returns with nobody hearing, then every seat
-# hears them all. A say past 80000 is refused and puts nothing on the wire.
+# Made for says of 80000, two deep: a seat's read end from each other seat
+# holds one of them. All say at once, every say returns with nobody hearing,
+# then every seat hears the others'. A say past 80000 is refused and puts
+# nothing on the wire.
 vMake mesh 3 80000
 [ -f "$pPatch/patch" ]
-"$pIccPatch/list" | grep -qx "$pPatch up mesh 3 2 4"
+"$pIccPatch/list" | grep -qx "$pPatch up mesh 3 2 2"
 "$pMoot/say" "$pDir" 01 < /dev/null 2>/dev/null && exit 1
 printf 'a\nSEAT 2\n' | "$pMoot/say" "$pDir" 0 2>/dev/null && exit 1
 "$pRaspberry" 80000 | "$pMoot/say" "$pDir" 0 2>/dev/null && exit 1
@@ -157,8 +164,8 @@ vBlow 1 70000 0 1 2
 vAtOnce say 1 0 1 2
 vAtOnce hear 1 0 1 2
 for osSeat in 0 1 2; do vHeard 1 "$osSeat" 0 1 2; done
-# A round is the next N: 0 and 1 hear round 2 and say round 3 before 2
-# hears round 2, and 2 hears round 2 and nothing of round 3.
+# A round is the next say from each: 0 and 1 hear round 2 and say round 3
+# before 2 hears round 2, and 2 hears round 2 and nothing of round 3.
 vBlow 2 3000 0 1 2
 vBlow 3 3000 0 1 2
 for osSeat in 0 1 2; do "$pMoot/say" "$pDir" "$osSeat" < "in.$osSeat.2"; done
@@ -173,11 +180,6 @@ for osSeat in 0 1 2; do
   "$pMoot/hear" "$pDir" "$osSeat" > "out.$osSeat.3"
   vHeard 3 "$osSeat" 0 1 2
 done
-# A seat cannot hear before it says: the round is one short, and hear
-# waits.
-printf 'REPORT\n' | "$pMoot/say" "$pDir" 1
-printf 'REPORT\n' | "$pMoot/say" "$pDir" 2
-timeout 3 "$pMoot/hear" "$pDir" 0 > /dev/null && exit 1
 "$pMoot/remove" "$pDir"
 [ ! -d "$pDir" ]
 [ ! -d "$pPatch" ]
@@ -215,9 +217,11 @@ mv "$pPatch/held" "$pPatch/made"
 "$pMoot/remove" "$pDir"
 [ ! -d "$pDir" ]
 [ ! -d "$pPatch" ]
-# On mesh-p the parent hears the round, as the seats do and in their order;
-# made as a moot is by default, for says as big as a model's longest.
+# On mesh-p the parent hears the round, every seat's words, off the merge,
+# and cannot say; made as a moot is by default, for says as big as a model's
+# longest.
 vMake mesh-p 2
+"$pMoot/say" "$pDir" p < /dev/null 2>/dev/null && exit 1
 "$pMoot/hear" "$pDir" p > out.p.1 &
 pidParent=$!
 vBlow 1 500000 0 1
@@ -228,7 +232,6 @@ for osSeat in 0 1; do
 done
 wait "$pidParent"
 vHeard 1 p 0 1
-cmp out.p.1 out.0.1
 "$pMoot/remove" "$pDir"
 [ ! -d "$pDir" ]
 [ ! -d "$pPatch" ]

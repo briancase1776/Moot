@@ -1,22 +1,21 @@
 #!/bin/bash
 ##
 # @file .seat
-# @brief What say and hear share: a seat's two lanes, and how many says
-#        make a round there.
+# @brief What say and hear share: the lane a seat writes and the lanes it
+#        reads.
 # @details Sourced, not run, by say and hear once they have named the
 #          moot's directory pDir and the seat osSeat. It reads the moot's
-#          line and finds the seat's ends in Patch's map. The seat is
+#          line and finds the seat's lanes in Patch's map. The seat is
 #          matched as a string, so no spelling of a seat but the map's
-#          finds an end. A pipe here is two lanes: the side a seat holds is
-#          the lane it writes, and the other is the lane it reads. On the
-#          one pipe of a mesh 2 a seat holds one side of it; through a
-#          mesh's fittings it holds side 0 of its own cable in and side 1
-#          of its own cable out. Where the seat is its own peer a tee hands
-#          its words back, and a round is all N says; on a mesh 2 its own
-#          never come back, and a round is the other seat's one.
+#          finds a lane. On the one pipe of a mesh 2 a seat holds one side,
+#          and writes that side's lane and reads the other. Through a
+#          mesh's fittings it writes its own cable and reads one from each
+#          other seat; p on a mesh-p reads one cable, from the merge, and
+#          writes none.
 #          It sets, from the moot's line, eShape, nSeats, pPatch, pIccPatch
-#          and nBytes; from the map, pWriteLane, pReadLane and osPeers, the
-#          seats its words reach, comma separated; and nSays.
+#          and nBytes; from the map, pWriteLane, empty for p, and aReads,
+#          one "LANE PEERS" per read end, PEERS the seats that write into
+#          it, comma separated.
 # @stdin nothing
 # @stdout nothing
 # @stderr the reason, when the seat is not in the map
@@ -31,39 +30,42 @@
 read -r eShape nSeats pPatch pIccPatch nBytes < "$pDir/moot"
 
 ##
-# @fn oEnd()
-# @brief Print the end the seat holds on one side: pipe, side and peers.
-# @param $1 eSide - the side, 0 or 1
-# @stdout "DIR SIDE PEERS" from the map, or nothing when the seat holds no
-#         end on that side
+# @fn oLanes()
+# @brief Print the lane the seat writes, or the lanes it reads.
+# @details A pipe two seats share is on two lines of the map, and there
+#          the seat writes its own side's lane and reads the other. A pipe
+#          through a fitting is on one, and goes one way: side 0 writes
+#          lane 0, and side 1 reads it.
+# @param $1 eWay - w for the lane it writes, r for those it reads
+# @stdout "LANE" for w, one "LANE PEERS" per read end for r, or nothing
 # @global osSeat - read, the seat
 # @global pPatch - read, the patch whose map it reads
 # @return 0
 ##
-oEnd() {
-  local eSide=$1
-  awk -v s="$osSeat" -v k="$eSide" \
-    '$1""==s"" && $2""==k"" {print $3, $2, $4}' "$pPatch/patch"
+oLanes() {
+  local eWay=$1
+  awk -v s="$osSeat" -v k="$eWay" '
+    NR > 1 {
+      n[$3]++
+      a[NR] = $0
+    }
+    END {
+      for (i = 2; i <= NR; i++) {
+        split(a[i], f, " ")
+        if (f[1] "" != s "")
+          continue
+        b = n[f[3]] == 2
+        if (k == "w" && (f[2] == 0 || b))
+          print f[3] "/" f[2]
+        if (k == "r" && (f[2] == 1 || b))
+          print f[3] "/" (1 - f[2]), f[4]
+      }
+    }' "$pPatch/patch"
 }
 
-oWrite=$(oEnd 0)
-oRead=$(oEnd 1)
-[ -n "$oWrite" ] || oWrite=$oRead
-[ -n "$oRead" ] || oRead=$oWrite
-[ -n "$oWrite" ] || {
+pWriteLane=$(oLanes w)
+mapfile -t aReads < <(oLanes r)
+[ -n "$pWriteLane" ] || [ "${#aReads[@]}" -gt 0 ] || {
   echo "no seat $osSeat in $pPatch" >&2
   exit 1
 }
-read -r pWritePipe eWriteSide osPeers <<< "$oWrite"
-# The read end's peers are the same seats, and are not needed twice.
-read -r pReadPipe eReadSide <<< "${oRead% *}"
-pWriteLane=$pWritePipe/$eWriteSide
-pReadLane=$pReadPipe/$((1 - eReadSide))
-case ",$osPeers," in
-  *,"$osSeat",*)
-    nSays=$nSeats
-    ;;
-  *)
-    nSays=$((nSeats - 1))
-    ;;
-esac
