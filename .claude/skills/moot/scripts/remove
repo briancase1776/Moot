@@ -24,6 +24,6 @@ set -eu
   echo "not a moot: $pDir" >&2
   exit 1
 }
-read -r eShape nSeats pPatch pIccPatch nBytes < "$pDir/moot"
+read -r eShape nSeats pPatch nBytes pIccPatch < "$pDir/moot"
 [ ! -d "$pPatch" ] || "$pIccPatch/remove" "$pPatch"
 rm -rf "$pDir"

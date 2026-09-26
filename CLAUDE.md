@@ -97,26 +97,34 @@ create runs Patch's create from a sibling checkout, `$ICC`, by default
 remove runs Patch's remove from there. Patch finds Pipes, Tee and Merge
 itself, as its CLAUDE.md says. Do not vendor any of them into this repo.
 
+Anything Moot needs that ICC already has, it sources from there and does
+not write again. create and both harnesses source icc-lib for the count
+checks and for the cleanup armed before anything is made, and run.sh
+takes its cut-off check from it. Sourcing is not vendoring; a copy is.
+
 Do not duplicate their documentation. A fact about a lane is Pipes'; a
 copy, Tee's or Merge's; a map, Patch's. If one of them is missing a
 fact, that is a change there, not a paragraph here.
 
 ## Testing
 
-A test harness is allowed **only to prove the table works**: shell
-seats, not agents, say and hear in rounds and every one hears every
-other seat's words, byte for byte, and none of its own; every seat
-says at once, before any hears, a round bigger than one pipe, and
-every say returns; a round is the next say from each seat, so a seat a
-round ahead is kept; a seat spelled another way, a body with a line
-shaped like the mark, and a say past what the moot was made for are
-refused; mesh 2 is one pipe and each seat hears the other; on mesh-p
-the parent hears the round and cannot say; create leaves no patch when
-it cannot finish; remove leaves the moot when the patch will not go;
-remove it, see nothing left. The harness must not
-run a moot, judge one, or grow into a seat, and must not touch a moot
-or a patch it did not make. If a test needs more than a few lines of
-setup, the table is too complicated, not the test.
+Two harnesses. tests/run.sh proves the table works with shell seats:
+they say and hear in rounds and every one hears every other seat's
+words, byte for byte, and none of its own; every seat says at once,
+before any hears, a round bigger than one pipe, and every say returns;
+a round is the next say from each seat, so a seat a round ahead is
+kept; a seat spelled another way, with an escape in it, or as the map's
+"-", a body with a line shaped like the mark, and a say past what the
+moot was made for are refused; mesh 2 is one pipe and each seat hears
+the other; on mesh-p the parent hears the round and cannot say; create
+leaves no patch when it cannot finish or a signal cuts it off; remove
+leaves the moot when the patch will not go; a moot over an ICC path
+with a space works; remove it, see nothing left. tests/agents.sh proves
+the wire carries for agents, which shell seats cannot: it sits a
+mesh-p, prints a brief per seat for the parent to spawn, hears two
+rounds as p, and checks every seat said once and heard every other.
+Neither touches a moot or a patch it did not make. If a test needs more
+than a few lines of setup, the table is too complicated, not the test.
 
 ## Rules
 
@@ -151,7 +159,7 @@ setup, the table is too complicated, not the test.
 .claude/skills/moot/SKILL.md      the skill definition Claude Code loads
 .claude/skills/moot/scripts/      create, say, hear, remove. One script
                                   each. .seat is what say and hear share.
-tests/                            the minimal harness described above
+tests/                            run.sh and agents.sh, described above
 ```
 
 Do not add directories without a reason that fits the scope above.

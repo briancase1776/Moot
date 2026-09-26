@@ -6,14 +6,16 @@
 # @details Sourced, not run, by say and hear once they have named the
 #          moot's directory pDir and the seat osSeat. It reads the moot's
 #          line and finds the seat's lanes in Patch's map. The seat is
-#          matched as a string, so no spelling of a seat but the map's
-#          finds a lane. On the one pipe of a mesh 2 a seat holds one side,
+#          matched as a string, handed to awk through the environment,
+#          where no escape in it is read, so no spelling of a seat but the
+#          map's finds a lane; and "-", the map's nobody, is no seat. On
+#          the one pipe of a mesh 2 a seat holds one side,
 #          and writes that side's lane and reads the other. Through a
 #          mesh's fittings it writes its own cable and reads one from each
 #          other seat; p on a mesh-p reads one cable, from the merge, and
 #          writes none.
-#          It sets, from the moot's line, eShape, nSeats, pPatch, pIccPatch
-#          and nBytes; from the map, pWriteLane, empty for p, and aReads,
+#          It sets, from the moot's line, eShape, nSeats, pPatch, nBytes
+#          and pIccPatch; from the map, pWriteLane, empty for p, and aReads,
 #          one "LANE PEERS" per read end, PEERS the seats that write into
 #          it, comma separated.
 # @stdin nothing
@@ -27,7 +29,7 @@
 #
 # MIT Licence. See LICENCE.TXT
 ##
-read -r eShape nSeats pPatch pIccPatch nBytes < "$pDir/moot"
+read -r eShape nSeats pPatch nBytes pIccPatch < "$pDir/moot"
 
 ##
 # @fn oLanes()
@@ -44,7 +46,7 @@ read -r eShape nSeats pPatch pIccPatch nBytes < "$pDir/moot"
 ##
 oLanes() {
   local eWay=$1
-  awk -v s="$osSeat" -v k="$eWay" '
+  SEAT=$osSeat awk -v k="$eWay" '
     NR > 1 {
       n[$3]++
       a[NR] = $0
@@ -52,7 +54,7 @@ oLanes() {
     END {
       for (i = 2; i <= NR; i++) {
         split(a[i], f, " ")
-        if (f[1] "" != s "")
+        if (f[1] == "-" || f[1] "" != ENVIRON["SEAT"] "")
           continue
         b = n[f[3]] == 2
         if (k == "w" && (f[2] == 0 || b))

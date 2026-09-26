@@ -9,16 +9,19 @@
 #          as the moot was made for, a model's longest by default, from
 #          each seat that writes into it. A round is the next say from each,
 #          so a seat a round ahead is kept and not swallowed. A seat spelled
-#          another way than the map spells it, a body holding a line shaped
-#          like the mark, and a say past what the moot was made for are all
-#          refused and put nothing on the wire. mesh 2 is one pipe, a say
-#          there at most a lane, and each seat hears the other; on mesh-p
-#          the parent hears the round, every seat's, and cannot say.
-#          create leaves no patch when it cannot finish; remove leaves the
-#          moot when the patch will not go; remove it, see nothing left.
+#          another way than the map spells it, with an escape in it, or as
+#          the map's "-", a body holding a line shaped like the mark, and a
+#          say past what the moot was made for are all refused and put
+#          nothing on the wire. mesh 2 is one pipe, a say there at most a
+#          lane, and each seat hears the other; on mesh-p the parent hears
+#          the round, every seat's, and cannot say. create leaves no patch
+#          when it cannot finish or a signal cuts it off; remove leaves the
+#          moot when the patch will not go; remove it, see nothing left. A
+#          moot over an ICC checkout whose path has a space works.
 #          Raspberries are what is said. Runs beside other patches, in a
 #          directory of its own, and touches only what it made. Needs
-#          $ICC, and Patch needs what its SKILL.md says.
+#          $ICC, and Patch needs what its SKILL.md says; sources icc-lib
+#          from there.
 # @stdin nothing
 # @stdout ok, once every check has passed
 # @stderr whatever a failing check printed
@@ -33,17 +36,18 @@
 set -eu
 cd "$(dirname "$0")/.."
 pMoot=$PWD/.claude/skills/moot/scripts
-pIccPatch=$(cd "${ICC:-../ICC}/.claude/skills/icc-patch/scripts" && pwd)
-pRaspberry=$(cd "${ICC:-../ICC}/.claude/skills/icc-raspberry/scripts" &&
-  pwd)/raspberry
-# Armed before anything is made: every moot made goes, and the work
-# directory with it, however this ends.
+pIcc=$(cd "${ICC:-../ICC}" && pwd)
+pIccPatch=$pIcc/.claude/skills/icc-patch/scripts
+pRaspberry=$pIcc/.claude/skills/icc-raspberry/scripts/raspberry
+source "$pIcc/.claude/skills/icc-lib/scripts/lib"
+# Armed before anything is made, as icc-lib's vArm says: every moot made
+# goes, and the work directory with it, however this ends.
 pWork=
 osMade=
-trap 'for pMade in $osMade; do
+vArm 'for pMade in $osMade; do
         "$pMoot/remove" "$pMade" 2>/dev/null || :
       done
-      [ -z "$pWork" ] || rm -rf "$pWork"' EXIT
+      [ -z "$pWork" ] || rm -rf "$pWork"'
 pWork=$(mktemp -d)
 export TMPDIR=$pWork
 cd "$pWork"
@@ -150,6 +154,10 @@ chmod +x mktemp
 PATH=$pWork:$PATH "$pMoot/create" mesh 3 2>/dev/null && exit 1
 [ -s asked ]
 for pAsked in $(cat asked); do [ ! -e "$pAsked" ]; done
+rm mktemp
+# A create a signal cuts off while Patch's create is building takes the
+# patch with it and exits 1, as icc-lib's vCutOff checks.
+vCutOff "$pMoot/create" mesh 3 1000
 # Made for says of 80000, two deep: a seat's read end from each other seat
 # holds one of them. All say at once, every say returns with nobody hearing,
 # then every seat hears the others'. A say past 80000 is refused and puts
@@ -158,6 +166,8 @@ vMake mesh 3 80000
 [ -f "$pPatch/patch" ]
 "$pIccPatch/list" | grep -qx "$pPatch up mesh 3 2 2"
 "$pMoot/say" "$pDir" 01 < /dev/null 2>/dev/null && exit 1
+"$pMoot/say" "$pDir" '\060' < /dev/null 2>/dev/null && exit 1
+timeout 3 "$pMoot/hear" "$pDir" - 2>&1 | grep -q '^no seat - '
 printf 'a\nSEAT 2\n' | "$pMoot/say" "$pDir" 0 2>/dev/null && exit 1
 "$pRaspberry" 80000 | "$pMoot/say" "$pDir" 0 2>/dev/null && exit 1
 vBlow 1 70000 0 1 2
@@ -188,7 +198,7 @@ done
 # round ahead is kept for the next hear.
 vMake mesh 2
 [ "$(sed 1d "$pPatch/patch" | cut -d' ' -f3 | sort -u | wc -l)" -eq 1 ]
-[ "$(cut -d' ' -f5 "$pDir/moot")" -eq 65472 ]
+[ "$(cut -d' ' -f4 "$pDir/moot")" -eq 65472 ]
 vBlow 1 65000 0 1
 vAtOnce say 1 0 1
 "$pMoot/hear" "$pDir" 0 > out.0.1
@@ -232,6 +242,16 @@ for osSeat in 0 1; do
 done
 wait "$pidParent"
 vHeard 1 p 0 1
+"$pMoot/remove" "$pDir"
+[ ! -d "$pDir" ]
+[ ! -d "$pPatch" ]
+# An ICC checkout whose path has a space in it: the moot's line ends with
+# Patch's scripts, and say, hear and remove read them back whole.
+ln -s "$pIcc" "with space"
+ICC="$pWork/with space" vMake mesh 2 1000
+grep -q ' /.*with space/' "$pDir/moot"
+printf 'A\n' | "$pMoot/say" "$pDir" 0
+"$pMoot/hear" "$pDir" 1 | grep -qx A
 "$pMoot/remove" "$pDir"
 [ ! -d "$pDir" ]
 [ ! -d "$pPatch" ]

@@ -5,18 +5,19 @@
 # @details create SHAPE N [BYTES]. SHAPE is mesh or mesh-p, N the seats
 #          besides p, 2 or more, and BYTES the most one say may be, 1 or
 #          more, and 524288 when not given, about what a model's longest
-#          answer comes to; both numbers are read in base ten. Patch's
-#          create makes the wire, from $ICC, by default ../ICC beside this
-#          repo: two lanes, every seat's read end pipes enough deep to
-#          hold a say of BYTES, and p's, which Patch makes N times as deep,
-#          a round of them. A mesh 2 is one pipe, which Patch does not
-#          deepen, so there BYTES is at most what one lane holds. The
-#          moot's directory holds one file, moot: SHAPE, N, the patch,
-#          Patch's scripts and BYTES, on one line. Patch makes the wire;
-#          the moot makes nothing but its rounds. The cleanup is armed
-#          before the patch is made, so a create that cannot finish, or
-#          that a signal cuts off, leaves no patch: bash runs the EXIT trap
-#          when it dies on one.
+#          answer comes to; both numbers are counts, as icc-lib's nCount
+#          takes one. Patch's create makes the wire, from $ICC, by default
+#          ../ICC beside this repo: two lanes, every seat's read end pipes
+#          enough deep to hold a say of BYTES, and p's, which Patch makes N
+#          times as deep, a round of them. A mesh 2 is one pipe, which
+#          Patch does not deepen, so there BYTES is at most what one lane
+#          holds. The moot's directory holds one file, moot: SHAPE, N, the
+#          patch, BYTES and Patch's scripts, on one line, the scripts last
+#          so that read gives them the rest of it, spaces and all. Patch
+#          makes the wire; the moot makes nothing but its rounds. The
+#          cleanup is armed with icc-lib's vArm before anything is made,
+#          so a create that cannot finish, or that a signal cuts off,
+#          leaves neither the patch nor the moot's directory.
 # @stdin nothing
 # @stdout the moot's directory, one line
 # @stderr the reason, on refusal, and whatever Patch's create says
@@ -37,6 +38,10 @@ set -eu
   echo "usage: create SHAPE N [BYTES]" >&2
   exit 1
 }
+pTop=$(cd "$(dirname "$0")/../../../.." && pwd)
+pIcc=$(cd "${ICC:-$pTop/../ICC}" && pwd)
+pIccPatch=$(cd "$pIcc/.claude/skills/icc-patch/scripts" && pwd)
+source "$pIcc/.claude/skills/icc-lib/scripts/lib"
 case $eShape in
   mesh|mesh-p)
     ;;
@@ -45,17 +50,16 @@ case $eShape in
     exit 1
     ;;
 esac
-[ "$nSeats" -ge 2 ] 2>/dev/null || {
+nSeats=$(nCount seats "$nSeats")
+[ "$nSeats" -ge 2 ] || {
   echo "seats must be 2 or more" >&2
   exit 1
 }
-[ "$nBytes" -ge 1 ] 2>/dev/null || {
+nBytes=$(nCount bytes "$nBytes")
+[ "$nBytes" -ge 1 ] || {
   echo "bytes must be 1 or more" >&2
   exit 1
 }
-# In base ten, as Patch reads them, so 02 is the mesh 2 it makes.
-nSeats=$((10#$nSeats))
-nBytes=$((10#$nBytes))
 # A mesh 2 is one pipe, which nothing deepens: a say there is at most what
 # one lane holds, 65536 bytes, less the length line in front of it.
 if [ "$eShape" = mesh ] && [ "$nSeats" -eq 2 ] && [ "$nBytes" -gt 65472 ]
@@ -68,15 +72,15 @@ fi
 # 17 D - 1 blocks, 16 a pipe and one a joint.
 nBlocks=$(( (nBytes + 64 + 4095) / 4096 + 1 ))
 nDepth=$(( (nBlocks + 1 + 16) / 17 ))
-pTop=$(cd "$(dirname "$0")/../../../.." && pwd)
-pIcc=$(cd "${ICC:-$pTop/../ICC}" && pwd)
-pIccPatch=$(cd "$pIcc/.claude/skills/icc-patch/scripts" && pwd)
-# Armed before anything is made: the patch goes however this ends, until
-# the moot's line names it.
+# Armed before anything is made, as icc-lib's vArm says: the patch and the
+# moot's directory go however this ends, until the moot is whole.
 pPatch=
-trap '[ -z "$pPatch" ] || "$pIccPatch/remove" "$pPatch"' EXIT
+pDir=
+vArm '[ -z "$pPatch" ] || "$pIccPatch/remove" "$pPatch" || :
+      [ -z "$pDir" ] || rm -rf "$pDir"
+      exit 1'
 pPatch=$("$pIccPatch/create" "$eShape" "$nSeats" 2 "$nDepth")
 pDir=$(mktemp -d /tmp/moot-XXXXXXXX)
-echo "$eShape $nSeats $pPatch $pIccPatch $nBytes" > "$pDir/moot"
-trap - EXIT
+echo "$eShape $nSeats $pPatch $nBytes $pIccPatch" > "$pDir/moot"
+vDisarm
 echo "$pDir"

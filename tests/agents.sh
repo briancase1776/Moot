@@ -26,12 +26,13 @@ set -eu
 cd "$(dirname "$0")/.."
 pMoot=$PWD/.claude/skills/moot/scripts
 pSkill=$PWD/.claude/skills/moot/SKILL.md
-# Armed before anything is made: the moot and the work directory go
-# however this ends.
+source "${ICC:-../ICC}/.claude/skills/icc-lib/scripts/lib"
+# Armed before anything is made, as icc-lib's vArm says: the moot and the
+# work directory go however this ends.
 pDir=
 pWork=
-trap '[ -z "$pDir" ] || "$pMoot/remove" "$pDir" 2>/dev/null || :
-      [ -z "$pWork" ] || rm -rf "$pWork"' EXIT
+vArm '[ -z "$pDir" ] || "$pMoot/remove" "$pDir" 2>/dev/null || :
+      [ -z "$pWork" ] || rm -rf "$pWork"'
 pDir=$("$pMoot/create" mesh-p "$nSeats" "$nBytes")
 pWork=$(mktemp -d)
 

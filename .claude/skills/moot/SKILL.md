@@ -18,7 +18,7 @@ The moot returns what survived. Patch made the wire and the map; see its
 SKILL.md. What a seat says goes down it as its length and its words. The
 moot adds the rounds and nothing else.
 
-    /tmp/moot-XXXXXXXX/moot           SHAPE N PATCH, Patch's scripts, BYTES
+    /tmp/moot-XXXXXXXX/moot           SHAPE N PATCH BYTES, Patch's scripts
     /tmp/moot-XXXXXXXX/work.XXXXXXXX  a seat's own; it makes it and it takes it away
 
 ## Operations
@@ -51,7 +51,9 @@ BYTES is.
 
 create runs Patch's create from `$ICC`, by default `../ICC` beside this
 repo, and writes its path into DIR/moot; remove takes it from there.
-Patch finds Pipes, Tee and Merge itself, as its SKILL.md says.
+Patch finds Pipes, Tee and Merge itself, as its SKILL.md says. create
+also sources icc-lib from there, for its count checks and its cleanup,
+so ICC has to be whole.
 
 ## Sitting a moot
 
