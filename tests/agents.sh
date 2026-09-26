@@ -87,11 +87,21 @@ awk -v n="$nSeats" '
     for (s = 0; s < n; s++) {
       if (!(s in t)) bad("no ping from seat " s)
       if (!(s in saw)) { bad("no pong from seat " s); continue }
-      for (q in t) if (index(saw[s], t[q]) == 0)
+      # A seat hears every other seat and not itself.
+      for (q in t) if (q != s && index(saw[s], t[q]) == 0)
         bad("seat " s " never heard seat " q)
+      if (s in t && index(saw[s], t[s]) != 0)
+        bad("seat " s " heard itself")
     }
-    same = 1; for (s in saw) if (saw[s] != ord) same = 0
-    print "  every seat said once and heard all " n ": " (rc ? "no" : "yes")
+    # What a seat saw is the order p heard, less its own.
+    same = 1
+    for (s in saw) {
+      want = ord
+      i = index(want, " " t[s])
+      if (i) want = substr(want, 1, i - 1) substr(want, i + 1 + length(t[s]))
+      if (saw[s] != want) same = 0
+    }
+    print "  every seat said once and heard every other: " (rc ? "no" : "yes")
     # The tee hands every seat the order the merge took the says in, so
     # this should be the same everywhere; it is reported, not required.
     print "  order seen: " (same ? "the same at every seat, and at p" \

@@ -1,17 +1,23 @@
 #!/bin/bash
 ##
 # @file hear
-# @brief Print the round at a seat, once all of it is in.
-# @details hear DIR SEAT. The round is the next says on SEAT's read end,
-#          in the order they came, which is the order the merge took them
-#          in: N of them, or on a mesh 2, where a seat's own words never
-#          come back, the other seat's one. For each it reads the length
-#          line in front and copies that many bytes. Anything behind the
-#          round is the next round's and stays on the wire. What it copies
-#          is off the wire once it is printed, and nothing keeps it, so a
-#          hear cut off partway has lost what it took.
+# @brief Print the round at a seat, once all of it is in: what the other
+#        seats said.
+# @details hear DIR SEAT. The round is the next says on SEAT's read end, in
+#          the order they came, which is the order the merge took them in:
+#          N of them, SEAT's own among them where a tee hands it back, or
+#          on a mesh 2, where a seat's own words never come back, the other
+#          seat's one. For each it reads the length line and the mark in
+#          front. A say under SEAT's own mark it takes off the wire and
+#          prints nothing of: the seat wrote those words, and has them
+#          already. Every other it prints, mark and words. p says nothing,
+#          so p is printed every say. Anything behind the round is the next
+#          round's and stays on the wire. What it takes is off the wire once
+#          it is printed, and nothing keeps it, so a hear cut off partway
+#          has lost what it took.
 # @stdin nothing
-# @stdout the round: each say's mark and words, ending in a newline
+# @stdout the other seats' says: each one's mark and words, ending in a
+#         newline
 # @stderr the reason, on refusal
 # @exit 0 the round is printed; 1 the seat is not in the map, or the wire
 #       is out of step, as a say cut inside its write leaves it
@@ -33,5 +39,12 @@ for ((iSay = 0; iSay < nSays; iSay++)); do
     echo "seat $osSeat: the wire is out of step; the moot is over" >&2
     exit 1
   }
-  head -c "$nLength" <&"$fdLane"
+  read -r -u "$fdLane" osMark
+  nWords=$((nLength - ${#osMark} - 1))
+  if [ "$osMark" = "SEAT $osSeat" ]; then
+    head -c "$nWords" <&"$fdLane" > /dev/null
+  else
+    printf '%s\n' "$osMark"
+    head -c "$nWords" <&"$fdLane"
+  fi
 done
