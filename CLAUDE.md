@@ -124,7 +124,9 @@ with a space works; remove it, see nothing left. tests/agents.sh proves
 the wire carries for agents, which shell seats cannot: it sits a
 mesh-p, prints a brief per seat for the parent to spawn, hears two
 rounds as p, and checks every seat said once and heard every other.
-Neither touches a moot or a patch it did not make. If a test needs more
+The seats are the parent's, so it leaves the moot for the parent to
+remove once every seat has returned. Neither touches a moot or a patch
+it did not make. If a test needs more
 than a few lines of setup, the table is too complicated, not the test.
 
 ## Rules

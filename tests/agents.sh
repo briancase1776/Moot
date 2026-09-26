@@ -9,9 +9,14 @@
 #          hears both rounds as p and checks every seat said once and heard
 #          every other and not itself. Two rounds and not one, because hear
 #          at p counts N off the merge and does not know seats, so a round
-#          that counts wrong only shows on the round after it.
+#          that counts wrong only shows on the round after it. Once the
+#          briefs are out the moot is left up, however this ends: the seats
+#          are the parent's, and only the parent sees them exit, so the
+#          parent removes the moot once every seat has returned. A seat may
+#          still be in its last hear when p has heard all it needs.
 # @stdin nothing
-# @stdout the briefs, then what p heard checked, and ok
+# @stdout the briefs, then what p heard checked, ok, and last the remove to
+#         run once every seat has returned
 # @stderr whatever a failing step printed
 # @exit 0 every seat said once and heard every other; otherwise not
 #
@@ -66,6 +71,10 @@ every Bash call the longest timeout you have.
 BRIEF
   iSeat=$((iSeat + 1))
 done
+# The briefs are out, so seats may be on the wire: from here the moot is the
+# parent's to remove, once every seat has returned, and this says how.
+vArm '[ -z "$pWork" ] || rm -rf "$pWork"
+      echo "once every seat has returned: $pMoot/remove $pDir"'
 echo
 echo "---- waiting for round 1 ----"
 timeout 1800 "$pMoot/hear" "$pDir" p > "$pWork/r1"
