@@ -30,9 +30,9 @@ moot adds the rounds and nothing else.
     scripts/say DIR SEAT            put what is on stdin on the wire as
                                     SEAT, once; give it a quoted heredoc
                                     in the same call, never a file
-    scripts/hear DIR SEAT           print the round: what the other seats
-                                    said, once all are in; p is printed
-                                    every seat's
+    scripts/hear DIR SEAT           print the round: what every seat said,
+                                    SEAT's own included where the wire
+                                    hands it back, once all are in
     scripts/remove DIR              remove the patch, then DIR
 
 SHAPE is mesh or mesh-p, as Patch says. N is 2 or more. On mesh-p the
@@ -190,12 +190,8 @@ it to the parent's remove; that is the sweep, not the plan.
 - hear prints the round in the order it reached the seat's end, which
   is the order the merge took the says in; the tee hands every seat
   that same order. The round is the next says on the wire: N of them,
-  the seat's own among them, or on a mesh 2, where a seat's own words
-  never come back, the other seat's one. hear takes the seat's own off
-  the wire and prints none of it: the seat wrote those words and has
-  them, and reading them again is context spent on nothing. So a seat
-  is printed the other seats' says, and p, which says nothing, every
-  seat's. Anything behind the round is the next round's and stays on the
+  or on a mesh 2, where a seat's own words never come back, the other
+  seat's one. Anything behind them is the next round's and stays on the
   wire for the next hear. The order means nothing.
 - hear counts says; it does not know seats. That is why p says nothing
   on mesh-p, and why a seat that says twice puts every seat one over: a
@@ -224,12 +220,11 @@ it to the parent's remove; that is the sweep, not the plan.
   wire, and every seat's next hear reads it out of step and says so. A
   say cut off before its write leaves nothing. Either way past that, the
   moot is over: remove it, and sit it again.
-- Nothing here reads what is heard. hear reads the length and the mark
-  in front of each say, to know where it ends and whether it is the
-  seat's own, and copies the rest or drops it; say measures what it is
-  handed and looks for a line shaped like the mark. That is all. A
-  REPORT, a DELTA or a VOTE is what the seats agree to say, and the
-  seats read them.
+- Nothing here reads what is heard. hear reads the length in front of
+  each say and copies that many bytes; say measures what it is handed
+  and looks for a line shaped like the mark. That is all. A REPORT, a
+  DELTA or a VOTE is what the seats agree to say, and the seats read
+  them.
 - Every seat gets the same brief, every position gets every seat,
   nothing is voted that every seat has not argued, the vote is yes or
   no with no tiebreak, and the parent says nothing. That is all the

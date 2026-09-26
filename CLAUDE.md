@@ -103,9 +103,9 @@ fact, that is a change there, not a paragraph here.
 ## Testing
 
 A test harness is allowed **only to prove the table works**: shell
-seats, not agents, say and hear in rounds and every one hears every
-other seat's words, byte for byte, and none of its own; every seat
-says at once, before any hears, a round bigger than one pipe, and
+seats, not agents, say and hear in rounds and every one hears the
+round, its own included where a tee hands it back, byte for byte; every
+seat says at once, before any hears, a round bigger than one pipe, and
 every say returns; a round is the next N says, so a seat a round ahead
 is kept; a seat cannot hear before it says; a seat spelled another way,
 a body with a line shaped like the mark, and a say past what the moot
@@ -133,10 +133,10 @@ setup, the table is too complicated, not the test.
 - **Favor nothing.** No line in SKILL.md, no brief, no script may make
   one outcome, one seat, or one round's word easier to reach than
   another.
-- **Never read what is heard.** hear reads the length and the mark in
-  front of each say, and copies the rest or, when it is the seat's own,
-  drops it; say measures what it is handed and looks for a line shaped
-  like the mark. Nothing here looks at what is said.
+- **Never read what is heard.** hear reads the length in front of each
+  say and copies that many bytes; say measures what it is handed and
+  looks for a line shaped like the mark. Nothing here looks at what is
+  said.
 - **The session defines the skill. The skill does not define the
   session.** How many seats, which model sits in one, what the matter
   is, what a seat finds and how it argues it — all the session's.
