@@ -42,9 +42,10 @@ refuses it, since p writes nowhere.
 
 BYTES is the most one say may be, its mark and its last newline
 counted; say refuses more. The default is about what a model's longest
-answer comes to, and the wire for it is big: at the default, three seats
-and p are about 150 processes, most of them Patch's pipes and tees. A
-table whose seats say less can be made for less. A mesh 2 is one pipe,
+answer comes to. That is counted in tokens, and a token is no fixed
+number of bytes, so the default is a guess, and generous on purpose.
+The wire for it is big: at the default, three seats and p are about 150
+processes, most of them Patch's pipes and tees. A mesh 2 is one pipe,
 which nothing deepens, so there a say is at most 65472 bytes, whatever
 BYTES is.
 
