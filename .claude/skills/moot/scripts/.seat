@@ -5,15 +5,13 @@
 #        reads.
 # @details Sourced, not run, by say and hear once they have named the
 #          moot's directory pDir and the seat osSeat. It reads the moot's
-#          line and finds the seat's lanes in Patch's map. The seat is
-#          matched as a string, handed to awk through the environment,
-#          where no escape in it is read, so no spelling of a seat but the
-#          map's finds a lane; and "-", the map's nobody, is no seat. On
-#          the one pipe of a mesh 2 a seat holds one side,
-#          and writes that side's lane and reads the other. Through a
-#          mesh's fittings it writes its own cable and reads one from each
-#          other seat; p on a mesh-p reads one cable, from the merge, and
-#          writes none.
+#          line and takes the seat's lanes off Patch's map with icc-lib's
+#          oLanes, sourced from beside Patch's scripts, which says what a
+#          lane is and how a seat is matched. On the one pipe of a mesh 2 a
+#          seat holds one side, and writes that side's lane and reads the
+#          other. Through a mesh's fittings it writes its own cable and
+#          reads one from each other seat; p on a mesh-p reads one cable,
+#          from the merge, and writes none.
 #          It sets, from the moot's line, eShape, nSeats, pPatch, nBytes
 #          and pIccPatch; from the map, pWriteLane, empty for p, and aReads,
 #          one "LANE PEERS" per read end, PEERS the seats that write into
@@ -30,43 +28,9 @@
 # MIT Licence. See LICENCE.TXT
 ##
 read -r eShape nSeats pPatch nBytes pIccPatch < "$pDir/moot"
-
-##
-# @fn oLanes()
-# @brief Print the lane the seat writes, or the lanes it reads.
-# @details A pipe two seats share is on two lines of the map, and there
-#          the seat writes its own side's lane and reads the other. A pipe
-#          through a fitting is on one, and goes one way: side 0 writes
-#          lane 0, and side 1 reads it.
-# @param $1 eWay - w for the lane it writes, r for those it reads
-# @stdout "LANE" for w, one "LANE PEERS" per read end for r, or nothing
-# @global osSeat - read, the seat
-# @global pPatch - read, the patch whose map it reads
-# @return 0
-##
-oLanes() {
-  local eWay=$1
-  SEAT=$osSeat awk -v k="$eWay" '
-    NR > 1 {
-      n[$3]++
-      a[NR] = $0
-    }
-    END {
-      for (i = 2; i <= NR; i++) {
-        split(a[i], f, " ")
-        if (f[1] == "-" || f[1] "" != ENVIRON["SEAT"] "")
-          continue
-        b = n[f[3]] == 2
-        if (k == "w" && (f[2] == 0 || b))
-          print f[3] "/" f[2]
-        if (k == "r" && (f[2] == 1 || b))
-          print f[3] "/" (1 - f[2]), f[4]
-      }
-    }' "$pPatch/patch"
-}
-
-pWriteLane=$(oLanes w)
-mapfile -t aReads < <(oLanes r)
+source "$pIccPatch/../../icc-lib/scripts/lib"
+pWriteLane=$(oLanes "$pPatch" "$osSeat" w)
+mapfile -t aReads < <(oLanes "$pPatch" "$osSeat" r)
 [ -n "$pWriteLane" ] || [ "${#aReads[@]}" -gt 0 ] || {
   echo "no seat $osSeat in $pPatch" >&2
   exit 1

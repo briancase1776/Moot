@@ -100,8 +100,9 @@ itself, as its CLAUDE.md says. Do not vendor any of them into this repo.
 
 Anything Moot needs that ICC already has, it sources from there and does
 not write again. create and both harnesses source icc-lib for the count
-checks and for the cleanup armed before anything is made, and run.sh
-takes its cut-off check from it. Sourcing is not vendoring; a copy is.
+checks and for the cleanup armed before anything is made, run.sh
+takes its cut-off check from it, and say and hear take a seat's lanes
+off the map with its oLanes. Sourcing is not vendoring; a copy is.
 
 Do not duplicate their documentation. A fact about a lane is Pipes'; a
 copy, Tee's or Merge's; a map, Patch's. If one of them is missing a
