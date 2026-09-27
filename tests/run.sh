@@ -18,7 +18,8 @@
 #          when it cannot finish or a signal cuts it off; remove leaves the
 #          moot when the patch will not go; remove it, see nothing left. A
 #          moot over an ICC checkout whose path has a space works.
-#          Raspberries are what is said. Runs beside other patches, in a
+#          Raspberries are what is said, and what is said and heard is
+#          held here and goes into no file. Runs beside other patches, in a
 #          directory of its own, and touches only what it made. Needs
 #          $ICC, and Patch needs what its SKILL.md says; sources icc-lib
 #          from there.
@@ -49,8 +50,9 @@ vArm 'for pMade in $osMade; do
       done
       [ -z "$pWork" ] || rm -rf "$pWork"'
 pWork=$(mktemp -d)
-export TMPDIR=$pWork
 cd "$pWork"
+declare -A aSaid
+declare -A aHeard
 
 ##
 # @fn vMake()
@@ -69,10 +71,11 @@ vMake() {
 
 ##
 # @fn vBlow()
-# @brief Blow a raspberry of so many bytes for each seat, a line of its own.
+# @brief Blow a raspberry of so many bytes for each seat.
 # @param $1 nRound - the round it is for
 # @param $2 nBytes - how long each raspberry is
 # @param $3... - the seats
+# @global aSaid - set, each seat's raspberry, by SEAT.ROUND
 # @return 0
 ##
 vBlow() {
@@ -81,11 +84,33 @@ vBlow() {
   local osSeat
   shift 2
   for osSeat; do
-    {
-      "$pRaspberry" "$nBytes"
-      echo
-    } > "in.$osSeat.$nRound"
+    aSaid[$osSeat.$nRound]=$("$pRaspberry" "$nBytes")
   done
+}
+
+##
+# @fn vSay()
+# @brief Have a seat say its raspberry for a round, a line of its own.
+# @param $1 nRound - the round
+# @param $2 osSeat - the seat
+# @global aSaid - read
+# @return 0; a say that fails or waits a minute ends the harness
+##
+vSay() {
+  printf '%s\n' "${aSaid[$2.$1]}" | timeout 60 "$pMoot/say" "$pDir" "$2"
+}
+
+##
+# @fn vHear()
+# @brief Have a seat hear a round.
+# @param $1 nRound - the round
+# @param $2 osSeat - the seat
+# @global aHeard - set, what the seat heard, by SEAT.ROUND, with a . after
+#                  it so that the newline it ends in is kept
+# @return 0; a hear that fails or waits a minute ends the harness
+##
+vHear() {
+  aHeard[$2.$1]=$(timeout 60 "$pMoot/hear" "$pDir" "$2" && echo .)
 }
 
 ##
@@ -101,42 +126,37 @@ vBlow() {
 vHeard() {
   local nRound=$1
   local osEar=$2
+  local osHeard=${aHeard[$osEar.$nRound]%.}
   local osSpeaker
   local aOthers=()
   shift 2
   for osSpeaker; do
     [ "$osSpeaker" = "$osEar" ] || aOthers+=("$osSpeaker")
   done
-  [ "$(grep -c '^SEAT ' "out.$osEar.$nRound")" -eq "${#aOthers[@]}" ]
-  awk -v o="got.$nRound.$osEar" \
-    '/^SEAT [0-9p]+$/ {f = o "." $2; next} {print > f}' \
-    "out.$osEar.$nRound"
+  [ "$(printf '%s' "$osHeard" | grep -c '^SEAT ')" -eq "${#aOthers[@]}" ]
   for osSpeaker in "${aOthers[@]}"; do
-    cmp "in.$osSpeaker.$nRound" "got.$nRound.$osEar.$osSpeaker"
+    [ "$(printf '%s' "$osHeard" | awk -v s="$osSpeaker" \
+      '/^SEAT [0-9p]+$/ {f = ($2 == s); next} f; END {print "."}')" \
+      = "${aSaid[$osSpeaker.$nRound]}"$'\n.' ]
   done
 }
 
 ##
 # @fn vAtOnce()
-# @brief Run one call of say or hear for each seat at once, and wait.
-# @param $1 osVerb - say or hear
-# @param $2 nRound - the round, whose in or out files it reads or writes
-# @param $3... - the seats
-# @return 0; a call that fails or waits a minute ends the harness
+# @brief Have every seat given say its raspberry for a round at once, and
+#        wait.
+# @param $1 nRound - the round
+# @param $2... - the seats
+# @return 0; a say that fails or waits a minute ends the harness
 ##
 vAtOnce() {
-  local osVerb=$1
-  local nRound=$2
+  local nRound=$1
   local osSeat
   local aPids=()
   local pidCall
-  shift 2
+  shift
   for osSeat; do
-    if [ "$osVerb" = say ]; then
-      timeout 60 "$pMoot/say" "$pDir" "$osSeat" < "in.$osSeat.$nRound" &
-    else
-      timeout 60 "$pMoot/hear" "$pDir" "$osSeat" > "out.$osSeat.$nRound" &
-    fi
+    vSay "$nRound" "$osSeat" &
     aPids+=($!)
   done
   for pidCall in "${aPids[@]}"; do wait "$pidCall"; done
@@ -171,23 +191,25 @@ timeout 3 "$pMoot/hear" "$pDir" - 2>&1 | grep -q '^no seat - '
 printf 'a\nSEAT 2\n' | "$pMoot/say" "$pDir" 0 2>/dev/null && exit 1
 "$pRaspberry" 80000 | "$pMoot/say" "$pDir" 0 2>/dev/null && exit 1
 vBlow 1 70000 0 1 2
-vAtOnce say 1 0 1 2
-vAtOnce hear 1 0 1 2
-for osSeat in 0 1 2; do vHeard 1 "$osSeat" 0 1 2; done
+vAtOnce 1 0 1 2
+for osSeat in 0 1 2; do
+  vHear 1 "$osSeat"
+  vHeard 1 "$osSeat" 0 1 2
+done
 # A round is the next say from each: 0 and 1 hear round 2 and say round 3
 # before 2 hears round 2, and 2 hears round 2 and nothing of round 3.
 vBlow 2 3000 0 1 2
 vBlow 3 3000 0 1 2
-for osSeat in 0 1 2; do "$pMoot/say" "$pDir" "$osSeat" < "in.$osSeat.2"; done
+for osSeat in 0 1 2; do vSay 2 "$osSeat"; done
 for osSeat in 0 1; do
-  "$pMoot/hear" "$pDir" "$osSeat" > "out.$osSeat.2"
-  "$pMoot/say" "$pDir" "$osSeat" < "in.$osSeat.3"
+  vHear 2 "$osSeat"
+  vSay 3 "$osSeat"
 done
-"$pMoot/hear" "$pDir" 2 > out.2.2
-"$pMoot/say" "$pDir" 2 < in.2.3
+vHear 2 2
+vSay 3 2
 for osSeat in 0 1 2; do
   vHeard 2 "$osSeat" 0 1 2
-  "$pMoot/hear" "$pDir" "$osSeat" > "out.$osSeat.3"
+  vHear 3 "$osSeat"
   vHeard 3 "$osSeat" 0 1 2
 done
 "$pMoot/remove" "$pDir"
@@ -200,24 +222,24 @@ vMake mesh 2
 [ "$(sed 1d "$pPatch/patch" | cut -d' ' -f3 | sort -u | wc -l)" -eq 1 ]
 [ "$(cut -d' ' -f4 "$pDir/moot")" -eq 65472 ]
 vBlow 1 65000 0 1
-vAtOnce say 1 0 1
-"$pMoot/hear" "$pDir" 0 > out.0.1
-"$pMoot/hear" "$pDir" 1 > out.1.1
+vAtOnce 1 0 1
+vHear 1 0
+vHear 1 1
 vHeard 1 0 1
 vHeard 1 1 0
 printf 'A\n' | "$pMoot/say" "$pDir" 0
 printf 'B\n' | "$pMoot/say" "$pDir" 1
-"$pMoot/hear" "$pDir" 1 > r
-grep -qx A r
+osRound=$("$pMoot/hear" "$pDir" 1)
+printf '%s\n' "$osRound" | grep -qx A
 printf 'C\n' | "$pMoot/say" "$pDir" 1
-"$pMoot/hear" "$pDir" 0 > r
-grep -qx B r
-grep -qx C r && exit 1
+osRound=$("$pMoot/hear" "$pDir" 0)
+printf '%s\n' "$osRound" | grep -qx B
+printf '%s\n' "$osRound" | grep -qx C && exit 1
 printf 'D\n' | "$pMoot/say" "$pDir" 0
-"$pMoot/hear" "$pDir" 0 > r
-grep -qx C r
-"$pMoot/hear" "$pDir" 1 > r
-grep -qx D r
+osRound=$("$pMoot/hear" "$pDir" 0)
+printf '%s\n' "$osRound" | grep -qx C
+osRound=$("$pMoot/hear" "$pDir" 1)
+printf '%s\n' "$osRound" | grep -qx D
 # remove leaves the moot when the patch will not go, and takes it all when
 # it will
 mv "$pPatch/made" "$pPatch/held"
@@ -232,14 +254,16 @@ mv "$pPatch/held" "$pPatch/made"
 # longest.
 vMake mesh-p 2
 "$pMoot/say" "$pDir" p < /dev/null 2>/dev/null && exit 1
-"$pMoot/hear" "$pDir" p > out.p.1 &
+exec {fdParent}< <("$pMoot/hear" "$pDir" p)
 pidParent=$!
 vBlow 1 500000 0 1
-vAtOnce say 1 0 1
+vAtOnce 1 0 1
 for osSeat in 0 1; do
-  "$pMoot/hear" "$pDir" "$osSeat" > "out.$osSeat.1"
+  vHear 1 "$osSeat"
   vHeard 1 "$osSeat" 0 1
 done
+aHeard[p.1]=$(cat <&"$fdParent" && echo .)
+exec {fdParent}<&-
 wait "$pidParent"
 vHeard 1 p 0 1
 "$pMoot/remove" "$pDir"

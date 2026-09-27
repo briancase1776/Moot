@@ -32,14 +32,11 @@ cd "$(dirname "$0")/.."
 pMoot=$PWD/.claude/skills/moot/scripts
 pSkill=$PWD/.claude/skills/moot/SKILL.md
 source "${ICC:-../ICC}/.claude/skills/icc-lib/scripts/lib"
-# Armed before anything is made, as icc-lib's vArm says: the moot and the
-# work directory go however this ends.
+# Armed before anything is made, as icc-lib's vArm says: the moot goes
+# however this ends.
 pDir=
-pWork=
-vArm '[ -z "$pDir" ] || "$pMoot/remove" "$pDir" 2>/dev/null || :
-      [ -z "$pWork" ] || rm -rf "$pWork"'
+vArm '[ -z "$pDir" ] || "$pMoot/remove" "$pDir" 2>/dev/null || :'
 pDir=$("$pMoot/create" mesh-p "$nSeats" "$nBytes")
-pWork=$(mktemp -d)
 
 iSeat=0
 while [ "$iSeat" -lt "$nSeats" ]; do
@@ -73,20 +70,20 @@ BRIEF
 done
 # The briefs are out, so seats may be on the wire: from here the moot is the
 # parent's to remove, once every seat has returned, and this says how.
-vArm '[ -z "$pWork" ] || rm -rf "$pWork"
-      echo "once every seat has returned: $pMoot/remove $pDir"'
+vArm 'echo "once every seat has returned: $pMoot/remove $pDir"'
 echo
 echo "---- waiting for round 1 ----"
-timeout 1800 "$pMoot/hear" "$pDir" p > "$pWork/r1"
+# What p hears is held here and goes into no file.
+osRound1=$(timeout 1800 "$pMoot/hear" "$pDir" p)
 echo "---- waiting for round 2 ----"
-timeout 1800 "$pMoot/hear" "$pDir" p > "$pWork/r2"
+osRound2=$(timeout 1800 "$pMoot/hear" "$pDir" p)
 
 awk -v n="$nSeats" '
   function bad(m) { print "  FAIL: " m; rc = 1 }
-  FILENAME ~ /r1$/ && /^PING / {
+  nRound == 1 && /^PING / {
     if (++seen[$2] > 1) bad("seat " $2 " pinged twice")
     t[$2] = $3; np++ }
-  FILENAME ~ /r2$/ && /^PONG / {
+  nRound == 2 && /^PONG / {
     if (++sn[$2] > 1) bad("seat " $2 " ponged twice")
     saw[$2] = ""
     for (k = 5; k <= NF; k++) saw[$2] = saw[$2] " " $k
@@ -105,5 +102,6 @@ awk -v n="$nSeats" '
     }
     print "  every seat said once and heard every other: " (rc ? "no" : "yes")
     exit rc
-  }' "$pWork/r1" "$pWork/r2"
+  }' nRound=1 <(printf '%s\n' "$osRound1") \
+    nRound=2 <(printf '%s\n' "$osRound2")
 echo ok

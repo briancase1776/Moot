@@ -202,7 +202,8 @@ it to the parent's remove; that is the sweep, not the plan.
 - hear takes the next say from each seat that writes into a read end;
   it does not know rounds. A seat that says twice has said its next
   round's too: every other seat hears its second say a round early, and
-  p's rounds from then on are one out.
+  p's rounds from then on are one out. Two hears at one seat at once
+  split a round between them, and neither has it.
 - say takes no turn and waits for nothing of its own. Every seat can
   say at once: every other seat reads it on a cable of its own, and say
   puts its words on with one dd, page after page without a pause. What
@@ -263,13 +264,6 @@ the wire what it is handed, and that is what it was handed. The words
 are another seat's, the mark is this one's, and the vote counts them.
 That is why a seat's files go in a directory mktemp named: two seats
 agreeing where to work is the one agreement the table cannot have.
-
-A call that outruns the tool's time limit is not cut off: Claude Code
-moves it to the background, where it goes on, and what it prints comes
-back as that task's output file. For a hear, that file is the round.
-Read it whole, once, when the task says it has finished, and start no
-other hear at that seat before then: two hears at one seat split a round
-between them, and neither has it.
 
 The patch is its own processes, as Patch says, so a moot outlives calls.
 Seats are agents the parent spawns; they share its container and its
