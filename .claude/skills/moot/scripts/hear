@@ -3,13 +3,15 @@
 # @file hear
 # @brief Print the round at a seat, once all of it is in.
 # @details hear DIR SEAT. The round is the next say from each seat that
-#          writes into one of SEAT's read ends, a read end at a time, in
-#          the order the map lists them: one from each other seat, or at p
-#          all N off its one end from the merge, in the order the merge took
-#          them. A seat's own words never come back to it. For each say it
-#          reads the length line in front and copies that many bytes.
-#          Anything behind the round is the next round's and stays on the
-#          wire. What it copies is off the wire once it is printed, and
+#          writes into one of SEAT's read ends, a read end at a time, in the
+#          order the map lists them: one from each other seat, or at p all N
+#          off its one end from the merge, in the order the merge took them.
+#          The read ends come off Patch's map with icc-lib's oLanes, sourced
+#          from beside Patch's scripts, which says what a lane is and how a
+#          seat is matched. A seat's own words never come back to it. For
+#          each say it reads the length line in front and copies that many
+#          bytes. Anything behind the round is the next round's and stays on
+#          the wire. What it copies is off the wire once it is printed, and
 #          nothing keeps it, so a hear cut off partway has lost what it
 #          took.
 # @stdin nothing
@@ -27,7 +29,14 @@ pDir=${1:?usage: hear DIR SEAT}
 osSeat=${2:?usage: hear DIR SEAT}
 set -eu
 export LC_ALL=C
-source "$(dirname "$0")/.seat"
+read -r eShape nSeats pPatch nBytes pIccPatch < "$pDir/moot"
+source "$pIccPatch/../../icc-lib/scripts/lib"
+pWriteLane=$(oLanes "$pPatch" "$osSeat" w)
+mapfile -t aReads < <(oLanes "$pPatch" "$osSeat" r)
+[ -n "$pWriteLane" ] || [ "${#aReads[@]}" -gt 0 ] || {
+  echo "no seat $osSeat in $pPatch" >&2
+  exit 1
+}
 for oRead in "${aReads[@]}"; do
   read -r pReadLane osPeers <<< "$oRead"
   IFS=, read -r -a aPeers <<< "$osPeers"

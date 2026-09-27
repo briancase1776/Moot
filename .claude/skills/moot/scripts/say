@@ -2,21 +2,23 @@
 ##
 # @file say
 # @brief Land the words on stdin on the wire as a seat, once.
-# @details say DIR SEAT < words. DIR is what create printed, and SEAT a
-#          seat as the map spells it. What goes on is a line with the
-#          length in bytes of what follows, then SEAT's mark, the words,
-#          and a newline at the end if the words lack one, in one write of
-#          whole pages. Nothing takes a turn: every other seat reads the
-#          words on a cable of its own, and on a mesh-p p's merge takes each
-#          say whole before the next, as Merge says of what one writer puts
-#          on without a pause. A write that finds the wire full waits there
-#          until the slowest seat reads. A body holding a line shaped like
-#          the mark, SEAT and one word alone, is refused, because a reader
-#          would take it for another seat's; so is a say past the BYTES the
-#          moot was made for, since a read end holds one say that size from
-#          each seat that writes into it and no bigger. p writes nowhere,
-#          and a say from p is refused too. A refused say puts nothing on
-#          the wire.
+# @details say DIR SEAT < words. DIR is what create printed, and SEAT a seat
+#          as the map spells it, its lane taken off Patch's map with
+#          icc-lib's oLanes, sourced from beside Patch's scripts, which says
+#          what a lane is and how a seat is matched. What goes on is a line
+#          with the length in bytes of what follows, then SEAT's mark, the
+#          words, and a newline at the end if the words lack one, in one
+#          write of whole pages. Nothing takes a turn: every other seat
+#          reads the words on a cable of its own, and on a mesh-p p's merge
+#          takes each say whole before the next, as Merge says of what one
+#          writer puts on without a pause. A write that finds the wire full
+#          waits there until the slowest seat reads. A body holding a line
+#          shaped like the mark, SEAT and one word alone, is refused,
+#          because a reader would take it for another seat's; so is a say
+#          past the BYTES the moot was made for, since a read end holds one
+#          say that size from each seat that writes into it and no bigger. p
+#          writes nowhere, and a say from p is refused too. A refused say
+#          puts nothing on the wire.
 # @stdin the words
 # @stdout nothing
 # @stderr the reason, on refusal
@@ -32,7 +34,14 @@ pDir=${1:?usage: say DIR SEAT}
 osSeat=${2:?usage: say DIR SEAT}
 set -eu
 export LC_ALL=C
-source "$(dirname "$0")/.seat"
+read -r eShape nSeats pPatch nBytes pIccPatch < "$pDir/moot"
+source "$pIccPatch/../../icc-lib/scripts/lib"
+pWriteLane=$(oLanes "$pPatch" "$osSeat" w)
+mapfile -t aReads < <(oLanes "$pPatch" "$osSeat" r)
+[ -n "$pWriteLane" ] || [ "${#aReads[@]}" -gt 0 ] || {
+  echo "no seat $osSeat in $pPatch" >&2
+  exit 1
+}
 [ -n "$pWriteLane" ] || {
   echo "seat $osSeat writes nowhere in $pPatch" >&2
   exit 1

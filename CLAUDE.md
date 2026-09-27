@@ -162,7 +162,7 @@ than a few lines of setup, the table is too complicated, not the test.
 ```
 .claude/skills/moot/SKILL.md      the skill definition Claude Code loads
 .claude/skills/moot/scripts/      create, say, hear, remove. One script
-                                  each. .seat is what say and hear share.
+                                  each.
 tests/                            run.sh and agents.sh, described above
 ```
 
