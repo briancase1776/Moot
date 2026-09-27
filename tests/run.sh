@@ -51,8 +51,8 @@ vArm 'for pMade in $osMade; do
       [ -z "$pWork" ] || rm -rf "$pWork"'
 pWork=$(mktemp -d)
 cd "$pWork"
-declare -A aSaid
-declare -A aHeard
+declare -A hSaid
+declare -A hHeard
 
 ##
 # @fn vMake()
@@ -75,7 +75,7 @@ vMake() {
 # @param $1 nRound - the round it is for
 # @param $2 nBytes - how long each raspberry is
 # @param $3... - the seats
-# @global aSaid - set, each seat's raspberry, by SEAT.ROUND
+# @global hSaid - set, each seat's raspberry, by SEAT.ROUND
 # @return 0
 ##
 vBlow() {
@@ -84,7 +84,7 @@ vBlow() {
   local osSeat
   shift 2
   for osSeat; do
-    aSaid[$osSeat.$nRound]=$("$pRaspberry" "$nBytes")
+    hSaid[$osSeat.$nRound]=$("$pRaspberry" "$nBytes")
   done
 }
 
@@ -93,11 +93,14 @@ vBlow() {
 # @brief Have a seat say its raspberry for a round, a line of its own.
 # @param $1 nRound - the round
 # @param $2 osSeat - the seat
-# @global aSaid - read
+# @global hSaid - read
 # @return 0; a say that fails or waits a minute ends the harness
 ##
 vSay() {
-  printf '%s\n' "${aSaid[$2.$1]}" | timeout 60 "$pMoot/say" "$pDir" "$2"
+  local nRound=$1
+  local osSeat=$2
+  printf '%s\n' "${hSaid[$osSeat.$nRound]}" |
+    timeout 60 "$pMoot/say" "$pDir" "$osSeat"
 }
 
 ##
@@ -105,12 +108,16 @@ vSay() {
 # @brief Have a seat hear a round.
 # @param $1 nRound - the round
 # @param $2 osSeat - the seat
-# @global aHeard - set, what the seat heard, by SEAT.ROUND, with a . after
+# @global hHeard - set, what the seat heard, by SEAT.ROUND, with a . after
 #                  it so that the newline it ends in is kept
 # @return 0; a hear that fails or waits a minute ends the harness
 ##
 vHear() {
-  aHeard[$2.$1]=$(timeout 60 "$pMoot/hear" "$pDir" "$2" && echo .)
+  local nRound=$1
+  local osSeat=$2
+  hHeard[$osSeat.$nRound]=$(
+    timeout 60 "$pMoot/hear" "$pDir" "$osSeat" && echo .
+  )
 }
 
 ##
@@ -126,7 +133,7 @@ vHear() {
 vHeard() {
   local nRound=$1
   local osEar=$2
-  local osHeard=${aHeard[$osEar.$nRound]%.}
+  local osHeard=${hHeard[$osEar.$nRound]%.}
   local osSpeaker
   local aOthers=()
   shift 2
@@ -137,7 +144,7 @@ vHeard() {
   for osSpeaker in "${aOthers[@]}"; do
     [ "$(printf '%s' "$osHeard" | awk -v s="$osSpeaker" \
       '/^SEAT [0-9p]+$/ {f = ($2 == s); next} f; END {print "."}')" \
-      = "${aSaid[$osSpeaker.$nRound]}"$'\n.' ]
+      = "${hSaid[$osSpeaker.$nRound]}"$'\n.' ]
   done
 }
 
@@ -262,7 +269,7 @@ for osSeat in 0 1; do
   vHear 1 "$osSeat"
   vHeard 1 "$osSeat" 0 1
 done
-aHeard[p.1]=$(cat <&"$fdParent" && echo .)
+hHeard[p.1]=$(cat <&"$fdParent" && echo .)
 exec {fdParent}<&-
 wait "$pidParent"
 vHeard 1 p 0 1

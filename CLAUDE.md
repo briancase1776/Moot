@@ -152,10 +152,13 @@ the test.
   looks for a line shaped like the mark. Nothing here looks at what is
   said.
 - **No file holds what is said.** A say goes from stdin onto the wire
-  and a round from the wire to stdout, and nothing here puts either in
-  a file, in /tmp or anywhere, the tests included. The files Claude Code
-  keeps of what a call printed or an agent returned are Anthropic's:
-  nothing here reads one, or tells a seat or the parent to.
+  and a round from the wire to stdout, and nothing here puts either in a
+  file, in /tmp or anywhere, the tests included. A seat hands say its
+  words from printf down a pipe: not a heredoc or a here-string, which
+  bash puts in a file in /tmp once one outgrows a pipe, and not a cap on
+  a say to keep one small enough. The files Claude Code keeps of what a
+  call printed or an agent returned are Anthropic's: nothing here reads
+  one, or tells a seat or the parent to.
 - **The session defines the skill. The skill does not define the
   session.** How many seats, which model sits in one, what the matter
   is, what a seat finds and how it argues it — all the session's.

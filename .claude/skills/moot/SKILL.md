@@ -29,8 +29,9 @@ moot adds the rounds and nothing else.
                                     that writes into it, print the moot's
                                     directory
     scripts/say DIR SEAT            put what is on stdin on the wire as
-                                    SEAT, once; give it a quoted heredoc
-                                    in the same call, never a file
+                                    SEAT, once; pipe it the words from
+                                    printf in the same call, never a
+                                    heredoc or a file
     scripts/hear DIR SEAT           print the round: what every other
                                     seat said, once all are in; p is
                                     printed every seat's
@@ -97,8 +98,8 @@ note to yourself. The name has a hash in it so that no two seats can
 choose the same one, which is the whole of why it is made this way; see
 In Claude Code for what happens when two do. Every Bash call is a fresh
 shell, so carry the path and name it in full in each one. Nothing you
-say goes through it: a say is a heredoc and a round is what hear
-printed, as the Facts say.
+say goes through it: a say is piped from printf and a round is what
+hear printed, as the Facts say.
 
 However you leave the table, after the vote, after a round that ended
 it, or because you are giving up, take it away last: remove what you
@@ -109,13 +110,11 @@ it to the parent's remove; that is the sweep, not the plan.
 
 1. Investigate the matter alone. say
 
-       scripts/say DIR I <<'MOOT-XXXX'
-       REPORT
-       what you found
-       MOOT-XXXX
+       printf '%s\n' 'REPORT
+       what you found' | scripts/say DIR I
 
    hear. Every say below is that same call, with what is written between
-   the markers.
+   the quotes.
 
 2. Read every report. say the discrepancies you see, zero or more, each
    a claim that some reports hold and others do not, numbered I.k with k
@@ -175,23 +174,23 @@ it to the parent's remove; that is the sweep, not the plan.
   holding a line of that shape, SEAT and one word alone, because a
   reader would take it for the mark and the words under it would speak,
   and vote, as another seat.
-- Give say what you have to say on stdin, from a heredoc with its
-  marker quoted, in the same call. Quoted, so the body goes down the
-  wire as it was written: unquoted, the shell expands a `$name` or a
-  backtick in it, and a report with code in it arrives as something the
-  seat did not say. Put a few characters of your own in the marker, the
-  way the work directory has a hash in it, and be sure no line of the
-  body is it. A body line equal to the marker ends the heredoc there:
-  the say stops at that line, and the rest of the report goes to the
-  shell as commands to run. Nothing catches that. say is handed what
-  is left after the shell has eaten the rest, and what it is handed is
-  a well formed say, so it goes down the wire and the seats read it as
-  all you had to say. The seat that trips is the one whose matter is
-  this project, because its report quotes the marker this file shows.
-  Do not write what you are going to say to a file and redirect the
-  file in: that is two calls for one say, and the seats share a /tmp,
-  so what a seat has not said yet would be sitting there to be read by
-  a seat that has not heard it.
+- Give say what you have to say on stdin, piped from printf in the same
+  call, the words one argument in single quotes:
+  `printf '%s\n' 'the words' | scripts/say DIR I`. printf is the
+  shell's own, so the words go from the call into the pipe and nowhere
+  else, however long they are. Single quotes, so the words go down the
+  wire as they were written: in double quotes or none, the shell expands
+  a `$name` or a backtick in them, and a report with code in it arrives
+  as something the seat did not say. In single quotes nothing is special
+  but the quote itself, so write every `'` in the words as `'\''`. A `'`
+  left as it is ends the quote there: the rest of the words go to the
+  shell as commands to run, or come apart into pieces that printf prints
+  a line each, and nothing catches that. Not a heredoc and not a
+  here-string: bash puts either in a file in /tmp once it is bigger than
+  a pipe, and every one before bash 5.1. Not a file of your own either:
+  that is two calls for one say. The seats share a /tmp, so what a seat
+  has not said yet would be sitting there to be read by a seat that has
+  not heard it.
 - A seat's own words never come back to it. It reads each other seat
   on a read end of its own, and hear prints the round a read end at a
   time, in the order the map lists them: the next say from each other
@@ -248,7 +247,7 @@ it to the parent's remove; that is the sweep, not the plan.
 
 ## In Claude Code
 
-Every Bash call is a fresh shell, so a say is one call with its heredoc
+Every Bash call is a fresh shell, so a say is one call with its printf
 in it, and a hear is one call and what it printed there. Neither goes
 through a file of the moot's. A report composed with an editing tool is
 a report another seat can read before it was said, and a round written

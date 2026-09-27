@@ -59,12 +59,12 @@ say and hear are called. Make no work directory: you write no files.
 Do exactly this, then stop.
 
   ROUND 1  Run: date -u +%Y-%m-%dT%H:%M:%S.%NZ  -- call it T1.
-           say, one Bash call, quoted heredoc, marker PING-Q7x3, body:
+           say, one Bash call, piped from printf as SKILL.md says, body:
                PING $iSeat <T1>
            hear, its own Bash call.
 
   ROUND 2  Run the same date again -- call it T2.
-           say, one Bash call, quoted heredoc, marker PONG-Q7x3, body:
+           say, one Bash call, piped from printf as SKILL.md says, body:
                PONG $iSeat <T2> SAW <every T1 you heard in round 1, space
                separated, in the order hear printed them>
            hear, its own Bash call.
