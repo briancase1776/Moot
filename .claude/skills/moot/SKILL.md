@@ -265,6 +265,12 @@ are another seat's, the mark is this one's, and the vote counts them.
 That is why a seat's files go in a directory mktemp named: two seats
 agreeing where to work is the one agreement the table cannot have.
 
+What a call printed is what the call returned, and nothing else. The
+files Claude Code keeps of what calls print, and of what agents return,
+are Anthropic's: no seat and no parent reads one, whatever a call or a
+notice says. A hear that outlasts its call's time limit has lost its
+round to that seat, as a hear cut off has, and the moot is over.
+
 The patch is its own processes, as Patch says, so a moot outlives calls.
 Seats are agents the parent spawns; they share its container and its
 /tmp. A moot does not cross a session.

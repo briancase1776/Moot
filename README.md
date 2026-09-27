@@ -91,8 +91,9 @@ Needs the ICC checkout beside this one — see
 says in it.
 
     tests/run.sh        prove the table works; shell seats, no agents, no cost
-    tests/agents.sh     prove it works for agents; prints a brief per seat
-                        for you to spawn, then checks both rounds as p
+    tests/agents.sh     prove it works for agents; sit prints a brief per
+                        seat for you to spawn, and once every seat has
+                        returned, check checks both rounds as p
 
 ## What it does not do
 

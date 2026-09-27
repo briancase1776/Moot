@@ -122,13 +122,14 @@ the other; on mesh-p the parent hears the round and cannot say; create
 leaves no patch when it cannot finish or a signal cuts it off; remove
 leaves the moot when the patch will not go; a moot over an ICC path
 with a space works; remove it, see nothing left. tests/agents.sh proves
-the wire carries for agents, which shell seats cannot: it sits a
-mesh-p, prints a brief per seat for the parent to spawn, hears two
-rounds as p, and checks every seat said once and heard every other.
-The seats are the parent's, so it leaves the moot for the parent to
-remove once every seat has returned. Neither touches a moot or a patch
-it did not make. If a test needs more
-than a few lines of setup, the table is too complicated, not the test.
+the wire carries for agents, which shell seats cannot: sit makes a
+mesh-p, prints a brief per seat for the parent to spawn, and returns;
+once every seat has returned, check hears two rounds as p, checks every
+seat said once and heard every other, and removes the moot. Neither
+call waits on a seat, so the parent takes what each returned and reads
+no file. Neither touches a moot or a patch it did not make. If a test
+needs more than a few lines of setup, the table is too complicated, not
+the test.
 
 ## Rules
 
@@ -150,6 +151,11 @@ than a few lines of setup, the table is too complicated, not the test.
   say and copies that many bytes; say measures what it is handed and
   looks for a line shaped like the mark. Nothing here looks at what is
   said.
+- **No file holds what is said.** A say goes from stdin onto the wire
+  and a round from the wire to stdout, and nothing here puts either in
+  a file, in /tmp or anywhere, the tests included. The files Claude Code
+  keeps of what a call printed or an agent returned are Anthropic's:
+  nothing here reads one, or tells a seat or the parent to.
 - **The session defines the skill. The skill does not define the
   session.** How many seats, which model sits in one, what the matter
   is, what a seat finds and how it argues it — all the session's.
