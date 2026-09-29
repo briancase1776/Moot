@@ -153,17 +153,16 @@ is being done.
 
 ICCLOCK is icc-lock's scripts, beside Patch's: the path DIR/moot ends
 with, icc-patch put as icc-lock. Every change to the plan file is one
-Bash call: take the lock, trying again until create takes it, change
-one line, give the lock back:
+Bash call: take the lock, change one line, give the lock back:
 
-    until ICCLOCK/create DIR/plan >/dev/null 2>&1; do sleep 1; done
-    ... read it, change your line, write it ...
-    ICCLOCK/remove DIR/plan
+    ICCLOCK/create DIR/plan && { CHANGE; ICCLOCK/remove DIR/plan; }
 
-One call, so that no call ends holding the lock. remove only after
-your own create took it: `create && change; remove` runs remove when
-create is refused, and takes away the lock of the seat that holds it.
-Read the plan file whenever you like; change it only holding its lock.
+Refused, nothing else runs: call it again. Taken, remove runs whether
+CHANGE worked or not. One call, so that no call ends holding the lock;
+remove inside the braces, so that it only ever follows your own
+create. `create && change; remove` runs remove when create is refused,
+and takes away the lock of the seat that holds it. Read the plan file
+whenever you like; change it only holding its lock.
 
 The plan file is one line an item that stood, in number order:
 
