@@ -50,7 +50,7 @@ them.
   one does and dig further into what they find, so a table can turn up
   what a single agent of longer reach, working alone, does not. That
   spread is the product. Nothing here may narrow it: not a fuller
-  brief, not a shared plan, not a house style for what a seat says.
+  brief, not a house style for what a seat says.
   Seats that agree where to look are one seat run N times.
 - **A matter is not spent in one moot.** What the spread will not cover
   is what every seat misses alike; a moot corrects a seat, it does not
