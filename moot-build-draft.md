@@ -17,7 +17,7 @@ shared tree, locking each file while they edit it. The spread goes
 where it finds things: every seat investigates everything and checks
 everything, and each item is built once.
 
-moot-build is a working name. Part 1 is the change to CLAUDE.md. Part 2
+Part 1 is the change to CLAUDE.md. Part 2
 is the add-on's SKILL.md. Part 3 is where this departs from what the
 moot voted, and why. Part 4 is what is still open.
 
@@ -168,6 +168,7 @@ The plan file is one line an item that stood, in number order:
 
     J.k free
     J.k claimed I
+    J.k claimed I waits L.m
     J.k done I COMMIT
     J.k blocked I why
 
@@ -176,7 +177,11 @@ The plan file is one line an item that stood, in number order:
    the lock in turn, compares it with the items it counted, and says
    any difference in its REPORT this round.
 2. Claim: take the lock, mark the first free line claimed I, give the
-   lock back. Hold one unbuilt item at a time.
+   lock back. Hold one unbuilt item at a time, but for this: if the
+   item needs another built first, read that one's line. Done, go on.
+   Free, claim it too and build it first. Claimed, add waits and its
+   number to your line, and go on when its line says done. If its
+   line waits on yours, the two need each other: mark both blocked.
 3. Build: lock every file in the tree the item needs, absolute path,
    before you edit any of them, and hold each until the item is
    committed. Refused one, give back the ones you hold, as Lock says,
@@ -295,11 +300,6 @@ N times.
 
 ## Part 4. Open
 
-- **Name.** moot-build is a working name.
-- **Order.** Where one item needs another built first, the draft has
-  no rule; a builder that finds it waits for that item's commit, and
-  two items that need each other are both blocked. An AFTER J.k on
-  the ITEM line would say it, at the cost of one more thing to read.
 - **Items that turn out not to fit.** Two standing items nobody saw
   conflict: the one committed first is in, and the second is blocked
   against it. That is an order by speed. It is said, and the check
