@@ -19,7 +19,7 @@ everything, and each item is built once.
 
 Part 1 is the change to CLAUDE.md. Part 2
 is the add-on's SKILL.md. Part 3 is where this departs from what the
-moot voted, and why. Part 4 is what is still open.
+moot voted, and why. Part 4 is what is settled for now.
 
 
 ## Part 1. CLAUDE.md
@@ -164,13 +164,19 @@ create. `create && change; remove` runs remove when create is refused,
 and takes away the lock of the seat that holds it. Read the plan file
 whenever you like; change it only holding its lock.
 
-The plan file is one line an item that stood, in number order:
+The plan file is one line an item that stood, in number order: the
+item's number, as moot numbers a DELTA, so 1.2 is seat 1's second,
+then its status. For example:
 
-    J.k free
-    J.k claimed I
-    J.k claimed I waits L.m
-    J.k done I COMMIT
-    J.k blocked I why
+    0.1 done 2 3f2a9c1
+    0.2 claimed 0
+    1.1 claimed 1 waits 0.2
+    1.2 free
+    2.1 blocked 2 needs a schema change first
+
+free; claimed and the seat that holds it; claimed and waits and the
+item it waits on; done, the seat and the commit; blocked, the seat
+and why.
 
 1. The first seat to take the lock after the vote finds no plan file
    and writes it, every standing item free. Every other seat, taking
@@ -298,23 +304,22 @@ where the table's design built everything N times and ran each tree
 N times.
 
 
-## Part 4. Open
+## Part 4. Settled for now
+
+These were open. Each is settled the simplest way until a sitting
+shows otherwise.
 
 - **Items that turn out not to fit.** Two standing items nobody saw
-  conflict: the one committed first is in, and the second is blocked
-  against it. That is an order by speed. It is said, and the check
-  argues it, but nothing undoes the first.
-- **Duplicates.** Two items for one change: the second builder finds it
-  done and marks its line done with the first's commit, or blocked. No
-  rule needed, but the check may call it.
-- **Rework.** A DELTA that stands against the tree goes back to the
-  parent. A build round after the check, the items the check condemned
-  going back to their builders, is the obvious next piece. It is left
-  out for now: the parent can sit it again.
-- **Tests.** moot's harnesses prove the wire. What moot-build adds is
-  rules for seats and the plan file under a lock; whether it needs a
-  harness of its own, and what one would prove, is not settled.
+  conflict: the one committed first is in, the second is marked
+  blocked against it, and the check argues it. That is an order by
+  speed, and it is said.
+- **Duplicates.** No rule. The second builder finds the change done
+  and marks its line done with the first's commit.
+- **Rework.** Left out. A DELTA that stands against the tree goes back
+  to the parent, who sits the matter again.
+- **Tests.** None yet. moot's harnesses prove the wire. Sit a build
+  moot by hand once before deciding what a harness of its own would
+  prove.
 - **Size.** A build round is small: REPORTs only. A round past about
-  30KB is still lost from view at the seat that hears it, here as in
-  any moot. The wait before hear is a precondition, not open: see the
-  top of Part 2.
+  30KB is still lost from view at the seat that hears it, as in any
+  moot. The wait before hear is a precondition: see the top of Part 2.
