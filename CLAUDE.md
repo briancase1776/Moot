@@ -77,9 +77,6 @@ Out of scope. Do not build, stub, or "leave room for" any of these:
 - **Other shapes.** A ring means a seat forwards what it heard, and
   forwarding is a seat's business, not the table's. Two shapes. Mesh,
   and mesh with the parent listening.
-- **The run.** Divide the work, do it, proofread, moot again. That is
-  the parent calling this once or twice, with its own work between.
-  Nothing here knows there was a first time.
 - **Reading what is said.** Tallying, de-duplicating DELTAs, parsing
   REPORTs, judging a VOTE well formed. The seats agreed on those lines;
   the seats read them.
