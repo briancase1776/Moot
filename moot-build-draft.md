@@ -73,6 +73,12 @@ it. Everything there holds here: the wire, the rounds, say, hear, the
 Facts, In Claude Code. This file says only what the build adds. MOOT is
 moot's skill directory, beside this one.
 
+A build moot needs hear to wait before it takes anything, so that a
+hear cut off while waiting loses nothing and can be called again. That
+is being made in moot. Until it is, a build moot cannot be sat: a build
+round lasts as long as its slowest item, far past what one call may
+wait, and a hear cut off has lost its round.
+
 ### Sitting one
 
 The parent does this. Make a tree for the moot: a checkout of the
@@ -87,13 +93,41 @@ MOOT/scripts/create, as moot says. Brief every seat alike:
 Spawn them all at once, as moot says. When they return, the tree holds
 what was built, one commit an item, on top of BASE, and DIR/plan says
 the status of every item. What the parent does with the tree is the
-parent's. Remove DIR with MOOT/scripts/remove.
+parent's.
+
+Locks live in /tmp, not in DIR, so remove does not take them. Before
+removing DIR, take away any a seat left behind: ICCLOCK/remove on
+DIR/plan and on TREE/F for every file F that `git -C TREE ls-files`
+and `git -C TREE ls-files --others` list. remove refuses a path
+nobody holds. That is the sweep for a seat that died holding a lock,
+not the plan. Then remove DIR with MOOT/scripts/remove.
 
 ### At a seat
 
-Make your work dir as in any moot. Nothing you write goes in the tree
-until the build round. Set TMPDIR to your work dir in every call that
-builds or runs anything, and bind nothing to a fixed port.
+Make your work dir as in any moot, WORK, and in it a clone of the
+tree to run things in:
+
+    git clone -q --shared TREE WORK/run
+
+TREE is for editing under lock and for committing, and nothing runs in
+it: a test, a build, an install or a CHECK writes files where it runs,
+and in TREE those would be writes outside any lock. Everything that
+runs, runs in your clone, brought first to TREE's HEAD:
+
+    git -C WORK/run fetch -q origin HEAD
+    git -C WORK/run reset -q --hard FETCH_HEAD
+
+To run an item you have not committed yet, bring the clone to HEAD,
+then copy in the files you hold. Nobody writes TREE before the build
+round. Set TMPDIR to your work dir in every call that runs anything,
+and bind nothing to a fixed port.
+
+Every round of a build moot is sat, in the plan and in the check. No
+step ends early: step 2 goes on though no seat said a DELTA, step 3
+runs all N-1 rotations though the seats agree, and step 4 goes back to
+3 until K cycles have run. A seat with nothing to add says an empty
+REPORT. So every seat says in every round, and no seat decides alone
+where the moot is.
 
 **Plan.** Sit the moot, steps 1 to 5, with three changes.
 
@@ -104,8 +138,7 @@ builds or runs anything, and bind nothing to a fixed port.
       ITEM I.3 the change
       CHECK the command
 
-- There is always an ITEM to vote, so step 2 does not end the moot.
-  Every ITEM is voted, even one no seat disputes, and is argued like a
+- Every ITEM is voted, even one no seat disputes, and is argued like a
   DELTA.
 - Step 6 does not return: go on to the build.
 
@@ -120,14 +153,17 @@ is being done.
 
 ICCLOCK is icc-lock's scripts, beside Patch's: the path DIR/moot ends
 with, icc-patch put as icc-lock. Every change to the plan file is one
-lock, one read, one line changed, one write, one remove:
+Bash call: take the lock, trying again until create takes it, change
+one line, give the lock back:
 
-    ICCLOCK/create DIR/plan
+    until ICCLOCK/create DIR/plan >/dev/null 2>&1; do sleep 1; done
     ... read it, change your line, write it ...
     ICCLOCK/remove DIR/plan
 
-Refused, try again. Read the plan file whenever you like; change it
-only holding its lock.
+One call, so that no call ends holding the lock. remove only after
+your own create took it: `create && change; remove` runs remove when
+create is refused, and takes away the lock of the seat that holds it.
+Read the plan file whenever you like; change it only holding its lock.
 
 The plan file is one line an item that stood, in number order:
 
@@ -142,20 +178,28 @@ The plan file is one line an item that stood, in number order:
    any difference in its REPORT this round.
 2. Claim: take the lock, mark the first free line claimed I, give the
    lock back. Hold one unbuilt item at a time.
-3. Build: lock each file in the tree before you touch it, absolute
-   path, and hold it until the item is committed. A file you are
-   refused, you wait for; refused one while holding others, give back
-   the ones you hold and start again, as Lock says.
+3. Build: lock every file in the tree the item needs, absolute path,
+   before you edit any of them, and hold each until the item is
+   committed. Refused one, give back the ones you hold, as Lock says,
+   and try again later. Never give back a lock on a file you have
+   changed and not committed: the next seat to lock it would edit on
+   top of your change and commit it as its own. If you find partway
+   that you need a file you are refused, first put back every file you
+   changed as it was, `git -C TREE restore -- FILE` for one in the tree
+   and rm for one you made, then give back every lock and start the
+   item again.
 4. Commit the item with only its own files, then give back their
    locks:
 
        git -C TREE add NEWFILES
        git -C TREE commit -m 'ITEM J.k' -- FILES
 
-   git refuses a second commit at once while one is running; try again.
+   git refuses an add or a commit at once while another is running;
+   try again.
 5. Mark it: take the lock, done I COMMIT, give it back. Commit first,
    then mark, so the plan file never says done for what is not in the
-   tree. An item you cannot build, mark blocked I and why.
+   tree. An item you cannot build, put back what you changed as in 3,
+   give back its locks, and mark it blocked I and why.
 6. Claim again. When no line is free, say
 
        REPORT
@@ -165,12 +209,12 @@ The plan file is one line an item that stood, in number order:
    what you have to say about it.
 
 **Check.** Sit the moot again, steps 1 to 6, on the same DIR, on the
-tree as it now stands. In step 1, read the plan file, run every
-standing item's CHECK, read every commit since BASE, and say what you
-found. Every seat checks every item, so no item is checked only by the
-seat that built it. A DELTA here is a claim about the tree: an item
-not done, or done and breaking something, with the command that shows
-it.
+tree as it now stands. In step 1, read the plan file, bring your clone
+to TREE's HEAD and run every standing item's CHECK there, read every
+commit since BASE, and say what you found. Every seat checks every
+item, so no item is checked only by the seat that built it. A DELTA
+here is a claim about the tree: an item not done, or done and
+breaking something, with the command that shows it.
 
 **Return** the plan with its counts; every item built, with its commit;
 every item blocked or not built, and why; every DELTA the check
@@ -184,17 +228,20 @@ argued, with its count; and where you stand.
   every seat of a build moot takes it, because this says to.
 - The plan file lock guards the status, not the work: it is held for
   one change of one line, never while building. A file lock guards the
-  work, not the status: it is held from the first edit of a file to
-  the commit of its item.
+  work, not the status: it is taken before the first edit of a file
+  and held to the commit of its item.
 - Which seat builds which item is decided by who marked it first. That
   favors no item and no outcome: every item that stood is built by
   someone, and the check is every seat's.
 - The plan file sits in DIR and goes with remove. Anyone can read it
   at any time, the parent included, to see where the build is.
-- A seat that stops holding a lock leaves it; `ICCLOCK/list` shows it.
-  The moot is over then anyway, as it is when any seat stops.
-- In the build round the tree moves: what a seat runs then runs on a
-  tree other seats are editing. The check runs on a tree that has
+- A seat that stops holding a lock leaves it. `ICCLOCK/list` shows
+  that there is one, by its hash only, not which path it is on; the
+  parent's sweep before remove takes it away. The moot is over then
+  anyway, as it is when any seat stops.
+- In the build round the tree moves. What a seat runs then runs in its
+  own clone at TREE's HEAD, with the committed items in it and nobody's
+  uncommitted edits but its own. The check runs on a tree that has
   stopped, since hear returns only when every seat has said.
 - Every item is its own commit, so every item can be read, run and
   reverted alone. Nothing of the build goes on the wire but REPORTs:
@@ -203,9 +250,9 @@ argued, with its count; and where you stand.
 - A tie builds nothing. So does a DELTA that says two items conflict,
   when it stands. The tree reaches BASE for them, and the return says
   which.
-- Nobody writes the tree before the build round, so a seat that
-  investigates finds only BASE there and nothing another seat has not
-  said.
+- Nobody writes the tree before the build round and nothing ever runs
+  in it, so a seat that investigates finds only BASE there and nothing
+  another seat has not said.
 
 
 ## Part 3. Where this departs from what the moot voted, and why
@@ -240,10 +287,11 @@ It departs on three points.
   seat checks every item, then the check's arguments rotate as the
   moot's always have. Each item is built once and checked N times.
 
-Cost at N seats and K cycles: at most KN+3 rounds to plan, one to
-build, at most KN+3 to check. That is 13 at three seats and one cycle,
-against the table's KN+4 = 7. Each item is built once, where the
-table's design built everything N times and ran each tree N times.
+Cost at N seats and K cycles: KN+3 rounds to plan, one to build,
+KN+3 to check, every one of them sat. That is 13 at three seats and
+one cycle, against the table's KN+4 = 7. Each item is built once,
+where the table's design built everything N times and ran each tree
+N times.
 
 
 ## Part 4. Open
@@ -267,6 +315,7 @@ table's design built everything N times and ran each tree N times.
 - **Tests.** moot's harnesses prove the wire. What moot-build adds is
   rules for seats and the plan file under a lock; whether it needs a
   harness of its own, and what one would prove, is not settled.
-- **Size and time.** A build round is small: REPORTs only. The
-  timeout is being worked on elsewhere. A round past about 30KB is
-  still lost from view at the seat that hears it, here as in any moot.
+- **Size.** A build round is small: REPORTs only. A round past about
+  30KB is still lost from view at the seat that hears it, here as in
+  any moot. The wait before hear is a precondition, not open: see the
+  top of Part 2.
