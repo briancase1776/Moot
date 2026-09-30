@@ -2,13 +2,14 @@
 ##
 # @file run.sh
 # @brief Prove the table works: shell seats say and hear in rounds.
-# @details Shell seats on a mesh say and hear in rounds, and every one
-#          hears every other seat's words byte for byte and none of its
-#          own. Every seat says at once before any hears, with a round past
-#          one pipe, and every say returns: a read end holds a say as big
-#          as the moot was made for, a model's longest by default, from
-#          each seat that writes into it. A round is the next say from each,
-#          so a seat a round ahead is kept and not swallowed. A seat spelled
+# @details Shell seats on a mesh say and hear in rounds, and every one hears
+#          every other seat's words byte for byte and none of its own. Every
+#          seat says at once before any hears, with a round past one pipe,
+#          and every say returns: a read end holds a say as big as the moot
+#          was made for, a model's longest by default, from each seat that
+#          writes into it. A round is the next say from each, so a seat a
+#          round ahead is kept and not swallowed, and a hear before its
+#          round is all in says not yet and takes nothing. A seat spelled
 #          another way than the map spells it, with an escape in it, or as
 #          the map's "-", a body holding a line shaped like the mark, and a
 #          say past what the moot was made for are all refused and put
@@ -18,11 +19,11 @@
 #          when it cannot finish or a signal cuts it off; remove leaves the
 #          moot when the patch will not go; remove it, see nothing left. A
 #          moot over an ICC checkout whose path has a space works.
-#          Raspberries are what is said, and what is said and heard is
-#          held here and goes into no file. Runs beside other patches, in a
-#          directory of its own, and touches only what it made. Needs
-#          $ICC, and Patch needs what its SKILL.md says; sources icc-lib
-#          from there.
+#          Raspberries are what is said, and what is said and heard is held
+#          here and goes into no file. Runs beside other patches, in a
+#          directory of its own, and touches only what it made. Needs $ICC,
+#          and Patch needs what its SKILL.md says; sources icc-lib from
+#          there.
 # @stdin nothing
 # @stdout ok, once every check has passed
 # @stderr whatever a failing check printed
@@ -219,6 +220,16 @@ for osSeat in 0 1 2; do
   vHear 3 "$osSeat"
   vHeard 3 "$osSeat" 0 1 2
 done
+# A hear before its round is all in says not yet and takes nothing: 1 has
+# said round 4 and 2 has not, so 0 hears nothing; once 2 says, 0 hears
+# both whole.
+vBlow 4 3000 1 2
+vSay 4 1
+BASH_MAX_TIMEOUT_MS=1000 timeout 60 "$pMoot/hear" "$pDir" 0 2>&1 >/dev/null |
+  grep -qx 'seat 0: not yet, nothing taken'
+vSay 4 2
+vHear 4 0
+vHeard 4 0 1 2
 "$pMoot/remove" "$pDir"
 [ ! -d "$pDir" ]
 [ ! -d "$pPatch" ]

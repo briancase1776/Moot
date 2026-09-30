@@ -98,8 +98,9 @@ itself, as its CLAUDE.md says. Do not vendor any of them into this repo.
 Anything Moot needs that ICC already has, it sources from there and does
 not write again. create and both harnesses source icc-lib for the count
 checks and for the cleanup armed before anything is made, run.sh
-takes its cut-off check from it, and say and hear take a seat's lanes
-off the map with its oLanes. Sourcing is not vendoring; a copy is.
+takes its cut-off check from it, say and hear take a seat's lanes off
+the map with its oLanes, and hear waits on them with its vWaitFor.
+Sourcing is not vendoring; a copy is.
 
 Do not duplicate their documentation. A fact about a lane is Pipes'; a
 copy, Tee's or Merge's; a map, Patch's. If one of them is missing a
@@ -112,7 +113,8 @@ they say and hear in rounds and every one hears every other seat's
 words, byte for byte, and none of its own; every seat says at once,
 before any hears, a round bigger than one pipe, and every say returns;
 a round is the next say from each seat, so a seat a round ahead is
-kept; a seat spelled another way, with an escape in it, or as the map's
+kept; a hear before its round is all in says not yet and takes nothing;
+a seat spelled another way, with an escape in it, or as the map's
 "-", a body with a line shaped like the mark, and a say past what the
 moot was made for are refused; mesh 2 is one pipe and each seat hears
 the other; on mesh-p the parent hears the round and cannot say; create

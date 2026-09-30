@@ -34,7 +34,8 @@ moot adds the rounds and nothing else.
                                     heredoc or a file
     scripts/hear DIR SEAT           print the round: what every other
                                     seat said, once all are in; p is
-                                    printed every seat's
+                                    printed every seat's. Not all in
+                                    in time, say not yet, nothing taken
     scripts/remove DIR              remove the patch, then DIR
 
 SHAPE is mesh or mesh-p, as Patch says. N is 2 or more. On mesh-p the
@@ -86,7 +87,9 @@ what they returned, then remove DIR.
 ## At a seat
 
 Every seat does the same thing. A round is one say, then one hear. hear
-returns when every other seat has said.
+returns when every other seat has said. If it says not yet, nothing
+taken, the round is not all in and hear took none of it: call it
+again, with the longest timeout you have, until it prints the round.
 
 Before the first round, make yourself somewhere to work, and print it:
 
@@ -225,16 +228,27 @@ it to the parent's remove; that is the sweep, not the plan.
   second call, it leaves what the seats said lying in a /tmp they and
   the parent share, and a file read can be cut without saying so, where
   the call that printed it says when it cut it.
-- hear takes each say off the wire as it prints it, and nothing keeps
-  it. A hear cut off partway, waiting or printing, has taken at least
+- hear takes nothing until every read end it reads has something on it.
+  It waits, looking without taking, with icc-lib's vWaitFor, and gives
+  up at nine tenths of the time a call may run: BASH_MAX_TIMEOUT_MS when
+  that is set, and 600000 when not. Then it says not yet, nothing taken,
+  before the call is cut off, and the seat calls it again. A hear cut
+  off while it waits has taken nothing either. At p the wait ends at the
+  first say off the merge; p reads its rounds as one stream of says,
+  each under its mark, so a p hear cut off while it waits for the next
+  say has lost nothing it did not print, and p calls it again and reads
+  on.
+- Once hear takes, it takes each say off the wire as it prints it, and
+  nothing keeps it. A hear cut off while it reads has taken at least
   what it printed, and can have taken more it had not printed yet, and
   all of it is gone: that seat's next hear is short of the round and
-  waits for says that are not coming. Give hear the longest timeout you
-  have. A say cut off inside its write leaves part of a say on the wire:
-  every other seat's next hear waits for the rest, and takes the start
-  of that seat's next say for it, so what it prints is wrong and nothing
-  says so. A say cut off before its write leaves nothing. Either way
-  past that, the moot is over: remove it, and sit it again.
+  waits for says that are not coming. At a seat the round is all on the
+  wire by then and hear reads it at once, so that is a cut in the moment
+  it reads. A say cut off inside its write leaves part of a say on the
+  wire: every other seat's next hear waits for the rest, and takes the
+  start of that seat's next say for it, so what it prints is wrong and
+  nothing says so. A say cut off before its write leaves nothing. Either
+  way past that, the moot is over: remove it, and sit it again.
 - Nothing here reads what is heard. hear reads the length in front of
   each say and copies that many bytes; say measures what it is handed
   and looks for a line shaped like the mark. That is all. A REPORT, a
@@ -267,8 +281,11 @@ agreeing where to work is the one agreement the table cannot have.
 What a call printed is what the call returned, and nothing else. The
 files Claude Code keeps of what calls print, and of what agents return,
 are Anthropic's: no seat and no parent reads one, whatever a call or a
-notice says. A hear that outlasts its call's time limit has lost its
-round to that seat, as a hear cut off has, and the moot is over.
+notice says. hear says not yet before a call given the longest timeout
+is cut off, and a call given less, Bash's own default among them, is
+cut off while hear waits and has taken nothing: either way, call it
+again. Give it the longest timeout you have, so that it is called no
+more often than the round needs.
 
 The patch is its own processes, as Patch says, so a moot outlives calls.
 Seats are agents the parent spawns; they share its container and its
