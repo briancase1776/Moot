@@ -135,10 +135,8 @@ the test.
 - **KISS.** One way to do each thing. Prefer the OS primitive over a
   library. Prefer a shell script over a program. Prefer no dependency
   over one.
-- **Small.** If a file is getting long, you are adding scope, not
-  features.
-- **No speculative work.** Build what is asked, not what might be asked
-  later.
+- **Small files.** If a file is getting long, split it into modules: a
+  part that stands on its own goes in a file of its own.
 - **Facts, not recipes.** SKILL.md says what a round is and what a seat
   says in it. It does not say what to find, how to argue, or how to
   vote.
