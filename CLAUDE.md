@@ -135,8 +135,10 @@ the test.
 - **KISS.** One way to do each thing. Prefer the OS primitive over a
   library. Prefer a shell script over a program. Prefer no dependency
   over one.
-- **Small files.** If a file is getting long, split it into modules: a
-  part that stands on its own goes in a file of its own.
+- **Small scopes.** A file is a scope, and so is a function, a section,
+  whatever holds a piece of the work wherever you are. When one is
+  getting long, split it: a part that stands on its own gets a scope of
+  its own.
 - **Facts, not recipes.** SKILL.md says what a round is and what a seat
   says in it. It does not say what to find, how to argue, or how to
   vote.
