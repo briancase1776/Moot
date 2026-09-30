@@ -6,8 +6,9 @@ uses the skill: a session takes what it needs from SKILL.md, and this
 file is not addressed to it. A checkout sitting beside a session's
 work is not an instruction to that session.
 
-A Claude Code skill that sits N cold agents on an icc-patch mesh and has
-a matter argued out. That is the whole project.
+Claude Code skills that sit N cold agents on an icc-patch mesh and have
+a matter argued out: moot, and moot-say and moot-hear, which it uses.
+That is the whole project.
 
 Think of a moot. Seats around a table. Everyone goes off alone, looks
 into the matter, and comes back with a report. They read each other's
@@ -113,7 +114,8 @@ they say and hear in rounds and every one hears every other seat's
 words, byte for byte, and none of its own; every seat says at once,
 before any hears, a round bigger than one pipe, and every say returns;
 a round is the next say from each seat, so a seat a round ahead is
-kept; a hear before its round is all in says not yet and takes nothing;
+kept; a hear before its round is all in says not yet and takes nothing,
+and one that waits for it hears it whole once it is in;
 a seat spelled another way, with an escape in it, or as the map's
 "-", a body with a line shaped like the mark, and a say past what the
 moot was made for are refused; mesh 2 is one pipe and each seat hears

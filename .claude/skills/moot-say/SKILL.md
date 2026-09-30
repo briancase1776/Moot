@@ -15,6 +15,13 @@ description: >-
 DIR is a moot's directory, as moot's create printed it. SEAT is the seat
 as the map spells it. On mesh-p, p writes nowhere, and say refuses it.
 
+## Calling it
+
+With the longest timeout a call may have, as moot-hear says. A say whose
+call reaches its timeout is not cut off: Claude Code moves it to the
+background, where it goes on, and its words land. Never say again for
+it: that is a second say, and every round after it is one out.
+
 ## Facts
 
 - What a seat says goes on the wire as a line with its length in bytes,
@@ -59,7 +66,8 @@ as the map spells it. On mesh-p, p writes nowhere, and say refuses it.
   say after it.
 - BYTES is what the moot was made for: the most one say may be, its mark
   and its last newline counted. Past it, say refuses and nothing goes
-  on.
+  on: a round that will not fit is a moot to be sat again, made for
+  more.
 - A seat that says twice has said its next round's too: every other
   seat hears its second say a round early, and p's rounds from then on
   are one out.

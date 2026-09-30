@@ -9,7 +9,8 @@
 #          was made for, a model's longest by default, from each seat that
 #          writes into it. A round is the next say from each, so a seat a
 #          round ahead is kept and not swallowed, and a hear before its
-#          round is all in says not yet and takes nothing. A seat spelled
+#          round is all in says not yet and takes nothing, and one that
+#          waits for it hears it whole once it is in. A seat spelled
 #          another way than the map spells it, with an escape in it, or as
 #          the map's "-", a body holding a line shaped like the mark, and a
 #          say past what the moot was made for are all refused and put
@@ -223,14 +224,17 @@ for osSeat in 0 1 2; do
   vHeard 3 "$osSeat" 0 1 2
 done
 # A hear before its round is all in says not yet and takes nothing: 1 has
-# said round 4 and 2 has not, so 0 hears nothing; once 2 says, 0 hears
-# both whole.
+# said round 4 and 2 has not, so 0 hears nothing. A hear that waits for
+# it hears both whole once 2 says.
 vBlow 4 3000 1 2
 vSay 4 1
 BASH_MAX_TIMEOUT_MS=1000 timeout 60 "$pHear" "$pDir" 0 2>&1 >/dev/null |
   grep -qx 'seat 0: not yet, nothing taken'
+exec {fdWait}< <(timeout 60 "$pHear" "$pDir" 0 && echo .)
+sleep 2
 vSay 4 2
-vHear 4 0
+hHeard[0.4]=$(cat <&"$fdWait")
+exec {fdWait}<&-
 vHeard 4 0 1 2
 "$pMoot/remove" "$pDir"
 [ ! -d "$pDir" ]

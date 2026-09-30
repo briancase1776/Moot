@@ -78,11 +78,17 @@ find, not who sits where. Cycles is how many times the table rotates,
 it; a DELTA that comes out of one is argued only if there is another,
 and is not voted otherwise. Set it before spawning and leave it: a
 parent that bought a cycle after hearing what came up would be
-steering. On mesh-p, hear every round as p. There are two rounds if no
-seat said a DELTA in round 2 and at most KN+3 if one did, fewer when a
-rotation finds the seats agree, and p learns which the way the seats
-do, by reading round 2 and each rotation. When the seats return, read
-what they returned, then remove DIR.
+steering. There are two rounds if no seat said a DELTA in round 2 and at
+most KN+3 if one did, fewer when a rotation finds the seats agree. When
+the seats return, read what they returned, then remove DIR.
+
+On mesh-p, hear every round as p once the seats have returned, and p
+learns how many there were the way the seats do, by reading round 2 and
+each rotation. By then every round is on p's read end, and no hear
+waits on a seat. p's read end holds N says of BYTES. A sitting of
+model-sized says is far less; one that is not has its seats wait in
+say for p. A p hear while the seats still sit can outlast its call: at
+p the wait ends at the first say, as moot-hear says.
 
 ## At a seat
 

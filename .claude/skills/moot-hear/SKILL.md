@@ -28,8 +28,9 @@ it prints the round.
 A call given less is not cut off when its time runs out. Claude Code
 moves it to the background, and hear goes on there: it waits, takes the
 round when it comes, and prints it into a file no seat reads. The round
-is lost to that seat, and a hear called again at that seat splits the
-next rounds with the one still running.
+is lost to that seat, and a hear called again at that seat while that
+one runs splits the next rounds with it. Claude Code says when it ends.
+Past that the seat is short a round, and the moot is over, as moot says.
 
 ## Facts
 
@@ -60,6 +61,12 @@ next rounds with the one still running.
   second call, it leaves what the seats said lying in a /tmp they and
   the parent share, and a file read can be cut without saying so, where
   the call that printed it says when it cut it.
+- A call shows about 30000 characters of what it printed. Past that it
+  hands back the first 2KB and the path of a file Claude Code keeps,
+  which no seat reads: a round longer than that has been taken off the
+  wire and is lost from view at the seat that heard it. At p a round is
+  N says long. A say short enough that a round of them fits is seen
+  whole.
 - hear reads the length in front of each say and copies that many
   bytes. That is all it reads.
 

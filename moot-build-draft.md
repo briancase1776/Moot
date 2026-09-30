@@ -2,9 +2,9 @@
 
 A draft to read, not a change. Nothing it proposes is in the repo yet.
 
-moot-build is a second skill beside moot. It is not a rewrite: moot's
-SKILL.md and its four scripts stay exactly as they are. moot-build has
-no scripts of its own. It sits a moot as moot's SKILL.md says, and
+moot-build is a second skill beside moot. It is not a rewrite: moot,
+moot-say and moot-hear stay exactly as they are. moot-build has no
+scripts of its own. It sits a moot as moot's SKILL.md says, and
 adds a build round between two sittings of it:
 
 1. **Plan:** a moot with ITEM lines in it.
@@ -19,7 +19,8 @@ everything, and each item is built once.
 
 Part 1 is the change to CLAUDE.md. Part 2
 is the add-on's SKILL.md. Part 3 is where this departs from what the
-moot voted, and why. Part 4 is what is settled for now.
+moot voted, and why. Part 4 is what is settled for now, and what is
+open.
 
 
 ## Part 1. CLAUDE.md
@@ -32,8 +33,8 @@ shared plan" is gone from what may narrow the spread (8fcfc96).
 ### What this is: add
 
 > - **moot-build**, an add-on skill: a moot sat on a plan, one build
->   round, and the moot sat again on what was built. It uses moot's
->   four scripts and icc-lock, and changes nothing in moot.
+>   round, and the moot sat again on what was built. It uses moot,
+>   moot-say, moot-hear and icc-lock, and changes nothing in them.
 
 ### Depends on ICC: add
 
@@ -73,11 +74,11 @@ it. Everything there holds here: the wire, the rounds, say, hear, the
 Facts, In Claude Code. This file says only what the build adds. MOOT is
 moot's skill directory, beside this one.
 
-A build moot needs hear to wait before it takes anything, so that a
-hear cut off while waiting loses nothing and can be called again. That
-is being made in moot. Until it is, a build moot cannot be sat: a build
-round lasts as long as its slowest item, far past what one call may
-wait, and a hear cut off has lost its round.
+A build round lasts as long as its slowest item, far past what one call
+may wait. hear waits for it, taking nothing, and says not yet before its
+call runs out, as moot-hear says: a seat calls it again until the round
+is in. The parent hears as p, if at all, once the seats have returned,
+as moot says.
 
 ### Sitting one
 
@@ -98,10 +99,13 @@ parent's.
 
 Locks live in /tmp, not in DIR, so remove does not take them. Before
 removing DIR, take away any a seat left behind: ICCLOCK/remove on
-DIR/plan and on TREE/F for every file F that `git -C TREE ls-files`
-and `git -C TREE ls-files --others` list. remove refuses a path
-nobody holds. That is the sweep for a seat that died holding a lock,
-not the plan. Then remove DIR with MOOT/scripts/remove.
+DIR/plan and on TREE/F for every file F that `git -C TREE ls-files`,
+`git -C TREE ls-files --others`, `git -C TREE diff --name-only BASE`
+and `git -C TREE diff --cached --name-only` list, deleted and staged
+paths among them. remove refuses a path nobody holds. A lock on a path
+git never saw, one a seat locked and died before writing, shows only
+in ICCLOCK/list, by its hash. That is the sweep for a seat that died
+holding a lock, not the plan. Then remove DIR with MOOT/scripts/remove.
 
 ### At a seat
 
@@ -198,12 +202,14 @@ and why.
 2. Claim: in one CHANGE, find the first free line and mark it claimed
    I. Hold one unbuilt item at a time, but for this: if the item needs
    another built first, read that one's line. Done, go on. Free, claim
-   it too and build it first. Claimed, follow its waits: from the line
-   you would wait on, to the line that one waits on, and on. If the
-   chain comes back to your item, the items need each other: mark
-   yours blocked, and why. Otherwise add waits and its number to your
-   line, and go on when its line says done. If it says blocked
-   instead, mark yours blocked too, and why: it will never be done.
+   it too and build it first. Claimed, follow its waits, in one CHANGE
+   under the lock: from the line you would wait on, to the line that
+   one waits on, and on. If the chain comes back to your item, the
+   items need each other: mark yours blocked, and why. Otherwise add
+   waits and its number to your line in that same CHANGE. Walked and
+   marked under one lock, no two seats can each add a wait on the
+   other. Go on when its line says done. If it says blocked instead,
+   mark yours blocked too, and why: it will never be done.
 3. Build: lock every file in the tree the item needs, absolute path,
    before you edit any of them, and hold each until the item is
    committed. Refused one, give back the ones you hold, as Lock says,
@@ -248,7 +254,9 @@ to TREE's HEAD and run every standing item's CHECK there, read every
 commit since BASE, and say what you found. Every seat checks every
 item, so no item is checked only by the seat that built it. A DELTA
 here is a claim about the tree: an item not done, or done and
-breaking something, with the command that shows it.
+breaking something, with the command that shows it. Number on
+from your last number in the plan, so that no DELTA of the check
+shares a number with an ITEM.
 
 **Return** the plan with its counts; every item built, with its commit;
 every item blocked or not built, and why; every DELTA the check
@@ -314,9 +322,10 @@ It departs on three points.
 - **A plan vote.** The objection was that standing items can
   contradict. Here a contradiction is a DELTA like any other, argued
   and voted, and if it stands neither item is built. The other
-  objection, that a voted plan narrows the spread, rested on a line
-  CLAUDE.md no longer has: the spread is for finding, and the plan is
-  what was found.
+  objection, that a voted plan narrows the spread, is not answered
+  here but overruled: the owner took "not a shared plan" out of
+  CLAUDE.md (8fcfc96) because a plan is wanted. The spread is spent on
+  the plan and the check instead.
 - **Checking, not N builds.** The spread goes into the check: every
   seat checks every item, then the check's arguments rotate as the
   moot's always have. Each item is built once and checked N times.
@@ -328,15 +337,17 @@ where the table's design built everything N times and ran each tree
 N times.
 
 
-## Part 4. Settled for now
+## Part 4. Settled for now, and open
 
 These were open. Each is settled the simplest way until a sitting
-shows otherwise.
+shows otherwise, but the first, which is open again.
 
-- **Items that turn out not to fit.** Two standing items nobody saw
-  conflict: the one committed first is in, the second is marked
-  blocked against it, and the check argues it. That is an order by
-  speed, and it is said.
+- **Open: items that turn out not to fit.** Two standing items nobody
+  saw conflict. The rule this draft had, the one committed first is in
+  and the second is blocked against it, orders by seat speed, and a
+  moot on this draft voted 3-0 that it breaks Favor nothing. What
+  replaces it is open: both blocked, the conflict said; or the first
+  reverted until the check votes between them.
 - **Duplicates.** No rule. The second builder finds the change done
   and marks its line done with the first's commit.
 - **Rework.** Left out. A DELTA that stands against the tree goes back
@@ -346,4 +357,4 @@ shows otherwise.
   prove.
 - **Size.** A build round is small: REPORTs only. A round past about
   30KB is still lost from view at the seat that hears it, as in any
-  moot. The wait before hear is a precondition: see the top of Part 2.
+  moot and as moot-hear says.

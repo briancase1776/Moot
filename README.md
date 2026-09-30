@@ -35,7 +35,7 @@ everything in that round has been said.
 brief, go at a matter from different sides and come back with mostly
 different things. N seats find more than one does and dig further into
 what they find. Nothing here narrows that: no fuller brief for one seat,
-no shared plan, no house style for a report.
+no house style for a report.
 
 ## What it found
 
