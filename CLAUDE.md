@@ -139,7 +139,6 @@ the test.
   features.
 - **No speculative work.** Build what is asked, not what might be asked
   later.
-- **No abstraction until there are two real callers.**
 - **Facts, not recipes.** SKILL.md says what a round is and what a seat
   says in it. It does not say what to find, how to argue, or how to
   vote.
