@@ -38,6 +38,8 @@
 set -eu
 cd "$(dirname "$0")/.."
 pMoot=$PWD/.claude/skills/moot/scripts
+pSay=$PWD/.claude/skills/moot-say/scripts/say
+pHear=$PWD/.claude/skills/moot-hear/scripts/hear
 pIcc=$(cd "${ICC:-../ICC}" && pwd)
 pIccPatch=$pIcc/.claude/skills/icc-patch/scripts
 pRaspberry=$pIcc/.claude/skills/icc-raspberry/scripts/raspberry
@@ -101,7 +103,7 @@ vSay() {
   local nRound=$1
   local osSeat=$2
   printf '%s\n' "${hSaid[$osSeat.$nRound]}" |
-    timeout 60 "$pMoot/say" "$pDir" "$osSeat"
+    timeout 60 "$pSay" "$pDir" "$osSeat"
 }
 
 ##
@@ -117,7 +119,7 @@ vHear() {
   local nRound=$1
   local osSeat=$2
   hHeard[$osSeat.$nRound]=$(
-    timeout 60 "$pMoot/hear" "$pDir" "$osSeat" && echo .
+    timeout 60 "$pHear" "$pDir" "$osSeat" && echo .
   )
 }
 
@@ -193,11 +195,11 @@ vCutOff "$pMoot/create" mesh 3 1000
 vMake mesh 3 80000
 [ -f "$pPatch/patch" ]
 "$pIccPatch/list" | grep -qx "$pPatch up mesh 3 2 2"
-"$pMoot/say" "$pDir" 01 < /dev/null 2>/dev/null && exit 1
-"$pMoot/say" "$pDir" '\060' < /dev/null 2>/dev/null && exit 1
-timeout 3 "$pMoot/hear" "$pDir" - 2>&1 | grep -q '^no seat - '
-printf 'a\nSEAT 2\n' | "$pMoot/say" "$pDir" 0 2>/dev/null && exit 1
-"$pRaspberry" 80000 | "$pMoot/say" "$pDir" 0 2>/dev/null && exit 1
+"$pSay" "$pDir" 01 < /dev/null 2>/dev/null && exit 1
+"$pSay" "$pDir" '\060' < /dev/null 2>/dev/null && exit 1
+timeout 3 "$pHear" "$pDir" - 2>&1 | grep -q '^no seat - '
+printf 'a\nSEAT 2\n' | "$pSay" "$pDir" 0 2>/dev/null && exit 1
+"$pRaspberry" 80000 | "$pSay" "$pDir" 0 2>/dev/null && exit 1
 vBlow 1 70000 0 1 2
 vAtOnce 1 0 1 2
 for osSeat in 0 1 2; do
@@ -225,7 +227,7 @@ done
 # both whole.
 vBlow 4 3000 1 2
 vSay 4 1
-BASH_MAX_TIMEOUT_MS=1000 timeout 60 "$pMoot/hear" "$pDir" 0 2>&1 >/dev/null |
+BASH_MAX_TIMEOUT_MS=1000 timeout 60 "$pHear" "$pDir" 0 2>&1 >/dev/null |
   grep -qx 'seat 0: not yet, nothing taken'
 vSay 4 2
 vHear 4 0
@@ -245,18 +247,18 @@ vHear 1 0
 vHear 1 1
 vHeard 1 0 1
 vHeard 1 1 0
-printf 'A\n' | "$pMoot/say" "$pDir" 0
-printf 'B\n' | "$pMoot/say" "$pDir" 1
-osRound=$("$pMoot/hear" "$pDir" 1)
+printf 'A\n' | "$pSay" "$pDir" 0
+printf 'B\n' | "$pSay" "$pDir" 1
+osRound=$("$pHear" "$pDir" 1)
 printf '%s\n' "$osRound" | grep -qx A
-printf 'C\n' | "$pMoot/say" "$pDir" 1
-osRound=$("$pMoot/hear" "$pDir" 0)
+printf 'C\n' | "$pSay" "$pDir" 1
+osRound=$("$pHear" "$pDir" 0)
 printf '%s\n' "$osRound" | grep -qx B
 printf '%s\n' "$osRound" | grep -qx C && exit 1
-printf 'D\n' | "$pMoot/say" "$pDir" 0
-osRound=$("$pMoot/hear" "$pDir" 0)
+printf 'D\n' | "$pSay" "$pDir" 0
+osRound=$("$pHear" "$pDir" 0)
 printf '%s\n' "$osRound" | grep -qx C
-osRound=$("$pMoot/hear" "$pDir" 1)
+osRound=$("$pHear" "$pDir" 1)
 printf '%s\n' "$osRound" | grep -qx D
 # remove leaves the moot when the patch will not go, and takes it all when
 # it will
@@ -271,8 +273,8 @@ mv "$pPatch/held" "$pPatch/made"
 # and cannot say; made as a moot is by default, for says as big as a model's
 # longest.
 vMake mesh-p 2
-"$pMoot/say" "$pDir" p < /dev/null 2>/dev/null && exit 1
-exec {fdParent}< <("$pMoot/hear" "$pDir" p)
+"$pSay" "$pDir" p < /dev/null 2>/dev/null && exit 1
+exec {fdParent}< <("$pHear" "$pDir" p)
 pidParent=$!
 vBlow 1 500000 0 1
 vAtOnce 1 0 1
@@ -292,8 +294,8 @@ vHeard 1 p 0 1
 ln -s "$pIcc" "with space"
 ICC="$pWork/with space" vMake mesh 2 1000
 grep -q ' /.*with space/' "$pDir/moot"
-printf 'A\n' | "$pMoot/say" "$pDir" 0
-"$pMoot/hear" "$pDir" 1 | grep -qx A
+printf 'A\n' | "$pSay" "$pDir" 0
+"$pHear" "$pDir" 1 | grep -qx A
 "$pMoot/remove" "$pDir"
 [ ! -d "$pDir" ]
 [ ! -d "$pPatch" ]

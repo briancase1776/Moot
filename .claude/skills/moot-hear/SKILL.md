@@ -1,0 +1,72 @@
+---
+name: moot-hear
+description: >-
+  Print a seat's round off a moot's wire: the next say from each other
+  seat once all are in, or "not yet, nothing taken". Always call it with
+  the longest timeout a call may have, and call it again on not yet.
+---
+
+# moot-hear
+
+    scripts/hear DIR SEAT  print the round at SEAT: the next say from
+                           each other seat, once all are in; at p, the
+                           next N says off the merge. Not all in in time:
+                           not yet, nothing taken
+
+DIR is a moot's directory, as moot's create printed it. SEAT is the seat
+as the map spells it, or p on mesh-p.
+
+## Calling it
+
+Always with the longest timeout a call may have: 600000 in Claude Code,
+or what BASH_MAX_TIMEOUT_MS says when it is set. hear waits, taking
+nothing, until every read end it reads has something on it, and gives
+up by itself at nine tenths of that time, before the call's time runs
+out: it says not yet, nothing taken. Call it again, the same way, until
+it prints the round.
+
+A call given less is not cut off when its time runs out. Claude Code
+moves it to the background, and hear goes on there: it waits, takes the
+round when it comes, and prints it into a file no seat reads. The round
+is lost to that seat, and a hear called again at that seat splits the
+next rounds with the one still running.
+
+## Facts
+
+- A seat's own words never come back to it. It reads each other seat
+  on a read end of its own, and hear prints the round a read end at a
+  time, in the order the map lists them: the next say from each other
+  seat. p reads one end, the merge's, and hear prints the next N says
+  off it, in the order the merge took them. Anything behind the round
+  is the next round's and stays on the wire for the next hear. The order
+  means nothing.
+- hear takes the next say from each seat that writes into a read end;
+  it does not know rounds. Two hears at one seat at once split a round
+  between them, and neither has it.
+- hear waits with icc-lib's vWaitFor, which looks at a read end without
+  taking from it. At a seat, once every read end has something on it,
+  the round is all on the wire, and hear reads it at once. At p the wait
+  ends at the first say off the merge, and hear then takes the rest of
+  the round as it comes; a rest slower than what is left of the call
+  goes to the background with the call. p hears a round whole, and
+  safest, once the seats that say it have said.
+- Once hear takes, it takes each say off the wire as it prints it, and
+  nothing keeps it. A hear cut off while it reads has taken at least
+  what it printed, and can have taken more it had not printed yet, and
+  all of it is gone: that seat's next hear is short of the round and
+  waits for says that are not coming.
+- What hear prints is the round: take it whole in the call that printed
+  it. Do not redirect it into a file and read the file back. That is a
+  second call, it leaves what the seats said lying in a /tmp they and
+  the parent share, and a file read can be cut without saying so, where
+  the call that printed it says when it cut it.
+- hear reads the length in front of each say and copies that many
+  bytes. That is all it reads.
+
+## In Claude Code
+
+Every Bash call is a fresh shell, so a hear is one call and what it
+printed there. What a call printed is what the call returned, and
+nothing else. The files Claude Code keeps of what calls print, and of
+what agents return, are Anthropic's: no seat and no parent reads one,
+whatever a call or a notice says.

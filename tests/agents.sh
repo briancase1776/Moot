@@ -33,7 +33,9 @@
 set -eu
 cd "$(dirname "$0")/.."
 pMoot=$PWD/.claude/skills/moot/scripts
-pSkill=$PWD/.claude/skills/moot/SKILL.md
+pHear=$PWD/.claude/skills/moot-hear/scripts/hear
+pSaySkill=$PWD/.claude/skills/moot-say/SKILL.md
+pHearSkill=$PWD/.claude/skills/moot-hear/SKILL.md
 pAgents=$PWD/tests/agents.sh
 source "${ICC:-../ICC}/.claude/skills/icc-lib/scripts/lib"
 pDir=
@@ -53,18 +55,19 @@ case ${1:-} in
 You are seat $iSeat of the moot at $pDir.
 
 This is a WIRE TEST, not a deliberation. There is no matter. Investigate
-nothing, and read nothing but $pSkill, and from it only how
-say and hear are called. Make no work directory: you write no files.
+nothing, and read nothing but $pSaySkill and
+$pHearSkill, how say and hear are called. Make no work
+directory: you write no files.
 
 Do exactly this, then stop.
 
   ROUND 1  Run: date -u +%Y-%m-%dT%H:%M:%S.%NZ  -- call it T1.
-           say, one Bash call, piped from printf as SKILL.md says, body:
+           say, one Bash call, piped from printf as moot-say says, body:
                PING $iSeat <T1>
            hear, its own Bash call.
 
   ROUND 2  Run the same date again -- call it T2.
-           say, one Bash call, piped from printf as SKILL.md says, body:
+           say, one Bash call, piped from printf as moot-say says, body:
                PONG $iSeat <T2> SAW <every T1 you heard in round 1, space
                separated, in the order hear printed them>
            hear, its own Bash call.
@@ -87,8 +90,8 @@ BRIEF
     vArm '"$pMoot/remove" "$pDir" 2>/dev/null || :'
     # Every seat has said both rounds, so both are on p's read end and
     # neither hear waits. What p hears is held here and goes into no file.
-    osRound1=$(timeout 60 "$pMoot/hear" "$pDir" p)
-    osRound2=$(timeout 60 "$pMoot/hear" "$pDir" p)
+    osRound1=$(timeout 60 "$pHear" "$pDir" p)
+    osRound2=$(timeout 60 "$pHear" "$pDir" p)
     awk -v n="$nSeats" '
       function bad(m) { print "  FAIL: " m; rc = 1 }
       nRound == 1 && /^PING / {

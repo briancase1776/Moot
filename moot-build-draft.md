@@ -86,9 +86,10 @@ repository at a base commit, somewhere every seat can reach, its own
 and nobody else's while the moot sits. Create the moot with
 MOOT/scripts/create, as moot says. Brief every seat alike:
 
-    You are seat I of the build moot at DIR. Read SKILL.md at PATH and
-    MOOT/SKILL.md, and do what a seat of a build moot does. Cycles: K.
-    The tree: TREE at BASE. The matter: ...
+    You are seat I of the build moot at DIR. Read SKILL.md at PATH,
+    MOOT/SKILL.md, and the SKILL.md of moot-say and moot-hear beside
+    it, and do what a seat of a build moot does. Cycles: K. The tree:
+    TREE at BASE. The matter: ...
 
 Spawn them all at once, as moot says. When they return, the tree holds
 what was built, one commit an item, on top of BASE, and DIR/plan says

@@ -163,9 +163,10 @@ the test.
 ## Layout
 
 ```
-.claude/skills/moot/SKILL.md      the skill definition Claude Code loads
-.claude/skills/moot/scripts/      create, say, hear, remove. One script
-                                  each.
+.claude/skills/moot/SKILL.md      the rounds and the table
+.claude/skills/moot/scripts/      create and remove
+.claude/skills/moot-say/          say: its SKILL.md and its script
+.claude/skills/moot-hear/         hear: its SKILL.md and its script
 tests/                            run.sh and agents.sh, described above
 ```
 
