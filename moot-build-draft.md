@@ -118,7 +118,9 @@ runs, runs in your clone, brought first to TREE's HEAD:
     git -C WORK/run reset -q --hard FETCH_HEAD
 
 To run an item you have not committed yet, bring the clone to HEAD,
-then copy in the files you hold. Nobody writes TREE before the build
+then, for each file you hold, copy it in if it is in TREE and remove
+it from the clone if it is not: that carries a deletion, and a rename
+is the two paths it touched. Nobody writes TREE before the build
 round. Set TMPDIR to your work dir in every call that runs anything,
 and bind nothing to a fixed port.
 
@@ -164,6 +166,16 @@ create. `create && change; remove` runs remove when create is refused,
 and takes away the lock of the seat that holds it. Read the plan file
 whenever you like; change it only holding its lock.
 
+CHANGE decides under the lock, not before it: what you read before
+taking the lock may have changed by the time you hold it. It changes a
+line only if the line still says what it expects, and then prints the
+line, so the call shows whether the change took:
+
+    sed -i 's/^1\.2 free$/1.2 claimed 0/' DIR/plan
+    grep '^1\.2 ' DIR/plan
+
+If the line printed is not yours, another seat got there first.
+
 The plan file is one line an item that stood, in number order: the
 item's number, as moot numbers a DELTA, so 1.2 is seat 1's second,
 then its status. For example:
@@ -182,12 +194,15 @@ and why.
    and writes it, every standing item free. Every other seat, taking
    the lock in turn, compares it with the items it counted, and says
    any difference in its REPORT this round.
-2. Claim: take the lock, mark the first free line claimed I, give the
-   lock back. Hold one unbuilt item at a time, but for this: if the
-   item needs another built first, read that one's line. Done, go on.
-   Free, claim it too and build it first. Claimed, add waits and its
-   number to your line, and go on when its line says done. If its
-   line waits on yours, the two need each other: mark both blocked.
+2. Claim: in one CHANGE, find the first free line and mark it claimed
+   I. Hold one unbuilt item at a time, but for this: if the item needs
+   another built first, read that one's line. Done, go on. Free, claim
+   it too and build it first. Claimed, follow its waits: from the line
+   you would wait on, to the line that one waits on, and on. If the
+   chain comes back to your item, the items need each other: mark
+   yours blocked, and why. Otherwise add waits and its number to your
+   line, and go on when its line says done. If it says blocked
+   instead, mark yours blocked too, and why: it will never be done.
 3. Build: lock every file in the tree the item needs, absolute path,
    before you edit any of them, and hold each until the item is
    committed. Refused one, give back the ones you hold, as Lock says,
@@ -195,9 +210,16 @@ and why.
    changed and not committed: the next seat to lock it would edit on
    top of your change and commit it as its own. If you find partway
    that you need a file you are refused, first put back every file you
-   changed as it was, `git -C TREE restore -- FILE` for one in the tree
-   and rm for one you made, then give back every lock and start the
-   item again.
+   changed as it was, then give back every lock and start the item
+   again. For a file in HEAD, from HEAD, index and all, since a plain
+   restore takes the index, and puts back an edit already added:
+
+       git -C TREE restore --source=HEAD --staged --worktree -- FILE
+
+   For a file you made, out of the index and then away:
+
+       git -C TREE rm -q --cached --ignore-unmatch -- FILE
+       rm -f TREE/FILE
 4. Commit the item with only its own files, then give back their
    locks:
 
@@ -205,7 +227,8 @@ and why.
        git -C TREE commit -m 'ITEM J.k' -- FILES
 
    git refuses an add or a commit at once while another is running;
-   try again.
+   try again. FILES names every path the item touched: one it deleted,
+   and both the old and the new path of one it renamed.
 5. Mark it: take the lock, done I COMMIT, give it back. Commit first,
    then mark, so the plan file never says done for what is not in the
    tree. An item you cannot build, put back what you changed as in 3,
