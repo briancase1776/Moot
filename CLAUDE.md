@@ -77,8 +77,9 @@ Out of scope. Do not build, stub, or "leave room for" any of these:
 - **Reading what is said.** Tallying, de-duplicating DELTAs, parsing
   REPORTs, judging a VOTE well formed. The seats agreed on those lines;
   the seats read them.
-- **What a wire could do for itself.** Discovery, naming, persistence,
-  replay, liveness, retries, timeouts, transports, config, plugins.
+- **Defining the wire.** What the wire is and what it does are ICC's,
+  and nothing here says. Getting a say onto it and a round off it is
+  this repo's: say, hear, and calling ICC.
 
 If a request touches any of the above, stop and say it is out of scope.
 Before adding anything, ask: is this the wire, what goes down it, what
