@@ -194,7 +194,7 @@ can read before it was said, and a round written to a file is the moot
 kept somewhere the moot is not.
 
 And it will be the same file. The seats are N agents of one model on one
-brief in one container: they go at a matter from different sides, which
+brief on one machine: they go at a matter from different sides, which
 is the point of them, but on an incidental like where to put a scratch
 file they land on the same obvious name in the same /tmp. Then one
 seat's report is written over another's, and a seat says words it did
@@ -210,5 +210,8 @@ are Anthropic's: no seat and no parent reads one, whatever a call or a
 notice says.
 
 The patch is its own processes, as Patch says, so a moot outlives calls.
-Seats are agents the parent spawns; they share its container and its
-/tmp. A moot does not cross a session.
+A seat is any agent that can open DIR, whatever session it runs in: a
+subagent the parent spawned, or another session on the same machine.
+The wire is pipes in DIR, and it reaches as far as DIR does. A cloud
+session is a container of its own, and a seat in another one cannot
+open DIR; a wire that reaches it is ICC's to make, not the table's.
