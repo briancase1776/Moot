@@ -10,15 +10,19 @@ description: >-
 
 # moot
 
-A moot is N seats on a mesh that icc-patch made, a cold agent in each,
-and a matter. Every seat investigates alone and reports. The seats say
-where the reports differ. Every position is then argued from every
-seat, one rotation at a time. What is still in dispute goes to a vote.
-The moot returns what survived. Patch made the wire and the map; see its
-SKILL.md. What a seat says goes down it as its length and its words. The
-moot adds the rounds and nothing else. say and hear are skills of their
-own, moot-say and moot-hear, beside this one: their SKILL.md say how
-each is called, and a seat reads all three.
+A moot is N seats, a cold agent in each, and a matter. Every seat
+investigates alone and reports. The seats say where the reports differ.
+Every position is then argued from every seat, one rotation at a time.
+What is still in dispute goes to a vote. The moot returns what
+survived. It has no opinion, and it is nobody's chair.
+
+Here the seats sit on a wire made of ICC's pieces, icc-pipes, icc-tee,
+icc-merge and icc-patch; their SKILL.md say what each is. What a seat
+says goes down it as its length, its mark and its words. The moot adds
+the rounds and nothing else. say and hear are skills of their own,
+moot-say and moot-hear, beside this one: their SKILL.md say how each is
+called, and a seat reads all three. A moot whose seats sit in other
+sessions is moot-cross's.
 
     /tmp/moot-XXXXXXXX/moot           SHAPE N PATCH BYTES, Patch's scripts
     /tmp/moot-XXXXXXXX/work.XXXXXXXX  a seat's own; it makes it and it takes it away
@@ -37,24 +41,31 @@ each is called, and a seat reads all three.
     ../moot-hear/scripts/hear DIR SEAT  print the round at SEAT, or not
                                         yet; see moot-hear
 
-SHAPE is mesh or mesh-p, as Patch says. N is 2 or more. On mesh-p the
-parent holds seat p: it hears every round and says nothing, and say
-refuses it, since p writes nowhere.
+SHAPE is mesh or mesh-p, two of Patch's shapes. N is 2 or more. On
+mesh-p the parent holds seat p: it hears every round and says nothing,
+and say refuses it, since p writes nowhere, as Patch says.
 
 BYTES is the most one say may be, its mark and its last newline
 counted; say refuses more. The default is about what a model's longest
 answer comes to. That is counted in tokens, and a token is no fixed
 number of bytes, so the default is a guess, and generous on purpose.
 The wire for it is big: at the default, three seats and p are about 150
-processes, most of them Patch's pipes and tees. A mesh 2 is one pipe,
-which nothing deepens, so there a say is at most 65472 bytes, whatever
-BYTES is.
+processes. Patch does not deepen a mesh 2, as it says, so there a say
+is at most 65472 bytes, whatever BYTES is.
 
 create runs Patch's create from `$ICC`, by default `../ICC` beside this
 repo, and writes its path into DIR/moot; remove takes it from there.
-Patch finds Pipes, Tee and Merge itself, as its SKILL.md says. create
-also sources icc-lib from there, for its count checks and its cleanup,
-so ICC has to be whole.
+create also sources icc-lib from there, for its count checks and its
+cleanup, so ICC has to be whole.
+
+create is a preset, so a session that wants a moot has a wire without
+building one. It is also the example of a moot's wire, and reading it
+takes knowing the pieces. It is not the only wire. A session can make
+the patch itself, or add to the preset, such as a fitting that gives a
+research assistant what the table hears; the pieces' SKILL.md say how.
+Whatever it builds, say and hear find a seat's ends on Patch's map, by
+the patch named in DIR/moot, so the map has to say where each seat's
+ends are.
 
 ## Sitting a moot
 
@@ -184,6 +195,21 @@ it to the parent's remove; that is the sweep, not the plan.
   nothing is voted that every seat has not argued, the vote is yes or
   no with no tiebreak, and the parent says nothing. That is all the
   moot does about fairness. The rest is the seats'.
+- No seat runs the moot, and none speaks first by right. There is no
+  moderator, summarizer, judge, weight on a vote, tiebreak or quorum.
+- The seats are cold and do not coordinate. Seats of one model on one
+  brief go at a matter from different sides and come back with mostly
+  different things: what a seat looks at first shapes everything it
+  looks at after. N seats find more than one does and dig further into
+  what they find, so a table can turn up what a single agent of longer
+  reach, working alone, does not. That spread is the product, and
+  nothing may narrow it: not a fuller brief, not a house style for what
+  a seat says. Seats that agree where to look are one seat run N times.
+- A matter is not spent in one moot. What the spread will not cover is
+  what every seat misses alike; a moot corrects a seat, it does not
+  correct a model. Sitting the same matter again turns up what one
+  sitting did not. That is the parent's to call, and nothing here knows
+  there was a first time.
 
 ## In Claude Code
 
@@ -211,4 +237,5 @@ notice says.
 
 The patch is its own processes, as Patch says, so a moot outlives calls.
 Seats are agents the parent spawns; they share its container and its
-/tmp. A moot this skill makes does not cross a session.
+/tmp. A moot this skill makes does not cross a session; one that does
+is moot-cross's.
