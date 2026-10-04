@@ -7,18 +7,17 @@
 #          icc-lib's oLanes, sourced from beside Patch's scripts, which says
 #          what a lane is and how a seat is matched. What goes on is a line
 #          with the length in bytes of what follows, then SEAT's mark, the
-#          words, and a newline at the end if the words lack one, in one
-#          write of whole pages. Nothing takes a turn: every other seat
-#          reads the words on a cable of its own, and on a mesh-p p's merge
-#          takes each say whole before the next, as Merge says of what one
-#          writer puts on without a pause. A write that finds the wire full
-#          waits there until the slowest seat reads. A body holding a line
-#          shaped like the mark, SEAT and one word alone, is refused,
-#          because a reader would take it for another seat's; so is a say
-#          past the BYTES the moot was made for, since a read end holds one
-#          say that size from each seat that writes into it and no bigger. p
-#          writes nowhere, and a say from p is refused too. A refused say
-#          puts nothing on the wire.
+#          words, and a newline at the end if the words lack one, put on by
+#          one dd, whole pages one after another, without a pause. Nothing
+#          takes a turn: the words reach every other seat as Patch says of
+#          the shape. A write that finds the wire full waits there until the
+#          slowest seat reads. A body holding a line shaped like the mark,
+#          SEAT and one word alone, is refused, because a reader would take
+#          it for another seat's; so is a say
+#          past the BYTES the moot was made for, since create made each read
+#          end to hold one say that size from each seat that writes into it
+#          and no bigger. p writes nowhere, as Patch says, and a say from p
+#          is refused too. A refused say puts nothing on the wire.
 # @stdin the words
 # @stdout nothing
 # @stderr the reason, on refusal

@@ -10,7 +10,7 @@ treatment if the parent paid for another turn of the table; if not, it
 comes back unargued and unvoted, so the parent knows it is there. What
 is still in dispute goes to a vote. The moot returns what survived.
 
-It is a Claude Code skill. The agents talk over real pipes, made by
+They are Claude Code skills. The agents talk over real pipes, made by
 [ICC](https://github.com/briancase1776/ICC).
 
 ## What is different about it
@@ -26,8 +26,8 @@ turn. A seat made to argue somebody else's case goes and looks where it
 would not have looked, which is where most of the good findings come
 from.
 
-**A real wire.** The seats are connected by pipes with an ordering
-guarantee, not by a loop passing strings around. Every seat hears every
+**A real wire.** The seats are connected by ICC's pipes, not by a loop
+passing strings around. Every seat hears every
 other seat's words, byte for byte, in rounds, and nothing is heard before
 everything in that round has been said.
 
@@ -105,10 +105,11 @@ It corrects a seat, not a model. Seats of one model share blind spots, and
 what they all miss alike, the moot will miss too. Sitting the same matter
 again turns up what one sitting did not.
 
-Its fairness is part mechanism and part discipline. The wire makes every
-seat hear the same words in the same rounds. It cannot stop a parent
-having a quiet word with one seat outside the moot, and nothing here can
-check that. After the brief, the parent says nothing to a seat.
+Its fairness is part mechanism and part discipline. say and hear give
+every seat every other seat's words, byte for byte, a round at a time.
+They cannot stop a parent having a quiet word with one seat outside the
+moot, and nothing here can check that. After the brief, the parent says
+nothing to a seat.
 
 The vote is what survived the argument you could afford, not what is true.
 

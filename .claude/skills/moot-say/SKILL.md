@@ -2,8 +2,8 @@
 name: moot-say
 description: >-
   Put what is on stdin on a moot's wire as one seat, once: its length, a
-  SEAT mark and the words, in one write. Piped from printf in the same
-  call, never a heredoc or a file.
+  SEAT mark and the words, with one dd that does not pause. Piped from
+  printf in the same call, never a heredoc or a file.
 ---
 
 # moot-say
@@ -13,25 +13,30 @@ description: >-
                           never a heredoc or a file
 
 DIR is a moot's directory, as moot's create printed it. SEAT is the seat
-as the map spells it. On mesh-p, p writes nowhere, and say refuses it.
+as the map spells it. On mesh-p say refuses p, which writes nowhere, as
+Patch says.
 
 ## Calling it
 
-With the longest timeout a call may have, as moot-hear says. A say whose
-call reaches its timeout is not cut off: Claude Code moves it to the
-background, where it goes on, and its words land. Never say again for
-it: that is a second say, and every round after it is one out.
+With the longest timeout a call may have, as moot-hear says. What
+happens to a say whose call reaches its timeout depends on the Claude
+Code version. Some cut it off: before its write it has put nothing on,
+and inside its write it has put part of a say on, as Facts says. Others
+move it to the background, where it goes on, and its words land. Never
+say again for one that went to the background: that is a second say,
+and every round after it is one out.
 
 ## Facts
 
 - What a seat says goes on the wire as a line with its length in bytes,
-  then a `SEAT I` line, the words, and a newline at the end, in one
-  write. The `SEAT I` line is the only mark of who said what, as Merge
-  says, and it is what say was told: nothing binds a caller to a seat
-  number. Say nothing that starts a line with SEAT; say refuses a body
-  holding a line of that shape, SEAT and one word alone, because a
-  reader would take it for the mark and the words under it would speak,
-  and vote, as another seat.
+  then a `SEAT I` line, the words, and a newline at the end, put on by
+  one dd, page after page, without a pause. The `SEAT I` line is the
+  only mark of who said what that hear prints, since nothing on the wire
+  says which seat a byte came from, as Patch says, and it is what say
+  was told: nothing binds a caller to a seat number. Say nothing that
+  starts a line with SEAT; say refuses a body holding a line of that
+  shape, SEAT and one word alone, because a reader would take it for the
+  mark and the words under it would speak, and vote, as another seat.
 - Give say what you have to say on stdin, piped from printf in the same
   call, the words one argument in single quotes:
   `printf '%s\n' 'the words' | scripts/say DIR I`. printf is the
@@ -49,21 +54,21 @@ it: that is a second say, and every round after it is one out.
   that is two calls for one say. The seats share a /tmp, so what a seat
   has not said yet would be sitting there to be read by a seat that has
   not heard it.
-- say takes no turn and waits for nothing of its own. Every seat can
-  say at once: every other seat reads it on a cable of its own, and say
-  puts its words on with one dd, page after page without a pause. What
-  feeds p's merge is each seat's tee, and the merge takes one say whole
-  before the next, as Merge says of a writer that does not pause, while
-  every seat and p keep up. A seat far enough behind that its cable
-  fills stops its tee partway through a say, the merge lets another
-  seat's in, and p's hear reads out of step; p far enough behind that
-  its own cable fills gets its rounds mixed, and nothing says so. At the
-  moot's default BYTES a model's says come nowhere near either. say
-  returns when the wire has taken them. A seat's read end holds a say of
-  BYTES from its seat, and p's a round of them, so a say waits on no
-  seat while every seat has heard the round before it; one made while a
-  seat is still behind waits for that seat to hear, and so does every
-  say after it.
+- say takes no turn and waits for nothing of its own. Every seat can say
+  at once, and each say reaches every other seat on a cable of its own,
+  as Patch says of a mesh. On a mesh-p every seat's says also reach p's
+  merge. Merge says it takes a writer's bytes whole while that writer
+  does not let its inlet go empty, and what writes into p's merge is
+  each seat's tee, as Patch says; whether a tee fed by say's dd keeps
+  its inlet from going empty for a whole say, ICC does not yet say.
+  Until it does, p's hear can find a say mixed with another, and nothing
+  says so; a seat or p far enough behind that its cable fills makes that
+  likelier. At the moot's default BYTES a model's says come nowhere near
+  filling one. say returns when the wire has taken them. A seat's read
+  end holds a say of BYTES from its seat, and p's a round of them, so a
+  say waits on no seat while every seat has heard the round before it;
+  one made while a seat is still behind waits for that seat to hear, and
+  so does every say after it.
 - BYTES is what the moot was made for: the most one say may be, its mark
   and its last newline counted. Past it, say refuses and nothing goes
   on: a round that will not fit is a moot to be sat again, made for

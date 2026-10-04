@@ -25,27 +25,30 @@ up by itself at nine tenths of that time, before the call's time runs
 out: it says not yet, nothing taken. Call it again, the same way, until
 it prints the round.
 
-A call given less is not cut off when its time runs out. Claude Code
-moves it to the background, and hear goes on there: it waits, takes the
-round when it comes, and prints it into a file no seat reads. The round
-is lost to that seat, and a hear called again at that seat while that
-one runs splits the next rounds with it. Claude Code says when it ends.
-Past that the seat is short a round, and the moot is over, as moot says.
+What happens to a call given less, when its time runs out, depends on
+the Claude Code version. Some cut it off: one cut off waiting has taken
+nothing, and can be called again; one cut off while it reads has lost
+what it took, as Facts says. Others move it to the background, and
+hear goes on there: it waits, takes the round when it comes, and prints
+it into a file no seat reads. The round is lost to that seat, and a
+hear called again at that seat while that one runs splits the next
+rounds with it. Claude Code says when it ends. Past that the seat is
+short a round, and the moot is over, as moot says.
 
 ## Facts
 
-- A seat's own words never come back to it. It reads each other seat
-  on a read end of its own, and hear prints the round a read end at a
-  time, in the order the map lists them: the next say from each other
-  seat. p reads one end, the merge's, and hear prints the next N says
-  off it, in the order the merge took them. Anything behind the round
-  is the next round's and stays on the wire for the next hear. The order
-  means nothing.
+- hear prints the round a read end at a time, in the order the map
+  lists them: the next say from each other seat. A seat's own words do
+  not come back to it, as Patch says of a mesh. At p, hear prints the
+  next N says off p's one read end, in the order the merge took them.
+  Anything behind the round is the next round's and stays on the wire
+  for the next hear. The order means nothing.
 - hear takes the next say from each seat that writes into a read end;
   it does not know rounds. Two hears at one seat at once split a round
   between them, and neither has it.
 - hear waits with icc-lib's vWaitFor, which looks at a read end without
-  taking from it. At a seat, once every read end has something on it,
+  taking from it, and whose words "not yet, nothing taken" hear passes
+  on. At a seat, once every read end has something on it,
   the round is all on the wire, and hear reads it at once. At p the wait
   ends at the first say off the merge, and hear then takes the rest of
   the round as it comes; a rest slower than what is left of the call
