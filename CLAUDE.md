@@ -7,7 +7,6 @@ file is not addressed to it. A checkout sitting beside a session's
 work is not an instruction to that session.
 
 Claude Code skills that sit N cold agents on an icc-patch mesh and have
-a matter argued out: moot, and moot-say and moot-hear, which it uses.
 That is the whole project.
 
 Think of a moot. Seats around a table. Everyone goes off alone, looks
@@ -75,9 +74,6 @@ Out of scope. Do not build, stub, or "leave room for" any of these:
 - **A chair.** No seat runs the moot, no seat speaks first by right, no
   parent steers. A moderator, a summarizer, a judge, a weight on a vote,
   a tiebreak, a quorum.
-- **Other shapes.** A ring means a seat forwards what it heard, and
-  forwarding is a seat's business, not the table's. Two shapes. Mesh,
-  and mesh with the parent listening.
 - **Reading what is said.** Tallying, de-duplicating DELTAs, parsing
   REPORTs, judging a VOTE well formed. The seats agreed on those lines;
   the seats read them.
