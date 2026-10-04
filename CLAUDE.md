@@ -7,7 +7,7 @@ file is not addressed to it. A checkout sitting beside a session's
 work is not an instruction to that session.
 
 Claude Code skills that sit N cold agents on an icc-patch mesh and have
-That is the whole project.
+a matter argued out: moot, and moot-say and moot-hear, which it uses.
 
 Think of a moot. Seats around a table. Everyone goes off alone, looks
 into the matter, and comes back with a report. They read each other's
