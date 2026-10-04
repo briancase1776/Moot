@@ -52,9 +52,10 @@ mesh-p, prints a brief per seat for the parent to spawn, and returns;
 once every seat has returned, check hears two rounds as p, checks every
 seat said once and heard every other, and removes the moot. Neither
 call waits on a seat, so the parent takes what each returned and reads
-no file. Neither touches a moot or a patch it did not make. If a test
-needs more than a few lines of setup, the table is too complicated, not
-the test.
+no file. Neither touches a moot or a patch it did not make. moot-cross
+has no script of its own: its sends are tool calls, which no harness
+makes. If a test needs more than a few lines of setup, the table is too
+complicated, not the test.
 
 ## Rules
 
