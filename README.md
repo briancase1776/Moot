@@ -11,7 +11,9 @@ comes back unargued and unvoted, so the parent knows it is there. What
 is still in dispute goes to a vote. The moot returns what survived.
 
 They are Claude Code skills. The agents talk over real pipes, made by
-[ICC](https://github.com/briancase1776/ICC).
+[ICC](https://github.com/briancase1776/ICC). moot-cross sits seats that
+are sessions of their own: says go by send_message, each say's hash
+sent before the say.
 
 ## What is different about it
 

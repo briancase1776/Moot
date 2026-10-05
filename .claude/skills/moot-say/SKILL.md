@@ -31,9 +31,10 @@ and every round after it is one out.
 - What a seat says goes on the wire as a line with its length in bytes,
   then a `SEAT I` line, the words, and a newline at the end, put on by
   one dd, page after page, without a pause. The `SEAT I` line is the
-  only mark of who said what that hear prints, since nothing on the wire
-  says which seat a byte came from, as Patch says, and it is what say
-  was told: nothing binds a caller to a seat number. Say nothing that
+  only mark of who said what that hear prints: hear prints no PEERS,
+  and on p's read end nothing says which seat a byte came from, as
+  Patch says of a read end with more than one PEER. It is what say was
+  told: nothing binds a caller to a seat number. Say nothing that
   starts a line with SEAT; say refuses a body holding a line of that
   shape, SEAT and one word alone, because a reader would take it for the
   mark and the words under it would speak, and vote, as another seat.

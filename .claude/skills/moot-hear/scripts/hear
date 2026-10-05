@@ -7,16 +7,16 @@
 #          order the map lists them: one from each other seat, or at p all N
 #          off its one end, in the order the merge took them, as Patch says
 #          of the shape. The read ends come off Patch's map with icc-lib's
-#          oLanes, sourced from beside Patch's scripts, which says what a
-#          lane is and how a seat is matched. For each say it reads the
-#          length line in front and copies that many bytes. Anything
-#          behind the round is the next round's and stays on the wire.
-#          Before it takes anything it waits, with icc-lib's vWaitFor, until
-#          every read end has something on it; if its time runs out first it
-#          says not yet, having taken nothing, and can be called again. Its
-#          time is nine tenths of what Claude Code gives a call, so it says
-#          so before the call is cut off: the milliseconds in
-#          BASH_MAX_TIMEOUT_MS when that is a count, and 600000, Claude
+#          oLanes, sourced from beside Patch's scripts, which says which
+#          lanes a seat writes and reads, and how a seat is matched. For
+#          each say it reads the length line in front and copies that many
+#          bytes. Anything behind the round is the next round's and stays on
+#          the wire. Before it takes anything it waits, with icc-lib's
+#          vWaitFor, until every read end has something on it; if its time
+#          runs out first it says not yet, having taken nothing, and can be
+#          called again. Its time is nine tenths of what Claude Code gives a
+#          call, so it says so before the call is cut off: the milliseconds
+#          in BASH_MAX_TIMEOUT_MS when that is a count, and 600000, Claude
 #          Code's own, when not. What it copies is off the wire once it is
 #          printed, and nothing keeps it, so a hear cut off while it reads
 #          has lost what it took.

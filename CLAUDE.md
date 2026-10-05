@@ -95,4 +95,6 @@ complicated, not the test.
   one, what the matter is, what a seat finds and how it argues it — all
   the session's. A skill says what a round is and stops there. A table
   that starts telling a session how to be arranged has stopped being
-  the table and become a seat at it.
+  the table and become a seat at it. A precondition the owner sets for
+  a skill, such as moot-cross's Auditor parent, is that skill's to
+  state.

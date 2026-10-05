@@ -62,10 +62,16 @@ create is a preset, so a session that wants a moot has a wire without
 building one. It is also the example of a moot's wire, and reading it
 takes knowing the pieces. It is not the only wire. A session can make
 the patch itself, or add to the preset, such as a fitting that gives a
-research assistant what the table hears; the pieces' SKILL.md say how.
-Whatever it builds, say and hear find a seat's ends on Patch's map, by
-the patch named in DIR/moot, so the map has to say where each seat's
-ends are.
+research assistant what the table hears. Patch says which shapes it
+makes and that any other is wired by hand from Pipes, Tee and Merge,
+and their SKILL.md say what each does: a fitting put on a lane reads it,
+and what it reads no one else does. Whatever a session builds, say and
+hear go by DIR/moot, create's one line, and find a seat's ends on a map
+in Patch's form at the patch it names. Each read end has to hold a say
+of BYTES from each seat that writes into it, as create makes them;
+shallower, and a round in which every seat says before any hears waits
+for ever. remove takes away only what Patch's create made, so a session
+takes away what it added first.
 
 ## Sitting a moot
 
