@@ -35,25 +35,26 @@ fact, that is a change there, not a paragraph here.
 Two harnesses. tests/run.sh proves the table works with shell seats:
 they say and hear in rounds and every one hears every other seat's
 words, byte for byte, and none of its own; every seat says at once,
-before any hears, a round bigger than one pipe, and every say returns;
-a round is the next say from each seat, so a seat a round ahead is
-kept; a hear before its round is all in says not yet and takes nothing,
-and one that waits for it hears it whole once it is in;
-a seat spelled another way, with an escape in it, or as the map's
-"-", a body with a line shaped like the mark, and a say past what the
-moot was made for are refused; on a mesh 2 each seat hears the other;
-on mesh-p the parent hears the round and cannot say; create
-leaves no patch when it cannot finish or a signal cuts it off; remove
-leaves the moot when the patch will not go; a moot over an ICC path
-with a space works; remove it, see nothing left. tests/agents.sh proves
-the wire carries for agents, which shell seats cannot: sit makes a
-mesh-p, prints a brief per seat for the parent to spawn, and returns;
-once every seat has returned, check hears two rounds as p, checks every
-seat said once and heard every other, and removes the moot. Neither
-call waits on a seat, so the parent takes what each returned and reads
-no file. Neither touches a moot or a patch it did not make. moot-cross
-has no script of its own: its sends are tool calls, which no harness
-makes. If a test needs more than a few lines of setup, the table is too
+before any hears, a round bigger than one pipe, and every say returns; a
+round is the next say from each seat, so a seat a round ahead is kept; a
+hear before its round is all in says not yet and takes nothing, and one
+that waits for it hears it whole once it is in; a seat spelled another
+way, with an escape in it, or as the map's "-", a body with a line
+shaped like the mark, and a say past what the moot was made for are
+refused; on a mesh 2 each seat hears the other; on mesh-p the parent
+hears the round and cannot say; create leaves no patch when it cannot
+finish or a signal cuts it off; remove leaves the moot when the patch
+will not go; a moot over an ICC path with a space works; remove it, see
+nothing left. tests/agents.sh proves the wire carries for agents, which
+shell seats cannot: sit makes a mesh-p, prints a brief per seat for the
+parent to spawn, and returns; once every seat has returned, check hears
+two rounds as p, checks every seat said once and heard every other, and
+removes the moot; on a loaded machine p's merge can cut a say, as Patch
+says, and check fails then for the shape, not the table. Neither call
+waits on a seat, so the parent takes what each returned and reads no
+file. Neither touches a moot or a patch it did not make. moot-cross has
+no script of its own: its sends are tool calls, which no harness makes.
+If a test needs more than a few lines of setup, the table is too
 complicated, not the test.
 
 ## Rules

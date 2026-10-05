@@ -58,18 +58,15 @@ and every round after it is one out.
 - say takes no turn and waits for nothing of its own. Every seat can say
   at once, and each say reaches every other seat on a cable of its own,
   as Patch says of a mesh. On a mesh-p every seat's says also reach p's
-  merge. Merge says it takes a writer's bytes whole while that writer
-  does not let its inlet go empty, and what writes into p's merge is
-  each seat's tee, as Patch says; whether a tee fed by say's dd keeps
-  its inlet from going empty for a whole say, ICC does not yet say.
-  Until it does, p's hear can find a say mixed with another, and nothing
-  says so; a seat or p far enough behind that its cable fills makes that
-  likelier. At the moot's default BYTES a model's says come nowhere near
-  filling one. say returns when the wire has taken them. A seat's read
-  end holds a say of BYTES from its seat, and p's a round of them, so a
-  say waits on no seat while every seat has heard the round before it;
-  one made while a seat is still behind waits for that seat to hear, and
-  so does every say after it.
+  merge, and there a say can come out with another seat's bytes inside
+  it: rarely, under load, even while every seat keeps up, and more often
+  once a seat stops reading and its cable fills, as Patch says of what
+  writes into p's merge. The seats' own rounds are not touched, since
+  every read end a seat holds has one writer. say returns when the wire
+  has taken them. A seat's read end holds a say of BYTES from its seat,
+  and p's a round of them, so a say waits on no seat while every seat
+  has heard the round before it; one made while a seat is still behind
+  waits for that seat to hear, and so does every say after it.
 - BYTES is what the moot was made for: the most one say may be, its mark
   and its last newline counted. Past it, say refuses and nothing goes
   on: a round that will not fit is a moot to be sat again, made for

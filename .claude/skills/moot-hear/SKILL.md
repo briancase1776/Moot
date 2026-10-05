@@ -40,9 +40,9 @@ short a round, and the moot is over, as moot says.
 - hear prints the round a read end at a time, in the order the map
   lists them: the next say from each other seat. A seat's own words do
   not come back to it, as Patch says of a mesh. At p, hear prints the
-  next N says off p's one read end, in the order the merge took them;
-  whether each comes off the merge whole, ICC does not yet say, as
-  moot-say says.
+  next N says off p's one read end, in the order the merge took them.
+  A say the merge cut, as moot-say says, is printed with another seat's
+  bytes inside it, and the say after it finds the wire out of step.
   Anything behind the round is the next round's and stays on the wire
   for the next hear. The order means nothing.
 - hear takes the next say from each seat that writes into a read end;
