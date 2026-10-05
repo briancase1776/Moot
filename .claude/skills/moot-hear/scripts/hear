@@ -50,6 +50,8 @@ osWho="seat $osSeat"
 nMs=${BASH_MAX_TIMEOUT_MS:-600000}
 [[ $nMs =~ ^[0-9]{1,15}$ ]] || nMs=600000
 vWaitFor "$pPatch" "$osSeat" $((10#$nMs * 9 / 10000))
+# read -r and head -c take only what they return, as Pipes says, so the
+# next say on a lane stays there for the next hear.
 for oRead in "${aReads[@]}"; do
   read -r pReadLane osPeers <<< "$oRead"
   IFS=, read -r -a aPeers <<< "$osPeers"

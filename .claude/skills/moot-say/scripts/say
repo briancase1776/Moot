@@ -58,11 +58,11 @@ osMark=$'\n''SEAT [^[:space:]]+'$'\n'
   echo "seat $osSeat: ${#osWords} bytes, past the $nBytes this moot holds" >&2
   exit 1
 }
-# dd and not printf alone: bash line-buffers a builtin's output, so printf
-# puts a short line on as a write of its own, which takes a page of the lane
-# to itself. dd, told to fill each block before it writes, writes whole
-# pages, the last part full, one after another. printf hands dd the say down
-# a pipe and not as a here-string: bash puts a here-string too big for a
-# pipe in a file in /tmp, and a say goes into no file.
+# dd puts the say on in whole pages, the last part full: a short write
+# keeps a page of the lane to itself, and dd iflag=fullblock fed by
+# something that ends writes whole blocks and stops at the end, as Pipes
+# says of both. printf hands dd the say down a pipe and not as a
+# here-string: bash puts a here-string too big for a pipe in a file in
+# /tmp, and a say goes into no file.
 printf '%s\n%s' "${#osWords}" "$osWords" |
   dd bs=4096 iflag=fullblock status=none > "$pWriteLane"
