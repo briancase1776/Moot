@@ -42,7 +42,9 @@ short a round, and the moot is over, as moot says.
   not come back to it, as Patch says of a mesh. At p, hear prints the
   next N says off p's one read end, in the order the merge took them.
   A say the merge cut, as moot-say says, is printed with another seat's
-  bytes inside it, and the say after it finds the wire out of step.
+  bytes inside it, and nothing says so. hear refuses the wire as out of
+  step only if the line where it next looks for a length is not digits,
+  so a cut can also pass, and the says after it be printed wrong too.
   Anything behind the round is the next round's and stays on the wire
   for the next hear. The order means nothing.
 - hear takes the next say from each seat that writes into a read end;

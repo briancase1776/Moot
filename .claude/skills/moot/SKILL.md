@@ -106,9 +106,10 @@ waits on a seat. p's read end holds N says of BYTES. A sitting of
 model-sized says is far less; one that is not has its seats wait in
 say for p. A p hear while the seats still sit can outlast its call: at
 p the wait ends at the first say, as moot-hear says. p's merge can cut a
-say, rarely and under load, as moot-say says, and p's hear then stops
-with the wire out of step. That is p's record, not the moot: the seats'
-rounds are not touched, and what they returned stands.
+say, rarely and under load, as moot-say says, and p's hear then prints
+it with another seat's bytes inside, sometimes with no refusal at all,
+as moot-hear says. That is p's record, not the moot: the seats' rounds
+are not touched, and what they returned stands.
 
 ## At a seat
 
