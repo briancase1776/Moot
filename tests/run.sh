@@ -20,6 +20,9 @@
 #          when it cannot finish or a signal cuts it off; remove leaves the
 #          moot when the patch will not go; remove it, see nothing left. A
 #          moot over an ICC checkout whose path has a space works.
+#          moot-cross's hash and check: a say delivered as Bridge says
+#          send_message delivers it passes through Bridge's sent, one
+#          changed on the way fails, and a hash that is not one is refused.
 #          Raspberries are what is said, and what is said and heard is held
 #          here and goes into no file. Runs beside other patches, in a
 #          directory of its own, and touches only what it made. Needs $ICC,
@@ -303,4 +306,23 @@ printf 'A\n' | "$pSay" "$pDir" 0
 "$pMoot/remove" "$pDir"
 [ ! -d "$pDir" ]
 [ ! -d "$pPatch" ]
+# moot-cross's steps 1 and 4: a say hashed as step 1 hashes it, delivered as
+# Bridge says send_message delivers it, passes step 4's check through
+# Bridge's sent. A say changed on the way fails, and so does a hash that is
+# not one.
+pSent=$pIcc/.claude/skills/icc-bridge/scripts/sent
+for osWords in "it's <b> & c" 'already &lt;escaped&gt; &amp; kept' \
+  $'\ta tab, $HOME and `date`\n\n    four spaces in front, two after  '; do
+  osSay=$(printf 'SEAT 1 ROUND 2\n%s\nSALT %s' "$osWords" \
+    "$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')")
+  osHash=$(printf '%s' "$osSay" | sha256sum | cut -c1-64)
+  osCame=$(printf '%s' "$osSay" |
+    sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/^/    /')
+  printf '%s\n' "$osCame" | "$pSent" |
+    sha256sum -c --status <(printf '%s  -\n' "$osHash")
+  printf '%s\n' "${osCame/SEAT 1/SEAT 2}" | "$pSent" |
+    sha256sum -c --status <(printf '%s  -\n' "$osHash") && exit 1
+done
+printf '%s\n' '    x' | "$pSent" |
+  sha256sum -c --status <(printf '%s  -\n' 'not a hash') 2>/dev/null && exit 1
 echo ok

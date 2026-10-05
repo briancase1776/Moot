@@ -54,6 +54,9 @@ says, and check fails then for the shape, not the table. Neither call
 waits on a seat, so the parent takes what each returned and reads no
 file. Neither touches a moot or a patch it did not make. moot-cross has
 no script of its own: its sends are tool calls, which no harness makes.
+run.sh checks its hash and check steps: a say delivered as Bridge says
+send_message delivers it passes through Bridge's sent, one changed on
+the way fails, and a hash that is not one is refused.
 If a test needs more than a few lines of setup, the table is too
 complicated, not the test.
 
