@@ -19,13 +19,12 @@ writes its path into the moot's line; remove runs Patch's remove from
 there. Do not vendor any of ICC into this repo.
 
 Anything Moot needs that ICC already has, it sources from there and does
-not write again. say and hear take a seat's lanes off the map with
-icc-lib's oLanes, and hear waits on them with its vWaitFor: the two
-functions icc-lib offers a script that sits at a seat. create and both
-harnesses also source its count checks, its directory maker and the
-cleanup armed before anything is made, and run.sh its cut-off check.
-icc-lib has not offered those outside ICC, and whether it will is open.
-Sourcing is not vendoring; a copy is.
+not write again, as icc-lib's SKILL.md allows a script outside ICC. From
+icc-lib, say and hear take oLanes, and hear vWaitFor; create takes
+nCount, pMakeDir, vArm and vDisarm; the harnesses take vArm and vDisarm,
+and run.sh vCutOff. icc-lib changes with ICC's pieces, and Moot keeps up
+with it, not it with Moot: run.sh against ICC is where a change there
+shows. Sourcing is not vendoring; a copy is.
 
 A fact about ICC is ICC's. Where a skill here needs one, it names the
 piece and points to the ICC SKILL.md that states it. If ICC is missing a
